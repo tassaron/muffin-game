@@ -1,0 +1,27 @@
+:root {
+    --arcade-font: "Ubuntu", "Roboto", sans-serif;
+}
+
+body {
+    padding: 0;
+    margin: auto auto;
+    background: #993f70;
+    color: #eee;
+    text-align: center;
+    margin-top: 2em;
+    font-family: sans;
+}
+
+canvas {
+    border: 2px solid black;
+    margin: auto;
+}
+
+main {
+    margin: auto;
+}
+
+#help_text {
+    padding-bottom: 0.5em;
+    margin: 0 auto;
+}
