@@ -1,6 +1,7 @@
 /*
 *  Entrypoint to the application. Creates canvas and loads all assets before beginning the game loop
 */
+import { textures, after_preload } from "./setup.js";
 import { Game } from "./game.js";
 
 
@@ -54,13 +55,11 @@ document.getElementById("game").appendChild(app.view);
 */
 const sprites = {};
 const loader = PIXI.Loader.shared;
+for (let texture of textures) {
+    loader.add(texture, PREFIX + texture + ".png");
+};
 loader
-    .add('explosion', PREFIX + "explosion.png")
-    .add('fuel', PREFIX + "fuel.png")
-    .add('grass', PREFIX + "grass.png")
-    .load((loader, resources) => {
-        sprites.explosion = new PIXI.Sprite(resources.explosion.texture);
-    })
+    .load((loader, resources) => after_preload(loader, resources, sprites))
     .onComplete.add(() => {
         const game = new Game(app, sprites);
         document.getElementById("pause_button").addEventListener('click', game.pauseGame, false);
