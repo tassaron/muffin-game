@@ -1,10 +1,37 @@
+<!--
+    This HTML file is merely an example of how to embed the game within a webpage.
+    It can be embedded anywhere with HTML elements that have IDs `game` and `pause_button`
+-->
 <!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="utf-8">
     <title>Muffin Game Template</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --arcade-font: "Ubuntu", "Roboto", sans-serif;
+        }
+        
+        body {
+            padding: 0;
+            margin: auto auto;
+            background: #993f70;
+            color: #eee;
+            text-align: center;
+            margin-top: 2em;
+            font-family: sans;
+        }
+        
+        canvas {
+            border: 2px solid black;
+            margin: auto;
+        }
+        
+        main {
+            margin: auto;
+        }
+    </style>
 </head>
 
 <body>
@@ -20,7 +47,7 @@
         </p>
     </main>
     <script src="https://pixijs.download/release/pixi.js"></script>
-    <script type="module" src="main.js"></script>
+    <script type="module" src="src/main.js"></script>
 </body>
 
 </html>
