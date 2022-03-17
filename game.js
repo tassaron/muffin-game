@@ -44,7 +44,7 @@ export class Game {
     }
 
     tick(delta) {
-        this.scene.update(delta, keyboard, mouse);
+        this.scene.tick(delta, keyboard, mouse);
         if (!this.state.root.game_over && keyboard.p) {this.state.root.paused = !this.state.root.paused}
         if (this.state.root.paused && this.scene.isPausedScene !== true) {
             this.changeScene(new PauseScene(this, this.ctx));
