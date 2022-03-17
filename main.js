@@ -54,15 +54,15 @@ document.getElementById("game").appendChild(app.view);
 */
 const sprites = {};
 const loader = PIXI.Loader.shared;
-loader.add('explosion', PREFIX + "explosion.png")
-
-
-loader.load((loader, resources) => {
-    sprites.explosion = new PIXI.Sprite(resources.explosion.texture);
-});
-
-
-loader.onComplete.add(() => {
-    const game = new Game(app, sprites);
-    document.getElementById("pause_button").addEventListener('click', game.pauseGame, false);
-});
+loader
+    .add('explosion', PREFIX + "explosion.png")
+    .add('fuel', PREFIX + "fuel.png")
+    .add('grass', PREFIX + "grass.png")
+    .load((loader, resources) => {
+        sprites.explosion = new PIXI.Sprite(resources.explosion.texture);
+    })
+    .onComplete.add(() => {
+        const game = new Game(app, sprites);
+        document.getElementById("pause_button").addEventListener('click', game.pauseGame, false);
+    })
+;
