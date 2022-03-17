@@ -1,3 +1,4 @@
+import { newContainer } from "./lib.js";
 import { MenuScene } from "./scenes/menu.js";
 //import { PauseScene } from "./scenes/pause.js";
 //import { GameOverScene } from "./scenes/gameover.js";
@@ -23,24 +24,31 @@ const mouse = {
 
 export class Game {
     constructor(app, sprites) {
-        this.paused = false;
-        this.game_over = false;
-        this.app = app;
+        this._app = app;
         this.sprites = sprites;
-        this.allowUserInput = true;
-        this.timer = [0.0, function(){}, this];
+
+        this.containers = {
+            root: newContainer(app.stage),
+        };
+        this.state = {
+            root: {
+                game_over: false,
+                paused: false,
+            },
+        };
+
         this.scene = new MenuScene(this);
         this.prevScene = this.scene;
-        
+
         app.ticker.add((delta) => this.tick(delta));
     }
 
     tick(delta) {
         this.scene.update(delta, keyboard, mouse);
-        if (!this.game_over && keyboard.p) {this.paused = !this.paused}
-        if (this.paused && this.scene.isPausedScene !== true) {
+        if (!this.state.root.game_over && keyboard.p) {this.state.root.paused = !this.state.root.paused}
+        if (this.state.root.paused && this.scene.isPausedScene !== true) {
             this.changeScene(new PauseScene(this, this.ctx));
-        } else if (!this.paused && this.scene.isPausedScene) {
+        } else if (!this.state.root.paused && this.scene.isPausedScene) {
             let scene = this.prevScene;
             this.changeScene(scene);
         }
@@ -49,19 +57,19 @@ export class Game {
     changeScene(scene) {
         let prevScene = this.scene;
         this.prevScene = prevScene;
-        scene.isPausedScene = this.paused;
+        scene.isPausedScene = this.state.root.paused;
         this.scene = scene;
     }
 
     gameOver() {
-        if (!this.game_over) {
+        if (!this.state.root.game_over) {
             this.changeScene(new GameOverScene(this));
         }
     }
 
     pauseGame() {
-        if (!this.game_over) {
-            this.paused = !this.paused;
+        if (!this.state.root.game_over) {
+            this.state.root.paused = !this.state.root.paused;
         }
     }
 }

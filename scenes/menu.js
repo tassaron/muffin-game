@@ -4,7 +4,7 @@ export class MenuScene {
     constructor(game) {
         this.explosion = game.sprites.explosion;
         this.game = game;
-        game.app.stage.addChild(this.explosion);
+        game.containers.root.addChild(this.explosion);
     }
 
     update(delta, keyboard, mouse) {
