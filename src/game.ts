@@ -1,6 +1,10 @@
 import * as PIXI from "pixi.js";
 import { newContainer } from "./lib";
-import { MenuScene } from "./scenes/menu.js";
+import IGame from "./interfaces/IGame";
+import IGameContainers from "./interfaces/IGameContainers";
+import IGameState from "./interfaces/IGameState";
+import IScene from "./interfaces/IScene";
+import { MenuScene } from "./scenes/menu";
 //import { PauseScene } from "./scenes/pause.js";
 //import { GameOverScene } from "./scenes/gameover.js";
 
@@ -23,37 +27,13 @@ const mouse = {
     "height": 0
 }
 
-interface IGameContainers {
-    root: PIXI.Container,
-}
-
-interface IGameState {
-    root: {
-        game_over: boolean,
-        paused: boolean,
-    }
-}
-
-interface IGame {
-    _app: PIXI.Application,
-    sprites: any,
-    containers: IGameContainers,
-    state: IGameState,
-    scene: any,
-    prevScene: any,
-    tick(delta: number): void,
-    changeScene(scene: any): void,
-    pauseGame(): void,
-    gameOver(): void,
-}
-
 export class Game implements IGame {
     _app: PIXI.Application;
     sprites: any;
     containers: IGameContainers;
     state: IGameState;
-    scene: any;
-    prevScene: any;
+    scene: IScene;
+    prevScene: IScene;
 
     constructor(app: PIXI.Application, sprites: any) {
         this._app = app;
@@ -77,7 +57,7 @@ export class Game implements IGame {
     };
 
     tick(delta: number) {
-        this.scene.tick(delta, keyboard, mouse);
+        this.scene.tick(delta, keyboard);
         if (!this.state.root.game_over && keyboard.p) {this.state.root.paused = !this.state.root.paused}
         if (this.state.root.paused && this.scene.isPausedScene !== true) {
             //this.changeScene(new PauseScene(this, this.ctx));
