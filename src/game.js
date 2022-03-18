@@ -1,4 +1,4 @@
-import { newContainer } from "./lib.js";
+import { newContainer } from "./lib";
 import { MenuScene } from "./scenes/menu.js";
 //import { PauseScene } from "./scenes/pause.js";
 //import { GameOverScene } from "./scenes/gameover.js";

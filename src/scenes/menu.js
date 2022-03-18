@@ -1,5 +1,5 @@
 //import { WorldScene } from "./world.js";
-import { logger } from "../logger.js";
+import { logger } from "../logger";
 
 export class MenuScene {
     constructor(game) {

@@ -1,19 +1,19 @@
 class Logger {
     LOGLEVEL = 0;
 
-    verbose(msg) {
+    verbose(msg: string) {
         this.LOGLEVEL < 0 ? console.log(msg) : null
     }
 
-    debug(msg) {
+    debug(msg: string) {
         this.LOGLEVEL < 1 ? console.log(msg) : null
     }
     
-    info(msg) {
+    info(msg: string) {
         this.LOGLEVEL < 2 ? console.info(msg) : null
     }
     
-    error(msg) {
+    error(msg: string) {
         this.LOGLEVEL < 3 ? console.error(msg) : null
     }
 }
