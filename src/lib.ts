@@ -3,7 +3,7 @@
 * and in case Pixi's API changes, this file is the main one that needs major editing
 */
 import * as PIXI from "pixi.js";
-import AnimatedSprite from './entities/AnimatedSprite.js';
+import AnimatedSprite from './entities/AnimatedSprite';
 
 export const newContainer = (parent: PIXI.Container) => {
     const container = new PIXI.Container();
