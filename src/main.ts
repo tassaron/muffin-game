@@ -3,7 +3,7 @@
 */
 import * as PIXI from "pixi.js";
 import { textures, after_preload } from "./setup";
-import { Game } from "./game.js";
+import { Game } from "./game";
 import { MissingHTMLElementError } from "./exceptions";
 
 

@@ -1,3 +1,4 @@
+import * as PIXI from "pixi.js";
 import { newContainer } from "./lib";
 import { MenuScene } from "./scenes/menu.js";
 //import { PauseScene } from "./scenes/pause.js";
@@ -22,14 +23,46 @@ const mouse = {
     "height": 0
 }
 
-export class Game {
-    constructor(app, sprites) {
+interface IGameContainers {
+    root: PIXI.Container,
+}
+
+interface IGameState {
+    root: {
+        game_over: boolean,
+        paused: boolean,
+    }
+}
+
+interface IGame {
+    _app: PIXI.Application,
+    sprites: any,
+    containers: IGameContainers,
+    state: IGameState,
+    scene: any,
+    prevScene: any,
+    tick(delta: number): void,
+    changeScene(scene: any): void,
+    pauseGame(): void,
+    gameOver(): void,
+}
+
+export class Game implements IGame {
+    _app: PIXI.Application;
+    sprites: any;
+    containers: IGameContainers;
+    state: IGameState;
+    scene: any;
+    prevScene: any;
+
+    constructor(app: PIXI.Application, sprites: any) {
         this._app = app;
         this.sprites = sprites;
 
         this.containers = {
             root: newContainer(app.stage),
         };
+
         this.state = {
             root: {
                 game_over: false,
@@ -41,20 +74,20 @@ export class Game {
         this.prevScene = this.scene;
 
         app.ticker.add((delta) => this.tick(delta));
-    }
+    };
 
-    tick(delta) {
+    tick(delta: number) {
         this.scene.tick(delta, keyboard, mouse);
         if (!this.state.root.game_over && keyboard.p) {this.state.root.paused = !this.state.root.paused}
         if (this.state.root.paused && this.scene.isPausedScene !== true) {
-            this.changeScene(new PauseScene(this, this.ctx));
+            //this.changeScene(new PauseScene(this, this.ctx));
         } else if (!this.state.root.paused && this.scene.isPausedScene) {
             let scene = this.prevScene;
             this.changeScene(scene);
         }
     }
 
-    changeScene(scene) {
+    changeScene(scene: any) {
         let prevScene = this.scene;
         this.prevScene = prevScene;
         scene.isPausedScene = this.state.root.paused;
@@ -63,7 +96,7 @@ export class Game {
 
     gameOver() {
         if (!this.state.root.game_over) {
-            this.changeScene(new GameOverScene(this));
+            //this.changeScene(new GameOverScene(this));
         }
     }
 
