@@ -3,7 +3,7 @@ import { logger } from "../logger";
 import IGame from "../interfaces/IGame";
 import BaseScene from "./BaseScene";
 
-export class MenuScene extends BaseScene {
+export default class MenuScene extends BaseScene {
     actors: any = {};
 
     constructor(game: IGame) {

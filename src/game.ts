@@ -4,7 +4,7 @@ import IGame from "./interfaces/IGame";
 import IGameContainers from "./interfaces/IGameContainers";
 import IGameState from "./interfaces/IGameState";
 import IScene from "./interfaces/IScene";
-import { MenuScene } from "./scenes/menu";
+import MenuScene from "./scenes/MenuScene";
 //import { PauseScene } from "./scenes/pause.js";
 //import { GameOverScene } from "./scenes/gameover.js";
 
