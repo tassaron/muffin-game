@@ -1,3 +1,5 @@
+//import { Sprite } from "./Sprite.js";
+import * as PIXI from "pixi.js";
 import { newRectangle } from '../lib.js';
 import { logger } from '../logger.js';
 

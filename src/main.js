@@ -1,6 +1,7 @@
 /*
 *  Entrypoint to the application. Creates canvas and loads all assets before beginning the game loop
 */
+import * as PIXI from "pixi.js";
 import { textures, after_preload } from "./setup.js";
 import { Game } from "./game.js";
 

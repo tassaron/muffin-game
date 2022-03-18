@@ -1,8 +1,8 @@
 /*
 * Provides a consistent API between Pixi's classes and our own
-* and in case Pixi's API changes, this file is the only one that needs major editing
+* and in case Pixi's API changes, this file is the main one that needs major editing
 */
-
+import * as PIXI from "pixi.js";
 import AnimatedSprite from './entities/AnimatedSprite.js';
 
 export const newContainer = (parent) => {
