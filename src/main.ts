@@ -1,9 +1,10 @@
 /*
-*  Entrypoint to the application. Creates canvas and loads all assets before beginning the game loop
+ * Entrypoint to the application. Creates canvas and loads all assets before beginning the game loop
 */
 import * as PIXI from "pixi.js";
 import { textures, after_preload } from "./setup.js";
 import { Game } from "./game.js";
+import MissingHTMLElementError from "./exceptions";
 
 
 const PREFIX = "assets/";
@@ -13,9 +14,9 @@ const PREFIX = "assets/";
 *  Create the canvas
 */
 const app = new PIXI.Application({
-    width: 800, height: 600, backgroundColor: "#bcbcf2", useContextAlpha: false, resolution: window.devicePixelRatio || 1,
+    width: 800, height: 600, backgroundColor: 0xbcbcf2, useContextAlpha: false, resolution: window.devicePixelRatio || 1,
 });
-function loadingText(app) {
+function loadingText(app: PIXI.Application) {
     const skewStyle = new PIXI.TextStyle({
         fontFamily: 'var(--arcade-font)',
         dropShadow: true,
@@ -48,7 +49,13 @@ function loadingText(app) {
     return skewText;
 }
 app.stage.addChild(loadingText(app));
-document.getElementById("game").appendChild(app.view);
+
+
+const gameDiv: HTMLElement | null = document.getElementById("game");
+if (gameDiv === null) {
+    throw new MissingHTMLElementError("game");
+}
+gameDiv.appendChild(app.view);
 
 
 /*
@@ -63,6 +70,7 @@ loader
     .load((loader, resources) => after_preload(loader, resources, sprites))
     .onComplete.add(() => {
         const game = new Game(app, sprites);
-        document.getElementById("pause_button").addEventListener('click', game.pauseGame, false);
+        const pauseButton: HTMLElement | null = document.getElementById("pause_button");
+        pauseButton && pauseButton.addEventListener('click', game.pauseGame, false);
     })
 ;
