@@ -5,6 +5,9 @@ import IScene from "./IScene";
 
 export default interface IGame {
     _app: PIXI.Application,
+    renderer: PIXI.AbstractRenderer,
+    width: number,
+    height: number,
     sprites: any,
     containers: IGameContainers,
     state: IGameState,

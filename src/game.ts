@@ -1,5 +1,6 @@
 import * as PIXI from "pixi.js";
-import { newContainer } from "./lib";
+//import { newContainer } from "./lib";
+import { logger } from "./logger";
 import IGame from "./interfaces/IGame";
 import IGameContainers from "./interfaces/IGameContainers";
 import IGameState from "./interfaces/IGameState";
@@ -29,6 +30,9 @@ const mouse = {
 
 export class Game implements IGame {
     _app: PIXI.Application;
+    renderer: PIXI.AbstractRenderer;
+    width: number;
+    height: number;
     sprites: any;
     containers: IGameContainers;
     state: IGameState;
@@ -37,10 +41,13 @@ export class Game implements IGame {
 
     constructor(app: PIXI.Application, sprites: any) {
         this._app = app;
+        this.renderer = app.renderer;
         this.sprites = sprites;
+        this.width = app.view.width;
+        this.height = app.view.height;
 
         this.containers = {
-            root: newContainer(app.stage),
+            root: app.stage,
         };
 
         this.state = {
@@ -50,6 +57,8 @@ export class Game implements IGame {
             },
         };
 
+        logger.info(`Game created with dimensions ${this.width}x${this.height}`);
+        
         this.scene = new MenuScene(this);
         this.prevScene = this.scene;
 
