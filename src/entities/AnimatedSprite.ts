@@ -1,5 +1,5 @@
-//import { Sprite } from "./Sprite.js";
 import * as PIXI from "pixi.js";
+import IAnimatedSprite from "../interfaces/IAnimatedSprite";
 import { newRectangle } from '../lib';
 import { logger } from '../logger';
 
@@ -9,23 +9,10 @@ function setFrame(texture: PIXI.Texture, w: number, h: number, number: number) {
     texture.frame = newRectangle(number * w, 0, w, h);
 }
 
-interface IAnimatedSprite {
-    __width: number,
-    __height: number,
-    __texture: PIXI.Texture,
-    __numFrames: number,
-    __currFrame: number,
-    __delayInFrames: number,
-    __loops: number,
-    __animTimer: number,
-    tick(delta: number): void,
-}
-
 
 export default class AnimatedSprite extends PIXI.Sprite implements IAnimatedSprite {
     __width: number;
     __height: number;
-    __texture: PIXI.Texture;
     __numFrames: number;
     __currFrame: number;
     __delayInFrames: number;
@@ -37,7 +24,6 @@ export default class AnimatedSprite extends PIXI.Sprite implements IAnimatedSpri
         super(texture);
         this.__width = width;
         this.__height = height;
-        this.__texture = texture;
         this.__numFrames = numFrames;
         this.__currFrame = 0;
         this.__delayInFrames = delayInFrames;
@@ -50,10 +36,10 @@ export default class AnimatedSprite extends PIXI.Sprite implements IAnimatedSpri
         if (newFrame != this.__currFrame) {
             this.__currFrame = newFrame;
             logger.debug(`Frame updated to ${this.__currFrame}`);
-            setFrame(this.__texture, this.__width, this.__height, this.__currFrame);
+            setFrame(this.texture, this.__width, this.__height, this.__currFrame);
         }
         this.__animTimer += delta;
         if (this.__animTimer > this.__numFrames * this.__delayInFrames) {this.__animTimer = 0.0; this.__loops++;}
-        this.__texture.update();
+        this.texture.update();
     }
 }
