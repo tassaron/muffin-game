@@ -16,6 +16,7 @@ export default class PauseScene extends BaseScene {
         this.actors.text.anchor.y = 0.5;
         this.actors.text.x = game.width / 2;
         this.actors.text.y = game.height / 2;
+        this.actors.interactive = [];
 
         logger.info("Created Pause scene");
     }
@@ -23,9 +24,19 @@ export default class PauseScene extends BaseScene {
 
     mount(container: PIXI.Container) {
         container.addChild(this.actors.text);
+        for (let child of container.children) {
+            if (child.isSprite) {
+                // for some reason Typescript doesn't know that PIXI.Sprite has .interactive?
+                (child as any).interactive = false;
+                this.actors.interactive.push(child);
+            }
+        }
     }
 
     unmount(container: PIXI.Container) {
         container.removeChild(this.actors.text);
+        for (let child of this.actors.interactive) {
+            child.interactive = true;
+        }
     }
 }
