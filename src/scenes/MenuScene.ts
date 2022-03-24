@@ -33,23 +33,26 @@ export default class MenuScene extends BaseScene {
     }
 
     tick(delta: number, keyboard: any) {
+        if (!this.mounted) return;
         if (keyboard.number == 1) {
             this.clickStart();
         }
         if (this.actors.explosion === undefined) return
         this.actors.explosion.tick(delta);
         if (this.actors.explosion.loops > 0) {
-            this.game.changeScene(new WorldScene(this.game));
+            this.mounted.removeChild(this.actors.explosion);
+            this.actors.explosion = undefined;
+            setTimeout(() => this.game.changeScene(new WorldScene(this.game)), 10.0);
         }
     }
 
     clickStart() {
-        if (this.actors.explosion === undefined) {
+        if (this.mounted && this.actors.explosion === undefined) {
             this.actors.explosion = this.game.sprites.explosion;
             this.actors.explosion.x = this.game.width / 2;
             this.actors.explosion.y = this.game.height / 2;
-            this.game.containers.root.addChild(this.actors.explosion);
-            this.game.containers.root.removeChild(this.actors.button);
+            this.mounted.addChild(this.actors.explosion);
+            this.mounted.removeChild(this.actors.button);
         }
     }
 }
