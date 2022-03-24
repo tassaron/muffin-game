@@ -41,8 +41,8 @@ export default class MenuScene extends BaseScene {
         this.actors.explosion.tick(delta);
         if (this.actors.explosion.loops > 0) {
             this.mounted.removeChild(this.actors.explosion);
-            this.actors.explosion = undefined;
-            setTimeout(() => this.game.changeScene(new WorldScene(this.game)), 10.0);
+            this.mounted = null;
+            setTimeout(() => this.game.changeScene(new WorldScene(this.game)), 250.0);
         }
     }
 
