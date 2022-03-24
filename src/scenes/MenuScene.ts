@@ -10,7 +10,7 @@ export default class MenuScene extends BaseScene {
 
     constructor(game: IGame) {
         super(game);
-        this.actors.button = new Button(game, 200, 50, 0x000000, 0xffffff, "Start Game");
+        this.actors.button = new Button(game, 200, 50, "Start Game");
         this.actors.button.x = game.width / 2;
         this.actors.button.y = game.height / 2;
         
