@@ -10,13 +10,21 @@ export default class PauseScene extends BaseScene {
     constructor(game: IGame) {
         super(game);
 
-        const pixi_text = new PIXI.Text("Paused")
-        pixi_text.anchor.x = 0.5;
-        pixi_text.anchor.y = 0.5;
-        game.containers.root.addChild(pixi_text);
-        pixi_text.x = game.width / 2;
-        pixi_text.y = game.height / 2;
+        this.actors.text = new PIXI.Text("Paused");
+        this.actors.text.anchor.x = 0.5;
+        this.actors.text.anchor.y = 0.5;
+        this.actors.text.x = game.width / 2;
+        this.actors.text.y = game.height / 2;
 
         logger.info("Created Pause scene");
+    }
+
+
+    mount(container: PIXI.Container) {
+        container.addChild(this.actors.text);
+    }
+
+    unmount(container: PIXI.Container) {
+        container.removeChild(this.actors.text);
     }
 }

@@ -1,3 +1,4 @@
+import { logger } from "./logger";
 import IKeyboard from "./interfaces/IKeyboard";
 
 class Keyboard implements IKeyboard {
@@ -12,6 +13,7 @@ class Keyboard implements IKeyboard {
 
     tick(delta: number) {
         if (this._framesDisabled == 0.0) return;
+        logger.spam(`Keyboard disabled for ${this._framesDisabled}`);
         this._framesDisabled -= delta;
         if (this._framesDisabled < 0) this._framesDisabled = 0.0;
     }

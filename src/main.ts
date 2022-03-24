@@ -72,7 +72,7 @@ loader
     .onComplete.add(() => {
         const game = new Game(app, sprites, keyboard);
         const pauseButton: HTMLElement | null = document.getElementById("pause_button");
-        pauseButton && pauseButton.addEventListener('click', () => game.pause, false);
+        pauseButton && pauseButton.addEventListener('click', () => game.pause(keyboard), false);
         addEventListeners(gameDiv);
     })
 ;

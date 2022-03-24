@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import IGameContainers from "./IGameContainers";
 import IGameState from "./IGameState";
 import IScene from "./IScene";
+import IKeyboard from "./IKeyboard";
 
 export default interface IGame {
     _app: PIXI.Application,
@@ -16,6 +17,6 @@ export default interface IGame {
     playTick(self: IGame, delta: number, keyboard: any): void,
     pauseTick(self: IGame, delta: number, keyboard: any): void,
     changeScene(scene: any): void,
-    pause(): void,
-    gameOver(): void,
+    pause(keyboard: IKeyboard): void,
+    gameOver(keyboard: IKeyboard): void,
 }

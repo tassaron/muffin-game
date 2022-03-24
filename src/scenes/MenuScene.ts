@@ -1,3 +1,4 @@
+import * as PIXI from "pixi.js";
 import { logger } from "../logger";
 import IGame from "../interfaces/IGame";
 import BaseScene from "./BaseScene";
@@ -9,9 +10,7 @@ export default class MenuScene extends BaseScene {
 
     constructor(game: IGame) {
         super(game);
-        game.containers.root.removeChildren();
         this.actors.button = new Button(game, 200, 50, 0x000000, 0xffffff, "Start Game");
-        game.containers.root.addChild(this.actors.button);
         this.actors.button.x = game.width / 2;
         this.actors.button.y = game.height / 2;
         
@@ -20,6 +19,17 @@ export default class MenuScene extends BaseScene {
         this.actors.button.click = (_: Event) => this.clickStart();
         
         logger.info("Created Menu scene");
+    }
+
+    mount(container: PIXI.Container) {
+        this.game.prevScene.unmount(container);
+        this.mounted = container;
+        container.addChild(this.actors.button);
+    }
+
+    unmount(container: PIXI.Container) {
+        this.mounted = null;
+        container.removeChild(this.actors.button);
     }
 
     tick(delta: number, keyboard: any) {

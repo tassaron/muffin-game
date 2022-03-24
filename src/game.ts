@@ -5,10 +5,13 @@ import IGameContainers from "./interfaces/IGameContainers";
 import IGameState from "./interfaces/IGameState";
 import IKeyboard from "./interfaces/IKeyboard";
 import IScene from "./interfaces/IScene";
+import LoadingScene from "./scenes/LoadingScene";
 import MenuScene from "./scenes/MenuScene";
 import PauseScene from "./scenes/PauseScene";
 //import { newContainer } from "./lib";
 //import { GameOverScene } from "./scenes/gameover.js";
+
+const KEYBOARD_DISABLE_FRAMES = 30.0;
 
 
 export class Game implements IGame {
@@ -46,7 +49,8 @@ export class Game implements IGame {
         logger.info(`Game created with dimensions ${this.width}x${this.height}`);
         
         this.scene = new MenuScene(this);
-        this.prevScene = this.scene;
+        this.prevScene = new LoadingScene(this);
+        this.scene.mount(this.containers.root);
 
         app.ticker.add((delta) => this.state.functions.tick(this, delta, keyboard));
     };
@@ -55,15 +59,16 @@ export class Game implements IGame {
         logger.spam(`Delta: ${delta}`);
         keyboard.tick(delta);
         self.scene.tick(delta, keyboard);
-        if (keyboard.p) self.pause();
+        if (keyboard.p) self.pause(keyboard);
     }
 
     pauseTick(self: IGame, delta: number, keyboard: IKeyboard) {
         keyboard.tick(delta);
         if (keyboard.p) {
-            keyboard.disable(100.0);
             self.state.flags.paused = false;
             self.state.functions.tick = self.playTick;
+            keyboard.disable(KEYBOARD_DISABLE_FRAMES);
+            self.scene.unmount(self.containers.root);
             self.changeScene(self.prevScene);
         }
     }
@@ -72,15 +77,18 @@ export class Game implements IGame {
         let prevScene = this.scene;
         this.prevScene = prevScene;
         this.scene = scene;
+        if (scene.mounted === null) {
+            scene.mount(this.containers.root);
+        }
     }
 
-    gameOver() {
+    gameOver(keyboard: IKeyboard) {
         if (!this.state.flags.gameOver) {
             //this.changeScene(new GameOverScene(this));
         }
     }
 
-    pause() {
+    pause(keyboard: IKeyboard) {
         if (!this.state.flags.gameOver) {
             this.state.flags.paused = !this.state.flags.paused;
         }
@@ -88,7 +96,8 @@ export class Game implements IGame {
             logger.error("Unpaused while not paused.");
             return;
         }
-        this.changeScene(new PauseScene(this));
+        keyboard.disable(KEYBOARD_DISABLE_FRAMES);
         this.state.functions.tick = this.pauseTick;
+        this.changeScene(new PauseScene(this));
     }
 }
