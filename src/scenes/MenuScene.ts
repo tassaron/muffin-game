@@ -4,13 +4,14 @@ import IGame from "../interfaces/IGame";
 import BaseScene from "./BaseScene";
 import Button from "../entities/Button";
 import WorldScene from "./WorldScene";
+import DrawnRectangle from "../entities/DrawnRectangle";
 
 export default class MenuScene extends BaseScene {
     actors: any = {};
 
     constructor(game: IGame) {
         super(game);
-        this.actors.button = new Button(game, 200, 50, "Start Game");
+        this.actors.button = new Button(game, DrawnRectangle, 200, 50, "Start Game");
         this.actors.button.x = game.width / 2;
         this.actors.button.y = game.height / 2;
         
