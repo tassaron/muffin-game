@@ -1,8 +1,8 @@
 import IGame from "./IGame";
+import IKeyboard from "./IKeyboard";
 
 export default interface IScene {
     game: IGame,
     actors: any,
-    isPausedScene: boolean,
-    tick(delta: number, keyboard: any): void,
+    tick(delta: number, keyboard: IKeyboard): void,
 }

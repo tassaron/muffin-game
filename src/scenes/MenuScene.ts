@@ -23,6 +23,9 @@ export default class MenuScene extends BaseScene {
     }
 
     tick(delta: number, keyboard: any) {
+        if (keyboard.number == 1) {
+            this.clickStart();
+        }
         if (this.actors.explosion === undefined) return
         this.actors.explosion.tick(delta);
         if (this.actors.explosion.loops > 0) {

@@ -13,8 +13,9 @@ export default interface IGame {
     state: IGameState,
     scene: IScene,
     prevScene: IScene,
-    tick(delta: number): void,
+    playTick(self: IGame, delta: number, keyboard: any): void,
+    pauseTick(self: IGame, delta: number, keyboard: any): void,
     changeScene(scene: any): void,
-    pauseGame(): void,
+    pause(): void,
     gameOver(): void,
 }

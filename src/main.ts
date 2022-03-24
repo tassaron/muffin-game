@@ -2,6 +2,7 @@
  * Entrypoint to the application. Creates canvas and loads all assets before beginning the game loop
 */
 import * as PIXI from "pixi.js";
+import { addEventListeners, keyboard } from "./ui";
 import { textures, after_preload } from "./setup";
 import { Game } from "./game";
 import { MissingHTMLElementError } from "./exceptions";
@@ -69,8 +70,9 @@ for (let texture of textures) {
 loader
     .load((loader, resources) => after_preload(loader, resources, sprites))
     .onComplete.add(() => {
-        const game = new Game(app, sprites);
+        const game = new Game(app, sprites, keyboard);
         const pauseButton: HTMLElement | null = document.getElementById("pause_button");
-        pauseButton && pauseButton.addEventListener('click', game.pauseGame, false);
+        pauseButton && pauseButton.addEventListener('click', () => game.pause, false);
+        addEventListeners(gameDiv);
     })
 ;

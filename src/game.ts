@@ -1,22 +1,15 @@
 import * as PIXI from "pixi.js";
-//import { newContainer } from "./lib";
 import { logger } from "./logger";
 import IGame from "./interfaces/IGame";
 import IGameContainers from "./interfaces/IGameContainers";
 import IGameState from "./interfaces/IGameState";
+import IKeyboard from "./interfaces/IKeyboard";
 import IScene from "./interfaces/IScene";
 import MenuScene from "./scenes/MenuScene";
-//import { PauseScene } from "./scenes/pause.js";
+import PauseScene from "./scenes/PauseScene";
+//import { newContainer } from "./lib";
 //import { GameOverScene } from "./scenes/gameover.js";
 
-const keyboard = {
-    "up": false,
-    "down": false,
-    "left": false,
-    "right": false,
-    "number": -1,
-    "p": false
-};
 
 export class Game implements IGame {
     _app: PIXI.Application;
@@ -29,7 +22,7 @@ export class Game implements IGame {
     scene: IScene;
     prevScene: IScene;
 
-    constructor(app: PIXI.Application, sprites: any) {
+    constructor(app: PIXI.Application, sprites: any, keyboard: any) {
         this._app = app;
         this.renderer = app.renderer;
         this.sprites = sprites;
@@ -41,9 +34,12 @@ export class Game implements IGame {
         };
 
         this.state = {
-            root: {
-                game_over: false,
+            flags: {
+                gameOver: false,
                 paused: false,
+            },
+            functions: {
+                tick: this.playTick,
             },
         };
 
@@ -52,37 +48,47 @@ export class Game implements IGame {
         this.scene = new MenuScene(this);
         this.prevScene = this.scene;
 
-        app.ticker.add((delta) => this.tick(delta));
+        app.ticker.add((delta) => this.state.functions.tick(this, delta, keyboard));
     };
 
-    tick(delta: number) {
-        logger.verbose(`Delta: ${delta}`);
-        this.scene.tick(delta, keyboard);
-        if (!this.state.root.game_over && keyboard.p) {this.state.root.paused = !this.state.root.paused}
-        if (this.state.root.paused && this.scene.isPausedScene !== true) {
-            //this.changeScene(new PauseScene(this, this.ctx));
-        } else if (!this.state.root.paused && this.scene.isPausedScene) {
-            let scene = this.prevScene;
-            this.changeScene(scene);
+    playTick(self: IGame, delta: number, keyboard: IKeyboard) {
+        logger.spam(`Delta: ${delta}`);
+        keyboard.tick(delta);
+        self.scene.tick(delta, keyboard);
+        if (keyboard.p) self.pause();
+    }
+
+    pauseTick(self: IGame, delta: number, keyboard: IKeyboard) {
+        keyboard.tick(delta);
+        if (keyboard.p) {
+            keyboard.disable(100.0);
+            self.state.flags.paused = false;
+            self.state.functions.tick = self.playTick;
+            self.changeScene(self.prevScene);
         }
     }
 
-    changeScene(scene: any) {
+    changeScene(scene: IScene) {
         let prevScene = this.scene;
         this.prevScene = prevScene;
-        scene.isPausedScene = this.state.root.paused;
         this.scene = scene;
     }
 
     gameOver() {
-        if (!this.state.root.game_over) {
+        if (!this.state.flags.gameOver) {
             //this.changeScene(new GameOverScene(this));
         }
     }
 
-    pauseGame() {
-        if (!this.state.root.game_over) {
-            this.state.root.paused = !this.state.root.paused;
+    pause() {
+        if (!this.state.flags.gameOver) {
+            this.state.flags.paused = !this.state.flags.paused;
         }
+        if (!this.state.flags.paused) {
+            logger.error("Unpaused while not paused.");
+            return;
+        }
+        this.changeScene(new PauseScene(this));
+        this.state.functions.tick = this.pauseTick;
     }
 }

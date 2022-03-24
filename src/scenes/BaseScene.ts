@@ -3,7 +3,6 @@ import IScene from "../interfaces/IScene";
 
 export default class BaseScene implements IScene {
     game: IGame;
-    isPausedScene = false;
     actors: any;
 
     constructor(game: IGame) {
