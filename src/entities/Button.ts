@@ -7,7 +7,7 @@ export default class Button extends DrawnRectangle {
     constructor(game: IGame, w: number, h: number, outline=0x000, colour=0xfff, text="", style: null | PIXI.TextStyle = null) {
         super(game, w, h, outline, colour);
         if (!style) {
-            style = new PIXI.TextStyle({fontFamily : 'Arial', fontSize: 24, fill : outline});
+            style = new PIXI.TextStyle({fontFamily : 'Arial', fontSize: 32, fill : outline});
         }
         const pixi_text = new PIXI.Text(text, style)
         this.anchor.x = 0.5;
