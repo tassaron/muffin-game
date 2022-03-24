@@ -9,20 +9,21 @@ export default class MenuScene extends BaseScene {
 
     constructor(game: IGame) {
         super(game);
-        //game.containers.root.removeChildren();
+        game.containers.root.removeChildren();
         this.actors.explosion = game.sprites.explosion;
-        this.actors.button = new Button(game, game.containers.root.width, game.containers.root.height * 4, 200, 50, 0x000000, 0xffffff, "Start Game");
+        this.actors.button = new Button(game, 200, 50, 0x000000, 0xffffff, "Start Game");
         logger.info("Created Menu scene");
         game.containers.root.addChild(this.actors.explosion);
         game.containers.root.addChild(this.actors.button);
+        this.actors.button.x = game.width / 2;
+        this.actors.button.y = game.height / 2;
 
         // Hook events to buttons
         this.actors.button.interactive = true;
-        this.actors.button.click = (e: Event) => logger.info(`Clicked ${e.type} at ${e.target}`);
+        this.actors.button.click = (e: Event) => logger.info(`${e.type} at ${e.target}`);
     }
 
     tick(delta: number, keyboard: any) {
-        logger.verbose(`Delta: ${delta}`);
         this.actors.explosion.tick(delta);
     }
 }

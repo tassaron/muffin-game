@@ -18,16 +18,6 @@ const keyboard = {
     "p": false
 };
 
-const mouse = {
-    "leftClick": false,
-    "middleClick": false,
-    "rightClick": false,
-    "x": 0,
-    "y": 0,
-    "width": 0,
-    "height": 0
-}
-
 export class Game implements IGame {
     _app: PIXI.Application;
     renderer: PIXI.AbstractRenderer;
@@ -66,6 +56,7 @@ export class Game implements IGame {
     };
 
     tick(delta: number) {
+        logger.verbose(`Delta: ${delta}`);
         this.scene.tick(delta, keyboard);
         if (!this.state.root.game_over && keyboard.p) {this.state.root.paused = !this.state.root.paused}
         if (this.state.root.paused && this.scene.isPausedScene !== true) {

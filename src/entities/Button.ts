@@ -4,8 +4,8 @@ import DrawnRectangle from "./DrawnRectangle";
 
 
 export default class Button extends DrawnRectangle {
-    constructor(game: IGame, x: number, y: number, w: number, h: number, outline=0x000, colour=0xfff, text="", style: null | PIXI.TextStyle = null) {
-        super(game, x, y, w, h, outline, colour);
+    constructor(game: IGame, w: number, h: number, outline=0x000, colour=0xfff, text="", style: null | PIXI.TextStyle = null) {
+        super(game, w, h, outline, colour);
         if (!style) {
             style = new PIXI.TextStyle({fontFamily : 'Arial', fontSize: 24, fill : outline});
         }
