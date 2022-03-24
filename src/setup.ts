@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { newSprite, newAnimatedSprite } from "./lib";
+import AnimatedSprite from './entities/AnimatedSprite';
 import { MissingTextureError } from "./exceptions";
 
 export const textures = [
@@ -17,10 +17,10 @@ function getTexture(texture: PIXI.Texture | undefined, name: string) : PIXI.Text
 
 export function after_preload(loader: PIXI.Loader, resources: PIXI.utils.Dict<PIXI.LoaderResource>, sprites: any) {
     // sprite
-    sprites.fuel = newSprite(getTexture(resources.fuel.texture, "fuel"));
+    sprites.fuel = new PIXI.Sprite(getTexture(resources.fuel.texture, "fuel"));
 
     // animated sprite
-    sprites.explosion = newAnimatedSprite(getTexture(resources.explosion.texture, "explosion"), 32, 32, 5, 10);
+    sprites.explosion = new AnimatedSprite(getTexture(resources.explosion.texture, "explosion"), 32, 32, 5, 10);
 
     // tileset [WIP]
     //sprites.grass = newTileset(resources.grass.texture);

@@ -8,7 +8,6 @@ import IScene from "./interfaces/IScene";
 import LoadingScene from "./scenes/LoadingScene";
 import MenuScene from "./scenes/MenuScene";
 import PauseScene from "./scenes/PauseScene";
-//import { newContainer } from "./lib";
 //import { GameOverScene } from "./scenes/gameover.js";
 
 const KEYBOARD_DISABLE_FRAMES = 30.0;

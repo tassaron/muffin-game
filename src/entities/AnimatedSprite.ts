@@ -1,13 +1,12 @@
 import * as PIXI from "pixi.js";
 import IAnimatedSprite from "../interfaces/IAnimatedSprite";
-import { newRectangle } from '../lib';
 import { logger } from '../logger';
 
 
 function setFrame(texture: PIXI.Texture, w: number, h: number, number: number) {
     //logger.debug(`${texture} set frame to: frame: ${number}`);
     logger.verbose(`AnimatedSprite's ${texture} updated frame to ${number}`);
-    texture.frame = newRectangle(number * w, 0, w, h);
+    texture.frame = new PIXI.Rectangle(number * w, 0, w, h);
 }
 
 
