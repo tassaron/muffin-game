@@ -4,10 +4,10 @@ import IGrid, { Grid } from "../interfaces/IGrid";
 import { logger } from "../logger";
 
 
-const setFrame = (self: TextureGrid, x: number, y: number): () => void => {
-    return () => {
+const setFrame = (self: TextureGrid, x: number, y: number): (texture: PIXI.Texture) => void => {
+    return (texture: PIXI.Texture) => {
         if (self._grid[y][x] != null) {
-            self.texture.frame = self._grid[y][x] as PIXI.Rectangle;
+            texture.frame = self._grid[y][x] as PIXI.Rectangle;
         };
     };
 };
@@ -18,15 +18,12 @@ export default class TextureGrid implements IGrid<PIXI.Rectangle> {
     cols: number;
     rows: number;
     _grid: Grid<PIXI.Rectangle>;
-    texture: PIXI.Texture;
-    setFrame: Grid<() => void>;
+    setFrame: Grid<(texture: PIXI.Texture) => void>;
 
-    constructor(cols: number, rows: number, gridSize: number, texture: PIXI.Texture) {
+    constructor(cols: number, rows: number, gridSize: number) {
         this.cols = cols;
         this.rows = rows;
-        this.texture = texture;
         
-
         let x = -1;
         let y = 0;
         const initial = () => {
@@ -38,15 +35,6 @@ export default class TextureGrid implements IGrid<PIXI.Rectangle> {
             logger.verbose(`Creating rectangle for TextureGrid x${x * gridSize}, y${y * gridSize}`);
             return new PIXI.Rectangle(x * gridSize, y * gridSize, gridSize, gridSize);
         }
-        /*
-       const _grid = Array(rows);
-       for (let y = 0; y < this.rows; y++) {
-            _grid[y] = [];
-            for (let x = 0; x < this.cols; x++) {
-                _grid[y][x] = new PIXI.Rectangle(x, y, gridSize, gridSize);//initial();
-            }
-        }*/
-
         this._grid = createGrid(this, initial);
 
         const frames = Array(rows);
@@ -55,9 +43,6 @@ export default class TextureGrid implements IGrid<PIXI.Rectangle> {
             for (let x = 0; x < this.cols; x++) {
                 frames[y][x] = setFrame(this, x, y);
             }
-            /*Object.defineProperty(this, y, {
-                value: frames[y]
-            });*/
         }
 
         this.setFrame = frames;
