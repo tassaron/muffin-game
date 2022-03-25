@@ -64,7 +64,11 @@ export class Game implements IGame {
         this.prevScene = prevScene;
         this.scene = scene;
         if (scene.mounted === null) {
-            scene.mount(this.containers.root);
+            try {
+                scene.mount(this.containers.root);
+            } catch (TypeError) {
+                logger.error("Failed to add an undefined entity to the container. The scene cannot mount.");
+            }
         }
     }
 
