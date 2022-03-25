@@ -6,6 +6,7 @@ import DrawnEllipse from "../entities/DrawnEllipse";
 import DrawnRectangle from "../entities/DrawnRectangle";
 import Collider from "../entities/Collider";
 import IKeyboard from "../interfaces/IKeyboard";
+import GridLayout from "../entities/GridLayout";
 
 
 class Ball extends Collider {
@@ -13,13 +14,17 @@ class Ball extends Collider {
     dy = 0.0;
 
     tick(delta: number, keyboard: IKeyboard) {
-        if (this.x + this.collisionWidth > this.game.width || this.x < 0.0) {
-            this.dx = -this.dx;
+        if (this.x < 0.0) {
+            this.dx = Math.abs(this.dx);
+        } else if (this.x + this.collisionWidth > this.game.width) {
+            this.dx = Math.abs(this.dx) * -1;
         }
         this.x += this.dx * delta;
 
-        if (this.y + this.collisionHeight > this.game.height || this.y < 0.0) {
-            this.dy = -this.dy;
+        if (this.y < 0.0) {
+            this.dy = Math.abs(this.dy);
+        } else if (this.y + this.collisionHeight > this.game.height) {
+            this.dy = Math.abs(this.dy) * -1;
         }
         this.y += this.dy * delta;
     }
@@ -36,6 +41,13 @@ export default class WorldScene extends BaseScene {
             new Ball(game, new DrawnRectangle(game, 60, 60, 0x666666, null), 60, 60)
         ];
         this.placeBalls();
+        this.actors.gridContainer = new PIXI.Container();
+        this.actors.gridContainer.x = 32;
+        this.actors.gridContainer.y = 32;
+        this.actors.grid = new GridLayout(8, 8, 32, game.sprites.explosion);
+        this.actors.grid[2][2] = new DrawnRectangle(game, 32, 32, 0x666666);
+        this.actors.grid[3][3] = new DrawnRectangle(game, 32, 32, 0x666666);
+        this.actors.grid[4][4] = new DrawnRectangle(game, 32, 32, 0x666666);
         logger.info("Created World scene");
     }
 
@@ -50,6 +62,8 @@ export default class WorldScene extends BaseScene {
 
     mount(container: PIXI.Container) {
         this.game.prevScene.unmount(container);
+        container.addChild(this.actors.gridContainer);
+        this.actors.grid.mount(this.actors.gridContainer);
         for (let ball of this.actors.balls) {
             container.addChild(ball);
         }
@@ -59,9 +73,12 @@ export default class WorldScene extends BaseScene {
         for (let ball of this.actors.balls) {
             container.removeChild(ball);
         }
+        container.removeChild(this.actors.gridContainer);
+        this.actors.grid.unmount(container);
     }
 
     tick(delta: number, keyboard: IKeyboard) {
+        this.actors.grid.tick(delta, keyboard);
         for (let ball of this.actors.balls) {
             ball.tick(delta, keyboard);
         }
