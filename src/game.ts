@@ -81,7 +81,10 @@ export class Game implements IGame {
             this.state.flags.paused = !this.state.flags.paused;
         }
         if (!this.state.flags.paused) {
-            logger.error("Unpaused while not paused.");
+            this.state.functions.tick = playTick;
+            keyboard?.disable(KEYBOARD_DISABLE_FRAMES);
+            this.scene.unmount(this.containers.root);
+            this.changeScene(this.prevScene);
             return;
         }
         keyboard?.disable(KEYBOARD_DISABLE_FRAMES);
@@ -111,11 +114,7 @@ function playTick(game: IGame, delta: number, keyboard: IKeyboard) {
 function pauseTick(game: IGame, delta: number, keyboard: IKeyboard) {
     keyboard.tick(delta);
     if (keyboard.p) {
-        game.state.flags.paused = false;
-        game.state.functions.tick = playTick;
-        keyboard.disable(KEYBOARD_DISABLE_FRAMES);
-        game.scene.unmount(game.containers.root);
-        game.changeScene(game.prevScene);
+        game.pause(keyboard);
     }
 }
 
