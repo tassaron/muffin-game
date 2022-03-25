@@ -15,7 +15,7 @@ export default interface IGame {
     scene: IScene,
     prevScene: IScene,
     changeScene(scene: any): void,
-    pause(keyboard: IKeyboard | undefined): void,
-    gameOver(keyboard: IKeyboard | undefined): void,
+    pause(keyboard?: IKeyboard): void,
+    gameOver(keyboard?: IKeyboard): void,
     reset(): void,
 }

@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { logger } from "../logger";
-import { Game } from "../game";
+import IGame from "../interfaces/IGame";
 import BaseScene from "./BaseScene";
 import DrawnEllipse from "../entities/DrawnEllipse";
 import DrawnRectangle from "../entities/DrawnRectangle";
@@ -34,7 +34,7 @@ class Ball extends Collider {
 export default class WorldScene extends BaseScene {
     actors: any = {};
 
-    constructor(game: Game) {
+    constructor(game: IGame) {
         super(game);
 
         // Create balls to bounce around the screen
@@ -53,7 +53,7 @@ export default class WorldScene extends BaseScene {
         this.actors.grid[3][3] = new DrawnRectangle(game, 32, 32, 0x666666);
         this.actors.grid[4][4] = new DrawnRectangle(game, 32, 32, 0x666666);
 
-        // A clickable fuel can that triggers a game over
+        // A clickable sprite that triggers a game over
         this.actors.fuel = game.sprites.fuel();
         this.actors.fuel.interactive = true;
         this.actors.fuel.click = (_: Event) => game.gameOver();
