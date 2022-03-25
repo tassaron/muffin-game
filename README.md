@@ -1,5 +1,7 @@
-# Muffin Game Engine
-My simple game engine/template for an HTML5 game using [PixiJS](https://pixijs.io). Evolved from what I learned making the [canvas-game](https://github.com/tassaron/canvas-game) template.
+# Muffin Game Template
+My game template (sort of an engine) for an HTML5 game using [PixiJS](https://pixijs.io). Evolved from what I learned making the [canvas-game](https://github.com/tassaron/canvas-game) template. This repo has some code for an example project to act as a starting point.
+
+## [Click to play the Example Project](https://rainey.tech/static/muffin-game/)
 
 ## How to Create a Game
 1. `npm install` to get the dependencies
@@ -20,6 +22,7 @@ My simple game engine/template for an HTML5 game using [PixiJS](https://pixijs.i
 
 ### Advanced game states
 -  The current `tick` function which occurs on every game tick is stored in `game.state.functions.tick` so that you can customize the gameplay loop at a higher level if needed.
+-  Use `game.startTimer(func, frames)` to time a function to trigger after a certain number of frames. This method returns the index of the timer created, so you can stop the timer early by using `game.stopTimer(index)`
 
 ### Scenes
 -  A game is broken up into Scenes.
