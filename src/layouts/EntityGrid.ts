@@ -1,32 +1,16 @@
 import * as PIXI from "pixi.js";
 import BaseEntity from "../entities/BaseEntity";
-import IGridLayout from "../interfaces/IGridLayout";
 import IKeyboard from "../interfaces/IKeyboard";
+import BaseGrid from "./BaseGrid";
 
 
-export default class GridLayout implements IGridLayout {
-    cols: number;
-    rows: number;
+export default class EntityGrid extends BaseGrid {
     gridSize: number;
-    _grid: Array<Array<BaseEntity | null>>;
     mounted: PIXI.Container | null = null;
 
     constructor(cols: number, rows: number, gridSize: number, initial: any = null) {
-        this.cols = cols;
-        this.rows = rows;
+        super(cols, rows, initial);
         this.gridSize = gridSize;
-        this._grid = Array(rows);
-        for (let y = 0; y < this.rows; y++) {
-            this._grid[y] = [];
-            for (let x = 0; x < this.cols; x++) {
-                this._grid[y][x] = initial?.();
-            }
-        }
-        for(let y = 0; y < this.rows; y++) {
-            Object.defineProperty(this, y, {
-              value: this._grid[y]
-            });
-          }
     }
 
     tick(delta: number, keyboard: IKeyboard) {

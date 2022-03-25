@@ -6,7 +6,7 @@ import DrawnEllipse from "../entities/DrawnEllipse";
 import DrawnRectangle from "../entities/DrawnRectangle";
 import Collider from "../entities/Collider";
 import IKeyboard from "../interfaces/IKeyboard";
-import GridLayout from "../layouts/GridLayout";
+import EntityGrid from "../layouts/EntityGrid";
 
 
 class Ball extends Collider {
@@ -44,11 +44,11 @@ export default class WorldScene extends BaseScene {
         ];
         this.placeBalls();
 
-        // Create a gridlayout with some random junk
+        // Create a EntityGrid with some random junk
         this.actors.gridContainer = new PIXI.Container();
         this.actors.gridContainer.x = 32;
         this.actors.gridContainer.y = 32;
-        this.actors.grid = new GridLayout(8, 8, 32, game.sprites.explosion);
+        this.actors.grid = new EntityGrid(8, 8, 32, game.sprites.explosion);
         this.actors.grid[2][2] = new DrawnRectangle(game, 32, 32, 0x666666);
         this.actors.grid[3][3] = new DrawnRectangle(game, 32, 32, 0x666666);
         this.actors.grid[4][4] = new DrawnRectangle(game, 32, 32, 0x666666);
