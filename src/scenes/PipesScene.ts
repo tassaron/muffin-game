@@ -16,23 +16,31 @@ export default class PipesScene extends Scene {
         super(game);
 
         this.actors.backButton = newBackButton(game);
+        
+        // A pipe factory :P
+        const newPipe = () => {
+            const pipe = game.sprites.pipe();
+            pipe.interactive = true;
+            let y = 0;
+            let x = 0;
+            pipe.click = (_: Event) => {
+                pipe.setFrame[y][x]?.();
+                x++;
+                if (x == pipe.textureGrid.cols - 1) {
+                    x = 0;
+                    y = y == 1 ? 0 : 1;
+                }
+            }
+            return pipe;
+        }
 
         // Create an EntityGrid with some pipes and junk
         this.actors.gridContainer = new PIXI.Container();
         this.actors.gridContainer.x = 36;
         this.actors.gridContainer.y = 36;
-        this.actors.grid = new EntityGrid(6, 9, 72, game.sprites.pipe);
-        this.actors.grid[2][2] = new DrawnEllipse(game, 36, 36, 0x666666);
+        this.actors.grid = new EntityGrid(6, 9, 72, newPipe);
         this.actors.grid[3][3] = new DrawnRectangle(game, 72, 72, 0x666666);
         this.actors.grid[4][4] = new DrawnRectangle(game, 72, 72, 0x666666);
-
-        // Make a TileSprite that changes tile frame when clicked
-        this.actors.pipe = game.sprites.pipe();
-        this.actors.pipe.textureGrid.setFrame[0][0]();
-        this.actors.pipe.interactive = true;
-        this.actors.pipe.click = (_: Event) => {
-            this.actors.pipe.textureGrid.setFrame[0][1]?.();
-        }
 
         logger.info("Created Pipes scene");
     }
@@ -40,14 +48,12 @@ export default class PipesScene extends Scene {
     mount(container: PIXI.Container) {
         this.game.prevScene.unmount(container);
         container.addChild(this.actors.backButton);
-        container.addChild(this.actors.pipe);
         container.addChild(this.actors.gridContainer);
         this.actors.grid.mount(this.actors.gridContainer);
     }
 
     unmount(container: PIXI.Container) {
         container.removeChild(this.actors.backButton);
-        container.removeChild(this.actors.pipe);
         container.removeChild(this.actors.gridContainer);
         this.actors.grid.unmount(this.actors.gridContainer);
     }
