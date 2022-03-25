@@ -1,5 +1,5 @@
 class Logger {
-    LOGLEVEL = -1;
+    LOGLEVEL = 0;
 
     spam(msg: string) {
         this.LOGLEVEL < 0 ? console.log(msg) : null
