@@ -7,6 +7,17 @@ import BallsScene from "./BallsScene";
 import PipesScene from "./PipesScene";
 import DrawnRectangle from "../entities/DrawnRectangle";
 
+
+export function newBackButton(game: IGame) {
+    const backButton = new Button(game, DrawnRectangle, 120, 50, "< Back");
+    backButton.x = 60;
+    backButton.y = 25;
+    (backButton as any).interactive = true;
+    (backButton as any).click = (_: Event) => game.changeScene(new MenuScene(game));
+    return backButton;
+}
+
+
 export default class MenuScene extends Scene {
     actors: any = {};
     scenes: typeof Scene[];

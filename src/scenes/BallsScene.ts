@@ -6,6 +6,7 @@ import DrawnEllipse from "../entities/DrawnEllipse";
 import DrawnRectangle from "../entities/DrawnRectangle";
 import Collider from "../entities/Collider";
 import IKeyboard from "../interfaces/IKeyboard";
+import { newBackButton } from "./MenuScene";
 
 
 class Ball extends Collider {
@@ -36,6 +37,8 @@ export default class BallsScene extends Scene {
     constructor(game: IGame) {
         super(game);
 
+        this.actors.backButton = newBackButton(game);
+
         // Create balls to bounce around the screen
         this.actors.balls = [
             new Ball(game, new DrawnEllipse(game, 30, 30, 0x666666, null), 60, 60),
@@ -49,8 +52,10 @@ export default class BallsScene extends Scene {
         this.actors.fuel.click = (_: Event) => game.gameOver();
         this.actors.fuel.x = this.game.width - 100;
         this.actors.fuel.y = this.game.height - 100;
+        this.actors.fuel.anchor.x = 0.5;
+        this.actors.fuel.anchor.y = 0.5;
 
-        logger.info("Created World scene");
+        logger.info("Created Balls scene");
     }
 
     placeBalls() {
@@ -64,6 +69,7 @@ export default class BallsScene extends Scene {
 
     mount(container: PIXI.Container) {
         this.game.prevScene.unmount(container);
+        container.addChild(this.actors.backButton);
         container.addChild(this.actors.fuel);
         for (let ball of this.actors.balls) {
             container.addChild(ball);
@@ -74,10 +80,12 @@ export default class BallsScene extends Scene {
         for (let ball of this.actors.balls) {
             container.removeChild(ball);
         }
+        container.removeChild(this.actors.backButton);
         container.removeChild(this.actors.fuel);
     }
 
     tick(delta: number, keyboard: IKeyboard) {
+        this.actors.fuel.rotation += 0.01 * delta;
         for (let ball of this.actors.balls) {
             ball.tick(delta, keyboard);
         }
