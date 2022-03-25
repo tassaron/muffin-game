@@ -1,14 +1,11 @@
 import * as PIXI from "pixi.js";
 import { logger } from "../logger";
 import IGame from "../interfaces/IGame";
-import BaseScene from "./BaseScene";
+import Scene from "./Scene";
 import DrawnEllipse from "../entities/DrawnEllipse";
 import DrawnRectangle from "../entities/DrawnRectangle";
 import Collider from "../entities/Collider";
 import IKeyboard from "../interfaces/IKeyboard";
-import EntityGrid from "../layouts/EntityGrid";
-import TextureGrid from "../layouts/TextureGrid";
-import BaseEntity from "../entities/BaseEntity";
 
 
 class Ball extends Collider {
@@ -33,7 +30,7 @@ class Ball extends Collider {
 }
 
 
-export default class WorldScene extends BaseScene {
+export default class BallsScene extends Scene {
     actors: any = {};
 
     constructor(game: IGame) {
@@ -45,30 +42,13 @@ export default class WorldScene extends BaseScene {
             new Ball(game, new DrawnRectangle(game, 60, 60, 0x666666, null), 60, 60)
         ];
         this.placeBalls();
-
-        // Create a EntityGrid with some random junk
-        this.actors.gridContainer = new PIXI.Container();
-        this.actors.gridContainer.x = 32;
-        this.actors.gridContainer.y = 32;
-        this.actors.grid = new EntityGrid(8, 8, 32, game.sprites.explosion);
-        this.actors.grid[2][2] = new DrawnEllipse(game, 16, 16, 0x666666);
-        this.actors.grid[3][3] = new DrawnRectangle(game, 32, 32, 0x666666);
-        this.actors.grid[4][4] = new DrawnRectangle(game, 32, 32, 0x666666);
-
+        
         // A clickable sprite that triggers a game over
         this.actors.fuel = game.sprites.fuel();
         this.actors.fuel.interactive = true;
         this.actors.fuel.click = (_: Event) => game.gameOver();
         this.actors.fuel.x = this.game.width - 100;
         this.actors.fuel.y = this.game.height - 100;
-
-        // Make a TileSprite that changes tile frame when clicked
-        this.actors.pipe = game.sprites.pipe();
-        this.actors.pipe.textureGrid.setFrame[0][0]();
-        this.actors.pipe.interactive = true;
-        this.actors.pipe.click = (_: Event) => {
-            this.actors.pipe.textureGrid.setFrame[0][1]?.();
-        }
 
         logger.info("Created World scene");
     }
@@ -84,10 +64,7 @@ export default class WorldScene extends BaseScene {
 
     mount(container: PIXI.Container) {
         this.game.prevScene.unmount(container);
-        container.addChild(this.actors.pipe);
-        //container.addChild(this.actors.gridContainer);
-        //container.addChild(this.actors.fuel);
-        this.actors.grid.mount(this.actors.gridContainer);
+        container.addChild(this.actors.fuel);
         for (let ball of this.actors.balls) {
             container.addChild(ball);
         }
@@ -97,14 +74,10 @@ export default class WorldScene extends BaseScene {
         for (let ball of this.actors.balls) {
             container.removeChild(ball);
         }
-        container.removeChild(this.actors.pipe);
-        container.removeChild(this.actors.gridContainer);
         container.removeChild(this.actors.fuel);
-        this.actors.grid.unmount(this.actors.gridContainer);
     }
 
     tick(delta: number, keyboard: IKeyboard) {
-        this.actors.grid.tick(delta, keyboard);
         for (let ball of this.actors.balls) {
             ball.tick(delta, keyboard);
         }
