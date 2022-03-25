@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { logger } from "../logger";
-import IGame from "../interfaces/IGame";
+import { Game } from "../game";
 import BaseScene from "./BaseScene";
 import DrawnEllipse from "../entities/DrawnEllipse";
 import DrawnRectangle from "../entities/DrawnRectangle";
@@ -34,13 +34,17 @@ class Ball extends Collider {
 export default class WorldScene extends BaseScene {
     actors: any = {};
 
-    constructor(game: IGame) {
+    constructor(game: Game) {
         super(game);
+
+        // Create balls to bounce around the screen
         this.actors.balls = [
             new Ball(game, new DrawnEllipse(game, 30, 30, 0x666666, null), 60, 60),
             new Ball(game, new DrawnRectangle(game, 60, 60, 0x666666, null), 60, 60)
         ];
         this.placeBalls();
+
+        // Create a gridlayout with some random junk
         this.actors.gridContainer = new PIXI.Container();
         this.actors.gridContainer.x = 32;
         this.actors.gridContainer.y = 32;
@@ -48,6 +52,14 @@ export default class WorldScene extends BaseScene {
         this.actors.grid[2][2] = new DrawnRectangle(game, 32, 32, 0x666666);
         this.actors.grid[3][3] = new DrawnRectangle(game, 32, 32, 0x666666);
         this.actors.grid[4][4] = new DrawnRectangle(game, 32, 32, 0x666666);
+
+        // A clickable fuel can that triggers a game over
+        this.actors.fuel = game.sprites.fuel();
+        this.actors.fuel.interactive = true;
+        this.actors.fuel.click = (_: Event) => game.gameOver();
+        this.actors.fuel.x = this.game.width - 100;
+        this.actors.fuel.y = this.game.height - 100;
+
         logger.info("Created World scene");
     }
 
@@ -63,6 +75,7 @@ export default class WorldScene extends BaseScene {
     mount(container: PIXI.Container) {
         this.game.prevScene.unmount(container);
         container.addChild(this.actors.gridContainer);
+        container.addChild(this.actors.fuel);
         this.actors.grid.mount(this.actors.gridContainer);
         for (let ball of this.actors.balls) {
             container.addChild(ball);
@@ -74,7 +87,8 @@ export default class WorldScene extends BaseScene {
             container.removeChild(ball);
         }
         container.removeChild(this.actors.gridContainer);
-        this.actors.grid.unmount(container);
+        container.removeChild(this.actors.fuel);
+        this.actors.grid.unmount(this.actors.gridContainer);
     }
 
     tick(delta: number, keyboard: IKeyboard) {

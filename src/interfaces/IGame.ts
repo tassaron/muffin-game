@@ -14,9 +14,8 @@ export default interface IGame {
     state: IGameState,
     scene: IScene,
     prevScene: IScene,
-    playTick(self: IGame, delta: number, keyboard: any): void,
-    pauseTick(self: IGame, delta: number, keyboard: any): void,
     changeScene(scene: any): void,
-    pause(keyboard: IKeyboard): void,
-    gameOver(keyboard: IKeyboard): void,
+    pause(keyboard: IKeyboard | undefined): void,
+    gameOver(keyboard: IKeyboard | undefined): void,
+    reset(): void,
 }
