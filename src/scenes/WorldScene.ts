@@ -7,6 +7,8 @@ import DrawnRectangle from "../entities/DrawnRectangle";
 import Collider from "../entities/Collider";
 import IKeyboard from "../interfaces/IKeyboard";
 import EntityGrid from "../layouts/EntityGrid";
+import TextureGrid from "../layouts/TextureGrid";
+import BaseEntity from "../entities/BaseEntity";
 
 
 class Ball extends Collider {
@@ -49,7 +51,7 @@ export default class WorldScene extends BaseScene {
         this.actors.gridContainer.x = 32;
         this.actors.gridContainer.y = 32;
         this.actors.grid = new EntityGrid(8, 8, 32, game.sprites.explosion);
-        this.actors.grid[2][2] = new DrawnRectangle(game, 32, 32, 0x666666);
+        this.actors.grid[2][2] = new DrawnEllipse(game, 16, 16, 0x666666);
         this.actors.grid[3][3] = new DrawnRectangle(game, 32, 32, 0x666666);
         this.actors.grid[4][4] = new DrawnRectangle(game, 32, 32, 0x666666);
 
@@ -59,6 +61,14 @@ export default class WorldScene extends BaseScene {
         this.actors.fuel.click = (_: Event) => game.gameOver();
         this.actors.fuel.x = this.game.width - 100;
         this.actors.fuel.y = this.game.height - 100;
+
+        // Make a TileSprite that changes tile frame when clicked
+        this.actors.pipe = game.sprites.pipe();
+        this.actors.pipe.textureGrid.setFrame[0][0]();
+        this.actors.pipe.interactive = true;
+        this.actors.pipe.click = (_: Event) => {
+            this.actors.pipe.textureGrid.setFrame[0][1]?.();
+        }
 
         logger.info("Created World scene");
     }
@@ -74,8 +84,9 @@ export default class WorldScene extends BaseScene {
 
     mount(container: PIXI.Container) {
         this.game.prevScene.unmount(container);
-        container.addChild(this.actors.gridContainer);
-        container.addChild(this.actors.fuel);
+        container.addChild(this.actors.pipe);
+        //container.addChild(this.actors.gridContainer);
+        //container.addChild(this.actors.fuel);
         this.actors.grid.mount(this.actors.gridContainer);
         for (let ball of this.actors.balls) {
             container.addChild(ball);
@@ -86,6 +97,7 @@ export default class WorldScene extends BaseScene {
         for (let ball of this.actors.balls) {
             container.removeChild(ball);
         }
+        container.removeChild(this.actors.pipe);
         container.removeChild(this.actors.gridContainer);
         container.removeChild(this.actors.fuel);
         this.actors.grid.unmount(this.actors.gridContainer);

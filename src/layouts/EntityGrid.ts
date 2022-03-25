@@ -1,16 +1,36 @@
 import * as PIXI from "pixi.js";
 import BaseEntity from "../entities/BaseEntity";
+import IGrid, { Grid } from "../interfaces/IGrid";
 import IKeyboard from "../interfaces/IKeyboard";
-import BaseGrid from "./BaseGrid";
 
 
-export default class EntityGrid extends BaseGrid {
+export function createGrid(self: IGrid<any>, initial: any) {
+    const _grid = Array(self.rows);
+    for (let y = 0; y < self.rows; y++) {
+        _grid[y] = [];
+        for (let x = 0; x < self.cols; x++) {
+            _grid[y][x] = initial?.();
+        }
+        Object.defineProperty(self, y, {
+            value: _grid[y]
+        });
+    }
+    return _grid;
+}
+
+
+export default class EntityGrid implements IGrid<BaseEntity> {
     gridSize: number;
     mounted: PIXI.Container | null = null;
+    cols: number;
+    rows: number;
+    _grid: Grid<BaseEntity>
 
     constructor(cols: number, rows: number, gridSize: number, initial: any = null) {
-        super(cols, rows, initial);
+        this.cols = cols;
+        this.rows = rows;
         this.gridSize = gridSize;
+        this._grid = createGrid(this, initial);
     }
 
     tick(delta: number, keyboard: IKeyboard) {

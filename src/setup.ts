@@ -2,12 +2,14 @@ import * as PIXI from "pixi.js";
 import IGame from "./interfaces/IGame";
 import BaseEntity from "./entities/BaseEntity";
 import AnimatedSprite from './entities/AnimatedSprite';
+import TextureGrid from "./layouts/TextureGrid";
+import TileSprite from "./entities/TileSprite";
 import { MissingTextureError } from "./exceptions";
 
 export const textures = [
     "explosion",
     "fuel",
-    "grass",
+    "pipes",
 ];
 
 function getTexture(texture: PIXI.Texture | undefined, name: string) : PIXI.Texture {
@@ -24,6 +26,6 @@ export function after_preload(loader: PIXI.Loader, resources: PIXI.utils.Dict<PI
     // animated sprite
     sprites.explosion = (game: IGame) => new AnimatedSprite(game, getTexture(resources.explosion.texture, "explosion"), 32, 32, 5, 10);
 
-    // tileset [WIP]
-    //sprites.grass = newTileset(resources.grass.texture);
+    // tilemap
+    sprites.pipe = (game: IGame) => new TileSprite(game, new TextureGrid(4, 4, 72, getTexture(resources.pipes.texture, "pipes")));
 };

@@ -1,9 +1,7 @@
-//import * as PIXI from "pixi.js";
-import BaseEntity from "../entities/BaseEntity";
-
-
-export default interface IGrid {
+export default interface IGrid<T> {
     cols: number,
     rows: number,
-    _grid: Array<Array<BaseEntity | null>>,
+    _grid: Grid<T>,
 }
+
+export type Grid<T> = Array<Array<T | null>>;
