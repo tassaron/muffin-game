@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import BaseEntity from "./BaseEntity";
+import BaseEntity from "../entities/BaseEntity";
 import IGridLayout from "../interfaces/IGridLayout";
 import IKeyboard from "../interfaces/IKeyboard";
 

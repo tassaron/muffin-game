@@ -6,7 +6,7 @@ import DrawnEllipse from "../entities/DrawnEllipse";
 import DrawnRectangle from "../entities/DrawnRectangle";
 import Collider from "../entities/Collider";
 import IKeyboard from "../interfaces/IKeyboard";
-import GridLayout from "../entities/GridLayout";
+import GridLayout from "../layouts/GridLayout";
 
 
 class Ball extends Collider {
