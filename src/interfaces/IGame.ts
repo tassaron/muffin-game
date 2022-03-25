@@ -14,8 +14,11 @@ export default interface IGame {
     state: IGameState,
     scene: IScene,
     prevScene: IScene,
+    timers: Array<[f: () => any, time: number]>,
     changeScene(scene: any): void,
     pause(keyboard?: IKeyboard): void,
     gameOver(keyboard?: IKeyboard): void,
     reset(): void,
+    startTimer(f: () => any, ms: number): number,
+    stopTimer(i: number): void,
 }

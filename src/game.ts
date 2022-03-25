@@ -31,16 +31,16 @@ export class Game implements IGame {
     renderer: PIXI.AbstractRenderer;
     width: number;
     height: number;
-    sprites: any;
     containers: IGameContainers;
     scene: IScene;
     prevScene: IScene;
+    sprites: any = {};
+    timers: Array<[f: () => any, time: number]> = [];
     state = getInitialGameState();
 
     constructor(app: PIXI.Application, sprites: any, keyboard: any) {
         this._app = app;
         this.renderer = app.renderer;
-        this.sprites = {};
         for (let sprite of Object.keys(sprites)) {
             this.sprites[sprite] = (): IEntity => sprites[sprite](this);
         }
@@ -99,12 +99,40 @@ export class Game implements IGame {
         this.prevScene = new LoadingScene(this);
         this.scene.mount(this.containers.root);
     }
+
+    startTimer(f: () => any, ms: number) {
+        return this.timers.push([f, ms]) - 1;
+    }
+
+    stopTimer(i: number) {
+        this.timers[i][0] = () => {};
+    }
 }
 
 
 function playTick(game: IGame, delta: number, keyboard: IKeyboard) {
     logger.spam(`Delta: ${delta}`);
     delta = Math.min(delta, 2.0);
+
+    // Tick game timers
+    let timersActive = false;
+    for (let i = 0; i < game.timers.length; i++) {
+        if (game.timers[i][1] == 0.0) {
+            game.timers[i][0]();
+            game.timers[i][0] = () => {};
+            continue;
+        }
+        timersActive = true;
+        game.timers[i][1] -= delta;
+        if (game.timers[i][1] <= 0.0) {
+            game.timers[i][1] = 0.0;
+        }
+    }
+    if (!timersActive) {
+        game.timers = [];
+    }
+
+    // Tick keyboard and scene
     keyboard.tick(delta);
     game.scene.tick(delta, keyboard);
     if (keyboard.p) game.pause(keyboard);
