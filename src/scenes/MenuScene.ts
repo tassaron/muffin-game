@@ -49,7 +49,7 @@ export default class MenuScene extends BaseScene {
 
     clickStart() {
         if (this.mounted && this.actors.explosion === undefined) {
-            this.actors.explosion = this.game.sprites.explosion;
+            this.actors.explosion = this.game.sprites.explosion();
             this.actors.explosion.x = this.game.width / 2;
             this.actors.explosion.y = this.game.height / 2;
             this.mounted.addChild(this.actors.explosion);

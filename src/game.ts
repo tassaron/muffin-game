@@ -5,6 +5,7 @@ import IGameContainers from "./interfaces/IGameContainers";
 import IGameState from "./interfaces/IGameState";
 import IKeyboard from "./interfaces/IKeyboard";
 import IScene from "./interfaces/IScene";
+import IEntity from "./interfaces/IEntity";
 import LoadingScene from "./scenes/LoadingScene";
 import MenuScene from "./scenes/MenuScene";
 import PauseScene from "./scenes/PauseScene";
@@ -27,7 +28,10 @@ export class Game implements IGame {
     constructor(app: PIXI.Application, sprites: any, keyboard: any) {
         this._app = app;
         this.renderer = app.renderer;
-        this.sprites = sprites;
+        this.sprites = {};
+        for (let sprite of Object.keys(sprites)) {
+            this.sprites[sprite] = (): IEntity => sprites[sprite](this);
+        }
         this.width = app.view.width;
         this.height = app.view.height;
 
@@ -56,6 +60,7 @@ export class Game implements IGame {
 
     playTick(self: IGame, delta: number, keyboard: IKeyboard) {
         logger.spam(`Delta: ${delta}`);
+        delta = Math.min(delta, 2.0);
         keyboard.tick(delta);
         self.scene.tick(delta, keyboard);
         if (keyboard.p) self.pause(keyboard);

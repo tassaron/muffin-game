@@ -1,4 +1,6 @@
 import * as PIXI from "pixi.js";
+import IGame from "./interfaces/IGame";
+import BaseEntity from "./entities/BaseEntity";
 import AnimatedSprite from './entities/AnimatedSprite';
 import { MissingTextureError } from "./exceptions";
 
@@ -17,10 +19,10 @@ function getTexture(texture: PIXI.Texture | undefined, name: string) : PIXI.Text
 
 export function after_preload(loader: PIXI.Loader, resources: PIXI.utils.Dict<PIXI.LoaderResource>, sprites: any) {
     // sprite
-    sprites.fuel = new PIXI.Sprite(getTexture(resources.fuel.texture, "fuel"));
+    sprites.fuel = (game: IGame) => new BaseEntity(game, getTexture(resources.fuel.texture, "fuel"));
 
     // animated sprite
-    sprites.explosion = new AnimatedSprite(getTexture(resources.explosion.texture, "explosion"), 32, 32, 5, 10);
+    sprites.explosion = (game: IGame) => new AnimatedSprite(game, getTexture(resources.explosion.texture, "explosion"), 32, 32, 5, 10);
 
     // tileset [WIP]
     //sprites.grass = newTileset(resources.grass.texture);
