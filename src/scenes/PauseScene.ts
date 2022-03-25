@@ -1,12 +1,12 @@
 import { logger } from "../logger";
 import * as PIXI from "pixi.js";
 import IGame from "../interfaces/IGame";
-import BaseScene from "./BaseScene";
+import Scene from "./Scene";
 import Button from "../entities/Button";
 import DrawnRectangle from "../entities/DrawnRectangle";
 
 
-export default class PauseScene extends BaseScene {
+export default class PauseScene extends Scene {
     actors: any = {};
 
     constructor(game: IGame) {

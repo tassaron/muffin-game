@@ -1,10 +1,10 @@
 import * as PIXI from "pixi.js";
 import { logger } from "../logger";
 import IGame from "../interfaces/IGame";
-import BaseScene from "./BaseScene";
+import Scene from "./Scene";
 
 
-export default class LoadingScene extends BaseScene {
+export default class LoadingScene extends Scene {
     actors: any = {};
 
     constructor(game: IGame) {

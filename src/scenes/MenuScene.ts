@@ -1,23 +1,36 @@
 import * as PIXI from "pixi.js";
 import { logger } from "../logger";
 import IGame from "../interfaces/IGame";
-import BaseScene from "./BaseScene";
+import Scene from "./Scene";
 import Button from "../entities/Button";
-import WorldScene from "./WorldScene";
+import BallsScene from "./BallsScene";
+import PipesScene from "./PipesScene";
 import DrawnRectangle from "../entities/DrawnRectangle";
 
-export default class MenuScene extends BaseScene {
+export default class MenuScene extends Scene {
     actors: any = {};
+    scenes: typeof Scene[];
+    timer: null | number = null;
 
     constructor(game: IGame) {
         super(game);
-        this.actors.button = new Button(game, DrawnRectangle, 200, 50, "Start Game");
-        this.actors.button.x = game.width / 2;
-        this.actors.button.y = game.height / 2;
+        this.actors.buttons = [
+            new Button(game, DrawnRectangle, 300, 50, "Balls Example"),
+            new Button(game, DrawnRectangle, 300, 50, "Pipes Example"),
+        ];
+        this.actors.buttons[0].x = game.width / 2;
+        this.actors.buttons[1].x = game.width / 2;
+        this.actors.buttons[0].y = (game.height / 2) - 25;
+        this.actors.buttons[1].y = (game.height / 2) + 25;
+        this.actors.explosions = [undefined, undefined];
+
+        this.scenes = [BallsScene, PipesScene];
         
         // Hook events to buttons
-        this.actors.button.interactive = true;
-        this.actors.button.click = (_: Event) => this.clickStart();
+        for (let i = 0; i < this.actors.buttons.length; i++) {
+            this.actors.buttons[i].interactive = true;
+            this.actors.buttons[i].click = (_: Event) => this.mountExplosion(i, (i * 25) - 25);
+        }
         
         logger.info("Created Menu scene");
     }
@@ -25,35 +38,46 @@ export default class MenuScene extends BaseScene {
     mount(container: PIXI.Container) {
         this.game.prevScene.unmount(container);
         this.mounted = container;
-        container.addChild(this.actors.button);
+        for (let button of this.actors.buttons) {
+            container.addChild(button);
+        }
     }
 
     unmount(container: PIXI.Container) {
         this.mounted = null;
-        container.removeChild(this.actors.button);
+        for (let button of this.actors.buttons) {
+            container.removeChild(button);
+        }
+        for (let explosion of this.actors.explosions) {
+            container.removeChild(explosion);
+        }
     }
 
     tick(delta: number, keyboard: any) {
         if (!this.mounted) return;
         if (keyboard.number == 1) {
-            this.clickStart();
+            this.actors.buttons[0].click();
         }
-        if (this.actors.explosion === undefined) return
-        this.actors.explosion.tick(delta);
-        if (this.actors.explosion.loops > 0) {
-            this.mounted.removeChild(this.actors.explosion);
-            this.mounted = null;
-            this.game.startTimer(() => this.game.changeScene(new WorldScene(this.game)), 10.0);
+        for (let i = 0; i < this.actors.explosions.length; i++) {
+            if (this.actors.explosions[i] === undefined) continue;
+            this.actors.explosions[i].tick(delta);
+            if (this.actors.explosions[i].loops > 0) {
+                (this.mounted as PIXI.Container).removeChild(this.actors.explosions[i]);
+                this.mounted = null;
+                if (!this.timer) {
+                    this.timer = this.game.startTimer(() => this.game.changeScene(new this.scenes[i](this.game)), 10.0);
+                }
+            }
         }
     }
 
-    clickStart() {
-        if (this.mounted && this.actors.explosion === undefined) {
-            this.actors.explosion = this.game.sprites.explosion();
-            this.actors.explosion.x = this.game.width / 2;
-            this.actors.explosion.y = this.game.height / 2;
-            this.mounted.addChild(this.actors.explosion);
-            this.mounted.removeChild(this.actors.button);
+    mountExplosion(i: number, offset: number) {
+        if (this.mounted && this.actors.explosions[i] === undefined) {
+            this.actors.explosions[i] = this.game.sprites.explosion();
+            this.actors.explosions[i].x = this.game.width / 2;
+            this.actors.explosions[i].y = (this.game.height / 2) + offset;
+            this.mounted.addChild(this.actors.explosions[i]);
+            this.mounted.removeChild(this.actors.buttons[i]);
         }
     }
 }

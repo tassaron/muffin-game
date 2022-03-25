@@ -3,10 +3,13 @@ import IGame from "../interfaces/IGame";
 import IScene from "../interfaces/IScene";
 import IKeyboard from "../interfaces/IKeyboard";
 
-export default class BaseScene implements IScene {
+export default class Scene implements IScene {
     game: IGame;
     actors: any;
     mounted: PIXI.Container | null = null;
+
+    // Allow class to have additional properties added at runtime:
+    // [key: string]: any;
 
     constructor(game: IGame) {
         this.game = game;

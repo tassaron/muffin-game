@@ -3,10 +3,10 @@ import { logger } from "../logger";
 import Button from "../entities/Button";
 import DrawnEllipse from "../entities/DrawnEllipse";
 import IGame from "../interfaces/IGame";
-import BaseScene from "./BaseScene";
+import Scene from "./Scene";
 
 
-export default class GameOverScene extends BaseScene {
+export default class GameOverScene extends Scene {
     actors: any = {};
 
     constructor(game: IGame) {
