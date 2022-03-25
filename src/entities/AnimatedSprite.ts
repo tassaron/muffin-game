@@ -1,5 +1,7 @@
 import * as PIXI from "pixi.js";
 import IAnimatedSprite from "../interfaces/IAnimatedSprite";
+import IGame from "../interfaces/IGame";
+import BaseEntity from "./BaseEntity";
 import { logger } from '../logger';
 
 
@@ -10,7 +12,7 @@ function setFrame(texture: PIXI.Texture, w: number, h: number, number: number) {
 }
 
 
-export default class AnimatedSprite extends PIXI.Sprite implements IAnimatedSprite {
+export default class AnimatedSprite extends BaseEntity implements IAnimatedSprite {
     __width: number;
     __height: number;
     numFrames: number;
@@ -19,9 +21,10 @@ export default class AnimatedSprite extends PIXI.Sprite implements IAnimatedSpri
     animTimer: number;
     loops: number;
 
-    constructor(texture: PIXI.Texture, width: number, height: number, numFrames: number, delayInFrames: number) {
+    constructor(game: IGame, texture: PIXI.Texture, width: number, height: number, numFrames: number, delayInFrames: number) {
         setFrame(texture, width, height, 0);
-        super(texture);
+        super(game);
+        this.texture = texture;
         this.__width = width;
         this.__height = height;
         this.numFrames = numFrames;
