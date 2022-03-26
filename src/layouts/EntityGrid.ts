@@ -24,7 +24,8 @@ export default class EntityGrid implements IGrid<BaseEntity> {
     mounted: PIXI.Container | null = null;
     cols: number;
     rows: number;
-    _grid: Grid<BaseEntity>
+    _grid: Grid<BaseEntity>;
+    _interactive = false;
 
     constructor(cols: number, rows: number, gridSize: number, initial: any = null) {
         this.cols = cols;
@@ -39,6 +40,22 @@ export default class EntityGrid implements IGrid<BaseEntity> {
                 cell?.tick(delta, keyboard);
             }
         }
+    }
+
+    get interactive() {
+        return this._interactive;
+    }
+
+    set interactive(value: boolean) {
+        let cell: BaseEntity | null = null;
+        for (let x = 0; x < this._grid.length; x++) {
+            for (let y = 0; y < this._grid[x].length; y++) {
+                cell = this._grid[x][y];
+                if (!cell) continue;
+                cell.interactive = value;
+            }
+        }
+        this._interactive = value;
     }
 
     mount(container: PIXI.Container) {

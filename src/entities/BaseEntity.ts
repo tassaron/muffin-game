@@ -6,6 +6,7 @@ import IKeyboard from "../interfaces/IKeyboard";
 
 export default class BaseEntity extends PIXI.Sprite implements IEntity {
     game: IGame;
+    interactive = false;
 
     constructor(game: IGame, texture: PIXI.Texture | undefined = undefined) {
         super(texture);
