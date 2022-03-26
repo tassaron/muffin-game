@@ -2,14 +2,14 @@ import * as PIXI from "pixi.js";
 import { logger } from "../logger";
 import IGame from "../interfaces/IGame";
 import Scene from "./Scene";
-import Button from "../entities/Button";
+import Button from "../actors/ButtonActor";
 import BallsScene from "./BallsScene";
 import PipesScene from "./PipesScene";
-import DrawnRectangle from "../entities/DrawnRectangle";
+import RectangleActor from "../actors/RectangleActor";
 
 
 export function newBackButton(game: IGame) {
-    const backButton = new Button(game, DrawnRectangle, 120, 50, "< Back");
+    const backButton = new Button(game, RectangleActor, 120, 50, "< Back");
     backButton.x = 60;
     backButton.y = 25;
     (backButton as any).interactive = true;
@@ -26,8 +26,8 @@ export default class MenuScene extends Scene {
     constructor(game: IGame) {
         super(game);
         this.actors.buttons = [
-            new Button(game, DrawnRectangle, 300, 50, "Balls Example"),
-            new Button(game, DrawnRectangle, 300, 50, "Pipes Example"),
+            new Button(game, RectangleActor, 300, 50, "Balls Example"),
+            new Button(game, RectangleActor, 300, 50, "Pipes Example"),
         ];
         this.actors.buttons[0].x = game.width / 2;
         this.actors.buttons[1].x = game.width / 2;

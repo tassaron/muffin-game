@@ -1,13 +1,14 @@
-import IEntity from "../interfaces/IEntity";
+import IActor from "../interfaces/IActor";
 import IGame from "../interfaces/IGame";
-import Entity from "./Entity";
+import Actor from "./Actor";
+import ICollisionActor from "../interfaces/ICollisionActor";
 
 
-export default class Collider extends Entity {
+export default class CollisionActor extends Actor implements ICollisionActor {
     collisionWidth: number;
     collisionHeight: number;
 
-    constructor(game: IGame, graphic: IEntity, w: number, h: number) {
+    constructor(game: IGame, graphic: IActor, w: number, h: number) {
         super(game);
         this.collisionWidth = w;
         this.collisionHeight = h;
@@ -16,7 +17,7 @@ export default class Collider extends Entity {
         graphic.y = 0;
     }
 
-    collides(other: Collider) {
+    collides(other: ICollisionActor) {
         return (
             this.x + this.collisionWidth > other.x &&
             this.x < other.x + other.collisionWidth &&

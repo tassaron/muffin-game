@@ -5,7 +5,7 @@ import IGameContainers from "./interfaces/IGameContainers";
 import IGameState from "./interfaces/IGameState";
 import IKeyboard from "./interfaces/IKeyboard";
 import IScene from "./interfaces/IScene";
-import IEntity from "./interfaces/IEntity";
+import IActor from "./interfaces/IActor";
 import LoadingScene from "./scenes/LoadingScene";
 import MenuScene from "./scenes/MenuScene";
 import PauseScene from "./scenes/PauseScene";
@@ -42,7 +42,7 @@ export class Game implements IGame {
         this._app = app;
         this.renderer = app.renderer;
         for (let sprite of Object.keys(sprites)) {
-            this.sprites[sprite] = (): IEntity => sprites[sprite](this);
+            this.sprites[sprite] = (): IActor => sprites[sprite](this);
         }
         this.width = app.view.width;
         this.height = app.view.height;
@@ -67,7 +67,7 @@ export class Game implements IGame {
             try {
                 scene.mount(this.containers.root);
             } catch (TypeError) {
-                logger.error("Failed to add an undefined entity to the container. The scene cannot mount.");
+                logger.error("Failed to add an undefined Actor to the container. The scene cannot mount.");
             }
         }
     }

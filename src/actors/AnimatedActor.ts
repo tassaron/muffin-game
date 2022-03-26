@@ -1,19 +1,19 @@
 import * as PIXI from "pixi.js";
-import IAnimatedSprite from "../interfaces/IAnimatedSprite";
+import IAnimatedActor from "../interfaces/IAnimatedActor";
 import IGame from "../interfaces/IGame";
-import Entity from "./Entity";
+import Actor from "./Actor";
 import { logger } from '../logger';
 
 
 function setFrame(texture: PIXI.Texture, w: number, h: number, number: number) {
-    logger.spam(`AnimatedSprite updated frame to ${number}`);
+    logger.spam(`AnimatedActor updated frame to ${number}`);
     texture.frame = new PIXI.Rectangle(number * w, 0, w, h);
 }
 
 
-export default class AnimatedSprite extends Entity implements IAnimatedSprite {
-    __width: number;
-    __height: number;
+export default class AnimatedActor extends Actor implements IAnimatedActor {
+    animatedWidth: number;
+    animatedHeight: number;
     numFrames: number;
     currFrame: number;
     delayInFrames: number;
@@ -24,8 +24,8 @@ export default class AnimatedSprite extends Entity implements IAnimatedSprite {
         setFrame(texture, width, height, 0);
         super(game);
         this.texture = texture;
-        this.__width = width;
-        this.__height = height;
+        this.animatedWidth = width;
+        this.animatedHeight = height;
         this.numFrames = numFrames;
         this.currFrame = 0;
         this.delayInFrames = delayInFrames;
@@ -37,7 +37,7 @@ export default class AnimatedSprite extends Entity implements IAnimatedSprite {
         const newFrame = Math.floor(this.animTimer / this.delayInFrames);
         if (newFrame != this.currFrame) {
             this.currFrame = newFrame;
-            setFrame(this.texture, this.__width, this.__height, this.currFrame);
+            setFrame(this.texture, this.animatedWidth, this.animatedHeight, this.currFrame);
         }
         this.animTimer += delta;
         if (this.animTimer > this.numFrames * this.delayInFrames) {this.animTimer = 0.0; this.loops++;}

@@ -2,14 +2,14 @@ import * as PIXI from "pixi.js";
 import { logger } from "../logger";
 import IGame from "../interfaces/IGame";
 import Scene from "./Scene";
-import DrawnEllipse from "../entities/DrawnEllipse";
-import DrawnRectangle from "../entities/DrawnRectangle";
-import Collider from "../entities/Collider";
+import EllipseActor from "../actors/EllipseActor";
+import RectangleActor from "../actors/RectangleActor";
+import CollisionActor from "../actors/CollisionActor";
 import IKeyboard from "../interfaces/IKeyboard";
 import { newBackButton } from "./MenuScene";
 
 
-class Ball extends Collider {
+class Ball extends CollisionActor {
     dx = 0.0;
     dy = 0.0;
 
@@ -41,8 +41,8 @@ export default class BallsScene extends Scene {
 
         // Create balls to bounce around the screen
         this.actors.balls = [
-            new Ball(game, new DrawnEllipse(game, 30, 30, 0x666666, null), 60, 60),
-            new Ball(game, new DrawnRectangle(game, 60, 60, 0x666666, null), 60, 60)
+            new Ball(game, new EllipseActor(game, 30, 30, 0x666666, null), 60, 60),
+            new Ball(game, new RectangleActor(game, 60, 60, 0x666666, null), 60, 60)
         ];
         this.placeBalls();
         

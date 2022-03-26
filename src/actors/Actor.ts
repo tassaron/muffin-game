@@ -1,10 +1,10 @@
 import * as PIXI from "pixi.js";
 import { logger } from "../logger";
 import IGame from "../interfaces/IGame";
-import IEntity from "../interfaces/IEntity";
+import IActor from "../interfaces/IActor";
 import IKeyboard from "../interfaces/IKeyboard";
 
-export default class Entity extends PIXI.Sprite implements IEntity {
+export default class Actor extends PIXI.Sprite implements IActor {
     game: IGame;
     interactive = false;
 

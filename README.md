@@ -15,21 +15,23 @@ My game template (sort of an engine) for an HTML5 game using [PixiJS](https://pi
 -  Game starts by unmounting the `LoadingScene` (which removes everything from the stage blindly)
 -  Game then mounts the `MenuScene` -- customize this scene for your game.
 
-### Game options
-- Most games have a `PauseScene` and `GameOverScene`. If you don't want one or both, then edit `game.ts` to remove them from the game loop.
-- Game expects an HTML element with id of `pause_button` on the page for triggering the `PauseScene` scene
+### Scenes
+-  A game is broken up into [Scenes](/src/scenes).
+-  Scenes may create [Actors](/src/actors) when instantiated and store them in the scene's `actors` property.
+-  Scenes 'mount' (add their actors to the stage) when changed to using `game.changeScene()`
+    -  unless the scene is already mounted! (the `mounted` property is not null)
+-  Scenes may be 'unmounted' any time to remove all their actors from the stage.
+-  The stage is a Pixi.JS Container which may contain actors or other containers.
+
+### General tips
+-  Use `game.startTimer(func, frames)` to time a function to trigger after a certain number of frames. This method returns the index of the timer created, so you can stop the timer early by using `game.stopTimer(index)`
+-  The current `tick` function which occurs on every game tick is stored in `game.state.functions.tick` so that you can customize the gameplay loop at a higher level if needed.
 - Score-sending functionality can be adapted using functions `send_score` and `hide_send_score_button`. See `compat.rainey_arcade.js` for an example of how I'm doing this with [Rainey Arcade](https://rainey.tech)
 
-### Advanced game states
--  The current `tick` function which occurs on every game tick is stored in `game.state.functions.tick` so that you can customize the gameplay loop at a higher level if needed.
--  Use `game.startTimer(func, frames)` to time a function to trigger after a certain number of frames. This method returns the index of the timer created, so you can stop the timer early by using `game.stopTimer(index)`
-
-### Scenes
--  A game is broken up into Scenes.
--  Scenes may create entities when instantiated and store them in the scene's `actors` property.
--  Scenes 'mount' (add their entities to the stage) when changed to using `game.changeScene()`
-    -  unless the scene is already mounted! (the `mounted` property is not null)
--  Scenes may be 'unmounted' any time to remove all their entities from the stage.
+### Grids
+-  A Grid is an array of arrays storing the contents of a grid logically
+-  The `ActorGrid` is halfway between actor and scene -- it can't be added to a container directly, but it can `mount` containers like a scene and `tick` like an actor.
+-  The `TextureGrid` is used to supply a `TileActor` with a grid of textures.
 
 ## Building
 ### Development

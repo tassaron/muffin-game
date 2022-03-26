@@ -2,10 +2,9 @@ import * as PIXI from "pixi.js";
 import { logger } from "../logger";
 import IGame from "../interfaces/IGame";
 import Scene from "./Scene";
-import DrawnEllipse from "../entities/DrawnEllipse";
-import DrawnRectangle from "../entities/DrawnRectangle";
+import RectangleActor from "../actors/RectangleActor";
 import IKeyboard from "../interfaces/IKeyboard";
-import EntityGrid from "../layouts/EntityGrid";
+import ActorGrid from "../grids/ActorGrid";
 import { newBackButton } from "./MenuScene";
 
 
@@ -34,13 +33,13 @@ export default class PipesScene extends Scene {
             return pipe;
         }
 
-        // Create an EntityGrid with some pipes and junk
+        // Create an ActorGrid with some pipes and junk
         this.actors.gridContainer = new PIXI.Container();
         this.actors.gridContainer.x = 36;
         this.actors.gridContainer.y = 36;
-        this.actors.grid = new EntityGrid(6, 9, 72, newPipe);
-        this.actors.grid[3][3] = new DrawnRectangle(game, 72, 72, 0x666666);
-        this.actors.grid[4][4] = new DrawnRectangle(game, 72, 72, 0x666666);
+        this.actors.grid = new ActorGrid(6, 9, 72, newPipe);
+        this.actors.grid[3][3] = new RectangleActor(game, 72, 72, 0x666666);
+        this.actors.grid[4][4] = new RectangleActor(game, 72, 72, 0x666666);
 
         logger.info("Created Pipes scene");
     }

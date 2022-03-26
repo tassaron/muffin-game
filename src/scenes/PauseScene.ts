@@ -2,8 +2,8 @@ import * as PIXI from "pixi.js";
 import { logger } from "../logger";
 import IGame from "../interfaces/IGame";
 import Scene from "./Scene";
-import Button from "../entities/Button";
-import DrawnRectangle from "../entities/DrawnRectangle";
+import Button from "../actors/ButtonActor";
+import RectangleActor from "../actors/RectangleActor";
 
 
 export default class PauseScene extends Scene {
@@ -12,7 +12,7 @@ export default class PauseScene extends Scene {
     constructor(game: IGame) {
         super(game);
 
-        this.actors.text = new Button(game, DrawnRectangle, 399, 133, "Paused");
+        this.actors.text = new Button(game, RectangleActor, 399, 133, "Paused");
         this.actors.text.anchor.x = 0.5;
         this.actors.text.anchor.y = 0.5;
         this.actors.text.x = game.width / 2;

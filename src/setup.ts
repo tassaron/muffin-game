@@ -1,9 +1,9 @@
 import * as PIXI from "pixi.js";
 import IGame from "./interfaces/IGame";
-import Entity from "./entities/Entity";
-import AnimatedSprite from './entities/AnimatedSprite';
-import TextureGrid from "./layouts/TextureGrid";
-import TileSprite from "./entities/TileSprite";
+import Actor from "./actors/Actor";
+import AnimatedActor from './actors/AnimatedActor';
+import TextureGrid from "./grids/TextureGrid";
+import TileActor from "./actors/TileActor";
 import { MissingTextureError } from "./exceptions";
 
 export const textures = [
@@ -21,11 +21,11 @@ function getTexture(texture: PIXI.Texture | undefined, name: string) : PIXI.Text
 
 export function after_preload(loader: PIXI.Loader, resources: PIXI.utils.Dict<PIXI.LoaderResource>, sprites: any) {
     // sprite
-    sprites.fuel = (game: IGame) => new Entity(game, getTexture(resources.fuel.texture, "fuel"));
+    sprites.fuel = (game: IGame) => new Actor(game, getTexture(resources.fuel.texture, "fuel"));
 
     // animated sprite
-    sprites.explosion = (game: IGame) => new AnimatedSprite(game, getTexture(resources.explosion.texture, "explosion"), 32, 32, 5, 4);
+    sprites.explosion = (game: IGame) => new AnimatedActor(game, getTexture(resources.explosion.texture, "explosion"), 32, 32, 5, 4);
 
     // tilemap
-    sprites.pipe = (game: IGame) => new TileSprite(game, getTexture(resources.pipes.texture, "pipes"), new TextureGrid(4, 4, 72));
+    sprites.pipe = (game: IGame) => new TileActor(game, getTexture(resources.pipes.texture, "pipes"), new TextureGrid(4, 4, 72));
 };
