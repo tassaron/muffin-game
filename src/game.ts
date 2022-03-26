@@ -74,6 +74,7 @@ export class Game implements IGame {
 
     gameOver(keyboard: IKeyboard | undefined = undefined) {
         if (!this.state.flags.gameOver) {
+            this.state.flags.gameOver = true;
             keyboard?.disable(KEYBOARD_DISABLE_FRAMES);
             this.state.functions.tick = gameOverTick;
             this.changeScene(new GameOverScene(this));
@@ -81,9 +82,9 @@ export class Game implements IGame {
     }
 
     pause(keyboard: IKeyboard | undefined = undefined) {
-        if (!this.state.flags.gameOver) {
-            this.state.flags.paused = !this.state.flags.paused;
-        }
+        if (this.state.flags.gameOver) return
+        this.state.flags.paused = !this.state.flags.paused;
+        
         if (!this.state.flags.paused) {
             this.state.functions.tick = playTick;
             keyboard?.disable(KEYBOARD_DISABLE_FRAMES);
