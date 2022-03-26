@@ -1,30 +1,16 @@
 import * as PIXI from "pixi.js";
-import BaseEntity from "../entities/BaseEntity";
-import IGrid, { Grid } from "../interfaces/IGrid";
+import Entity from "../entities/Entity";
+import IGrid from "../interfaces/IGrid";
 import IKeyboard from "../interfaces/IKeyboard";
+import { Grid, createGrid } from "./Grid";
 
 
-export function createGrid(self: IGrid<any>, initial: any) {
-    const _grid = Array(self.rows);
-    for (let y = 0; y < self.rows; y++) {
-        _grid[y] = [];
-        for (let x = 0; x < self.cols; x++) {
-            _grid[y][x] = initial?.();
-        }
-        Object.defineProperty(self, y, {
-            value: _grid[y]
-        });
-    }
-    return _grid;
-}
-
-
-export default class EntityGrid implements IGrid<BaseEntity> {
+export default class EntityGrid implements IGrid<Entity> {
     gridSize: number;
     mounted: PIXI.Container | null = null;
     cols: number;
     rows: number;
-    _grid: Grid<BaseEntity>;
+    _grid: Grid<Entity>;
     _interactive = false;
 
     constructor(cols: number, rows: number, gridSize: number, initial: any = null) {
@@ -47,7 +33,7 @@ export default class EntityGrid implements IGrid<BaseEntity> {
     }
 
     set interactive(value: boolean) {
-        let cell: BaseEntity | null = null;
+        let cell: Entity | null = null;
         for (let x = 0; x < this._grid.length; x++) {
             for (let y = 0; y < this._grid[x].length; y++) {
                 cell = this._grid[x][y];
@@ -60,7 +46,7 @@ export default class EntityGrid implements IGrid<BaseEntity> {
 
     mount(container: PIXI.Container) {
         this.mounted = container;
-        let cell: BaseEntity | null = null;
+        let cell: Entity | null = null;
         for (let x = 0; x < this._grid.length; x++) {
             for (let y = 0; y < this._grid[x].length; y++) {
                 cell = this._grid[x][y];
@@ -74,7 +60,7 @@ export default class EntityGrid implements IGrid<BaseEntity> {
 
     unmount(container: PIXI.Container) {
         this.mounted = null;
-        let cell: BaseEntity | null = null;
+        let cell: Entity | null = null;
         for (let x = 0; x < this._grid.length; x++) {
             for (let y = 0; y < this._grid[x].length; y++) {
                 cell = this._grid[x][y];

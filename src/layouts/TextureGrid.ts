@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
-import { createGrid } from "./EntityGrid";
-import IGrid, { Grid } from "../interfaces/IGrid";
+import { Grid, createGrid } from "./Grid";
+import IGrid from "../interfaces/IGrid";
 import { logger } from "../logger";
 
 

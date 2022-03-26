@@ -4,7 +4,7 @@ import IGame from "../interfaces/IGame";
 import IEntity from "../interfaces/IEntity";
 import IKeyboard from "../interfaces/IKeyboard";
 
-export default class BaseEntity extends PIXI.Sprite implements IEntity {
+export default class Entity extends PIXI.Sprite implements IEntity {
     game: IGame;
     interactive = false;
 

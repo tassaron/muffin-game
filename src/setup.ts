@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import IGame from "./interfaces/IGame";
-import BaseEntity from "./entities/BaseEntity";
+import Entity from "./entities/Entity";
 import AnimatedSprite from './entities/AnimatedSprite';
 import TextureGrid from "./layouts/TextureGrid";
 import TileSprite from "./entities/TileSprite";
@@ -21,7 +21,7 @@ function getTexture(texture: PIXI.Texture | undefined, name: string) : PIXI.Text
 
 export function after_preload(loader: PIXI.Loader, resources: PIXI.utils.Dict<PIXI.LoaderResource>, sprites: any) {
     // sprite
-    sprites.fuel = (game: IGame) => new BaseEntity(game, getTexture(resources.fuel.texture, "fuel"));
+    sprites.fuel = (game: IGame) => new Entity(game, getTexture(resources.fuel.texture, "fuel"));
 
     // animated sprite
     sprites.explosion = (game: IGame) => new AnimatedSprite(game, getTexture(resources.explosion.texture, "explosion"), 32, 32, 5, 4);

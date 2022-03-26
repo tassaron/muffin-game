@@ -1,12 +1,12 @@
 import * as PIXI from "pixi.js";
 import { logger } from "../logger";
 import IGame from "../interfaces/IGame";
-import BaseEntity from "./BaseEntity";
+import Entity from "./Entity";
 import TextureGrid from "../layouts/TextureGrid";
-import { Grid } from "../interfaces/IGrid";
+import { Grid } from "../layouts/Grid";
 
 
-export default class TileSprite extends BaseEntity {
+export default class TileSprite extends Entity {
     textureGrid: TextureGrid;
     setFrame: Grid<() => void>;
 

@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import IAnimatedSprite from "../interfaces/IAnimatedSprite";
 import IGame from "../interfaces/IGame";
-import BaseEntity from "./BaseEntity";
+import Entity from "./Entity";
 import { logger } from '../logger';
 
 
@@ -11,7 +11,7 @@ function setFrame(texture: PIXI.Texture, w: number, h: number, number: number) {
 }
 
 
-export default class AnimatedSprite extends BaseEntity implements IAnimatedSprite {
+export default class AnimatedSprite extends Entity implements IAnimatedSprite {
     __width: number;
     __height: number;
     numFrames: number;

@@ -1,12 +1,12 @@
 import IGame from "../interfaces/IGame";
-import BaseEntity from "./BaseEntity";
+import Entity from "./Entity";
 
 
-export default class Collider extends BaseEntity {
+export default class Collider extends Entity {
     collisionWidth: number;
     collisionHeight: number;
 
-    constructor(game: IGame, graphic: BaseEntity, w: number, h: number) {
+    constructor(game: IGame, graphic: Entity, w: number, h: number) {
         super(game);
         this.collisionWidth = w;
         this.collisionHeight = h;

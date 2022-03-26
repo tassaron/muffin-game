@@ -1,10 +1,10 @@
 import * as PIXI from "pixi.js";
 import { logger } from "../logger";
-import BaseEntity from "./BaseEntity";
+import Entity from "./Entity";
 import IGame from "../interfaces/IGame";
 
 
-export default class DrawnRectangle extends BaseEntity {
+export default class DrawnRectangle extends Entity {
     constructor(game: IGame, w: number, h: number, colour=0xffffff, outline: number | null = 0x000000) {
         super(game);
         let graphic: PIXI.Graphics;

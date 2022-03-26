@@ -1,10 +1,10 @@
 import * as PIXI from "pixi.js";
 import IGame from "../interfaces/IGame";
-import BaseEntity from "./BaseEntity";
+import Entity from "./Entity";
 import DrawnRectangle from "./DrawnRectangle";
 
 
-export default class Button extends BaseEntity {
+export default class Button extends Entity {
     constructor(game: IGame, Shape: typeof DrawnRectangle, w: number, h: number, text="", style: null | PIXI.TextStyle = null, colour=0xffffff,  outline: number = 0x000000) {
         super(game);
         const shape = new Shape(game, w, h, colour, outline);
