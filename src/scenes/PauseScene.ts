@@ -1,5 +1,5 @@
-import { logger } from "../logger";
 import * as PIXI from "pixi.js";
+import { logger } from "../logger";
 import IGame from "../interfaces/IGame";
 import Scene from "./Scene";
 import Button from "../entities/Button";
@@ -25,13 +25,17 @@ export default class PauseScene extends Scene {
 
     mount(container: PIXI.Container) {
         container.addChild(this.actors.text);
-        for (let child of container.children) {
-            if (child.isSprite) {
-                // for some reason Typescript doesn't know that PIXI.Sprite has .interactive?
-                (child as any).interactive = false;
-                this.actors.interactive.push(child);
+        const disable = (container: PIXI.Container) => {
+            for (let child of container.children) {
+                if (child.hasOwnProperty("interactive")) {
+                    (child as any).interactive = false;
+                    this.actors.interactive.push(child);
+                } else if (child instanceof PIXI.Container) {
+                    disable(child);
+                }
             }
         }
+        disable(container);
     }
 
     unmount(container: PIXI.Container) {
