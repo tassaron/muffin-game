@@ -1,16 +1,16 @@
 import * as PIXI from "pixi.js";
-import Entity from "../entities/Entity";
+import IEntity from "../interfaces/IEntity";
 import IGrid from "../interfaces/IGrid";
 import IKeyboard from "../interfaces/IKeyboard";
 import { Grid, createGrid } from "./Grid";
 
 
-export default class EntityGrid implements IGrid<Entity> {
+export default class EntityGrid implements IGrid<IEntity> {
     gridSize: number;
     mounted: PIXI.Container | null = null;
     cols: number;
     rows: number;
-    _grid: Grid<Entity>;
+    _grid: Grid<IEntity>;
     _interactive = false;
 
     constructor(cols: number, rows: number, gridSize: number, initial: any = null) {
@@ -33,7 +33,7 @@ export default class EntityGrid implements IGrid<Entity> {
     }
 
     set interactive(value: boolean) {
-        let cell: Entity | null = null;
+        let cell: IEntity | null = null;
         for (let x = 0; x < this._grid.length; x++) {
             for (let y = 0; y < this._grid[x].length; y++) {
                 cell = this._grid[x][y];
@@ -46,7 +46,7 @@ export default class EntityGrid implements IGrid<Entity> {
 
     mount(container: PIXI.Container) {
         this.mounted = container;
-        let cell: Entity | null = null;
+        let cell: IEntity | null = null;
         for (let x = 0; x < this._grid.length; x++) {
             for (let y = 0; y < this._grid[x].length; y++) {
                 cell = this._grid[x][y];
@@ -60,7 +60,7 @@ export default class EntityGrid implements IGrid<Entity> {
 
     unmount(container: PIXI.Container) {
         this.mounted = null;
-        let cell: Entity | null = null;
+        let cell: IEntity | null = null;
         for (let x = 0; x < this._grid.length; x++) {
             for (let y = 0; y < this._grid[x].length; y++) {
                 cell = this._grid[x][y];

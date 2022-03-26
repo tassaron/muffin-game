@@ -1,4 +1,6 @@
-export default interface IAnimatedSprite {
+import IEntity from "./IEntity";
+
+export default interface IAnimatedSprite extends IEntity {
     __width: number,
     __height: number,
     numFrames: number,

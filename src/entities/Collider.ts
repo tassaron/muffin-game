@@ -1,3 +1,4 @@
+import IEntity from "../interfaces/IEntity";
 import IGame from "../interfaces/IGame";
 import Entity from "./Entity";
 
@@ -6,7 +7,7 @@ export default class Collider extends Entity {
     collisionWidth: number;
     collisionHeight: number;
 
-    constructor(game: IGame, graphic: Entity, w: number, h: number) {
+    constructor(game: IGame, graphic: IEntity, w: number, h: number) {
         super(game);
         this.collisionWidth = w;
         this.collisionHeight = h;
