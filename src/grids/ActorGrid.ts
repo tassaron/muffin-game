@@ -1,24 +1,29 @@
 import * as PIXI from "pixi.js";
 import IActor from "../interfaces/IActor";
-import IGrid from "../interfaces/IGrid";
+import IGame from "../interfaces/IGame";
 import IKeyboard from "../interfaces/IKeyboard";
-import { Grid, createGrid } from "./Grid";
+import IScene from "../interfaces/IScene";
+import { SceneOptions, constructorOptions, beforeMount } from "../scenes/Scene";
+import Grid from "./Grid";
 
 
-export default class ActorGrid implements IGrid<IActor> {
-    gridSize: number;
+export default class ActorGrid extends Grid<IActor> implements IScene {
+    game: IGame;
+    actors: {[name: string]: IActor};
     mounted: PIXI.Container | null = null;
-    cols: number;
-    rows: number;
-    _grid: Grid<IActor>;
+    _beforeMountFuncs: ((container: PIXI.Container) => void)[];
     _interactive = false;
-    [key: number]: Array<IActor>;
 
-    constructor(cols: number, rows: number, gridSize: number, initial: any = null) {
-        this.cols = cols;
-        this.rows = rows;
-        this.gridSize = gridSize;
-        this._grid = createGrid(this, initial);
+    constructor(game: IGame, cols: number, rows: number, gridSize: number, options: SceneOptions = {}, initial: (() => IActor | null) | null = null) {
+        super(cols, rows, gridSize, initial);
+        this.game = game;
+        this.actors = {};
+        for (let x = 0; x < this._grid.length; x++) {
+            for (let y = 0; y < this._grid[x].length; y++) {
+                if (this._grid[y][x] !== null) this.actors[`${y},${x}`] = (this._grid[y][x] as IActor);
+            }
+        }
+        this._beforeMountFuncs = constructorOptions(this, options);
     }
 
     tick(delta: number, keyboard: IKeyboard) {
@@ -47,6 +52,9 @@ export default class ActorGrid implements IGrid<IActor> {
 
     mount(container: PIXI.Container) {
         this.mounted = container;
+        for (let func of this._beforeMountFuncs) {
+            func(container);
+        }
         let cell: IActor | null = null;
         for (let x = 0; x < this._grid.length; x++) {
             for (let y = 0; y < this._grid[x].length; y++) {
@@ -69,5 +77,27 @@ export default class ActorGrid implements IGrid<IActor> {
                 container.removeChild(cell);
             }
         }
+    }
+
+    addActors(actors: IActor[]): string[] {
+        /* Place actors at random positions on the grid */
+        const names: Set<string> = new Set();
+        let x: number, y: number, name: string;
+        for (let actor of actors) {
+            while (true) {
+                x = Math.floor(Math.random() * this.cols);
+                y = Math.floor(Math.random() * this.rows);
+                name = `${y},${x}`;
+                if (names.has(name)) continue
+                names.add(name);
+                this._grid[y][x] = actor;
+                break;
+            }
+        }
+        return Array.from(names);
+    }
+
+    beforeMount(func: (container: PIXI.Container) => void): (container: PIXI.Container) => void {
+        return beforeMount(this, func);
     }
 }
