@@ -2,7 +2,6 @@ import * as PIXI from "pixi.js";
 import IGame from "./interfaces/IGame";
 import Actor from "./actors/Actor";
 import AnimatedActor from './actors/AnimatedActor';
-import TextureGrid from "./grids/TextureGrid";
 import TileActor from "./actors/TileActor";
 import { MissingTextureError } from "./exceptions";
 
@@ -27,5 +26,5 @@ export function after_preload(loader: PIXI.Loader, resources: PIXI.utils.Dict<PI
     sprites.explosion = (game: IGame) => new AnimatedActor(game, getTexture(resources.explosion.texture, "explosion"), 32, 32, 5, 4);
 
     // tilemap
-    sprites.pipe = (game: IGame) => new TileActor(game, getTexture(resources.pipes.texture, "pipes"), new TextureGrid(4, 4, 72));
+    sprites.pipe = (game: IGame) => new TileActor(game, getTexture(resources.pipes.texture, "pipes"), 4, 4, 72);
 };

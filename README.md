@@ -29,9 +29,9 @@ My game template (sort of an engine) for an HTML5 game using [PixiJS](https://pi
 - Score-sending functionality can be adapted using functions `send_score` and `hide_send_score_button`. See `compat.rainey_arcade.js` for an example of how I'm doing this with [Rainey Arcade](https://rainey.tech)
 
 ### Grids
--  A Grid is an array of arrays storing the contents of a grid logically
--  The `GridScene` is halfway between actor and scene -- it can't be added to a container directly, but it can `mount` containers like a scene and `tick` like an actor.
--  The `TextureGrid` is used to supply a `TileActor` with a grid of textures.
+-  A Grid is any class that owns an array of arrays with helper methods for managing it
+-  The `GridScene` is a type of Scene which implements the grid interface for its actors (it has an array of arrays of actors)
+-  The `GridRectangle` is part of a `TileActor` used to store a grid of textures (it has an array of arrays of rectangular regions)
 
 ## Building
 ### Development

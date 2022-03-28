@@ -3,7 +3,7 @@ import { logger } from "../logger";
 import Grid from "./Grid";
 
 
-const setFrame = (self: TextureGrid, x: number, y: number): (texture: PIXI.Texture) => void => {
+const setFrame = (self: GridRectangle, x: number, y: number): (texture: PIXI.Texture) => void => {
     return (texture: PIXI.Texture) => {
         if (self._grid[y][x] != null) {
             texture.frame = self._grid[y][x] as PIXI.Rectangle;
@@ -12,7 +12,7 @@ const setFrame = (self: TextureGrid, x: number, y: number): (texture: PIXI.Textu
 };
 
 
-export default class TextureGrid extends Grid<PIXI.Rectangle> {
+export default class GridRectangle extends Grid<PIXI.Rectangle> {
     setFrame: Array<Array<(texture: PIXI.Texture) => void>>;
 
     constructor(cols: number, rows: number, gridSize: number) {
@@ -24,7 +24,7 @@ export default class TextureGrid extends Grid<PIXI.Rectangle> {
                 x=0;
                 y++;
             }
-            logger.verbose(`Creating rectangle for TextureGrid x${x * gridSize}, y${y * gridSize}`);
+            logger.verbose(`Creating rectangle for GridRectangle x${x * gridSize}, y${y * gridSize}`);
             return new PIXI.Rectangle(x * gridSize, y * gridSize, gridSize, gridSize);
         }
 

@@ -2,23 +2,23 @@ import * as PIXI from "pixi.js";
 import { logger } from "../logger";
 import IGame from "../interfaces/IGame";
 import Actor from "./Actor";
-import TextureGrid from "../grids/TextureGrid";
+import GridRectangle from "../grids/GridRectangle";
 
 
 export default class TileActor extends Actor {
-    textureGrid: TextureGrid;
+    gridRectangle: GridRectangle;
     setFrame: Array<Array<() => void>>;
 
-    constructor(game: IGame, texture: PIXI.Texture, textureGrid: TextureGrid) {
+    constructor(game: IGame, texture: PIXI.Texture, cols: number, rows: number, gridSize: number) {
         super(game);
-        this.textureGrid = textureGrid;
+        this.gridRectangle = new GridRectangle(cols, rows, gridSize);
         this.texture = texture.clone();
 
-        const frames = Array(textureGrid.rows);
-        for (let y = 0; y < this.textureGrid.rows; y++) {
+        const frames = Array(this.gridRectangle.rows);
+        for (let y = 0; y < this.gridRectangle.rows; y++) {
             frames[y] = [];
-            for (let x = 0; x < textureGrid.cols; x++) {
-                frames[y][x] = () => textureGrid.setFrame[y][x]?.(this.texture);
+            for (let x = 0; x < this.gridRectangle.cols; x++) {
+                frames[y][x] = () => this.gridRectangle.setFrame[y][x]?.(this.texture);
             }
         }
         this.setFrame = frames;

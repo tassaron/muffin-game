@@ -26,7 +26,7 @@ export default class PipesScene extends Scene {
             pipe.pointertap = (_: Event) => {
                 pipe.setFrame[y][x]?.();
                 x++;
-                if (x == pipe.textureGrid.cols - 1) {
+                if (x == pipe.gridRectangle.cols - 1) {
                     x = 0;
                     y = y == 1 ? 0 : 1;
                 }
