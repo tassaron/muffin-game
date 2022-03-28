@@ -18,6 +18,7 @@ export default class Button extends Actor {
         pixi_text.anchor.y = 0.5;
         this.addChild(shape);
         shape.addChild(pixi_text);
+        (this as any).buttonMode = true;
     }
 
     //tick(delta: number) {}
