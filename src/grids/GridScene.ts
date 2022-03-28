@@ -15,7 +15,9 @@ export class GridSceneOptions extends SceneOptions {
 export default class GridScene extends Grid<IActor> implements IScene {
     game: IGame;
     actors: {[name: string]: IActor};
+    subscenes: IScene[] = [];
     mounted: PIXI.Container | null = null;
+    subcontainer: PIXI.Container | null = null;
     _beforeMountFuncs: ((container: PIXI.Container) => void)[];
     _interactive = false;
 
@@ -60,27 +62,35 @@ export default class GridScene extends Grid<IActor> implements IScene {
         for (let func of this._beforeMountFuncs) {
             func(container);
         }
+        const subcontainer = this.subcontainer == null ? container : this.subcontainer;
         let cell: IActor | null = null;
         for (let x = 0; x < this._grid.length; x++) {
             for (let y = 0; y < this._grid[x].length; y++) {
                 cell = this._grid[x][y];
                 if (!cell) continue;
-                container.addChild(cell);
-                cell.x = container.x + (x * this.gridSize);
-                cell.y = container.y + (y * this.gridSize);
+                subcontainer.addChild(cell);
+                cell.x = subcontainer.x + (x * this.gridSize);
+                cell.y = subcontainer.y + (y * this.gridSize);
             }
+        }
+        if (subcontainer !== container) {
+            container.addChild(subcontainer);
         }
     }
 
     unmount(container: PIXI.Container) {
         this.mounted = null;
+        const subcontainer = this.subcontainer == null ? container : this.subcontainer;
         let cell: IActor | null = null;
         for (let x = 0; x < this._grid.length; x++) {
             for (let y = 0; y < this._grid[x].length; y++) {
                 cell = this._grid[x][y];
                 if (!cell) continue;
-                container.removeChild(cell);
+                subcontainer.removeChild(cell);
             }
+        }
+        if (subcontainer !== container) {
+            container.removeChild(subcontainer);
         }
     }
 

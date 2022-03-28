@@ -3,15 +3,11 @@ import { logger } from "../logger";
 import IGame from "../interfaces/IGame";
 import Scene from "./Scene";
 import RectangleActor from "../actors/RectangleActor";
-import IKeyboard from "../interfaces/IKeyboard";
 import GridScene from "../grids/GridScene";
 import { newBackButton } from "./MenuScene";
 
 
 export default class PipesScene extends Scene {
-    gridContainer = new PIXI.Container();
-    grid: GridScene;
-
     constructor(game: IGame) {
         super(game);
 
@@ -34,30 +30,15 @@ export default class PipesScene extends Scene {
             return pipe;
         }
 
-        // Create an GridScene with some pipes and junk
-        this.gridContainer.x = 36;
-        this.gridContainer.y = 36;
-        this.grid = new GridScene(this.game, 6, 9, 72, { initial: newPipe });
-        this.grid[3][3] = new RectangleActor(game, 72, 72, 0x666666);
-        this.grid[4][4] = new RectangleActor(game, 72, 72, 0x666666);
+        // Create a GridScene with some pipes and junk
+        const grid = new GridScene(this.game, 6, 9, 72, { initial: newPipe });
+        grid[3][3] = new RectangleActor(game, 72, 72, 0x666666);
+        grid[4][4] = new RectangleActor(game, 72, 72, 0x666666);
+        grid.subcontainer = new PIXI.Container();
+        grid.subcontainer.x = 36;
+        grid.subcontainer.y = 36;
+        this.subscenes = [grid];
 
         logger.info("Created Pipes scene");
-    }
-
-    mount(container: PIXI.Container) {
-        super.mount(container);
-        this.grid.mount(this.gridContainer);
-        container.addChild(this.gridContainer);
-    }
-
-    unmount(container: PIXI.Container) {
-        super.unmount(container);
-        container.removeChild(this.gridContainer);
-        this.grid.unmount(this.gridContainer);
-    }
-
-    tick(delta: number, keyboard: IKeyboard) {
-        super.tick(delta, keyboard);
-        this.grid.tick(delta, keyboard);
     }
 }

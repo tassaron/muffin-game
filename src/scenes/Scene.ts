@@ -10,56 +10,105 @@ export class SceneOptions {doUnmountPrevious?: boolean};
 
 export default class Scene implements IScene {
     game: IGame;
-    actors: {[name: string]: IActor};
+    actors: {[name: string]: IActor} = {};
+    subscenes: IScene[] = [];
+    subcontainer: PIXI.Container | null = null;
     mounted: PIXI.Container | null = null;
     _beforeMountFuncs: ((container: PIXI.Container) => void)[];
     _interactive = false;
 
     constructor(game: IGame, options: SceneOptions = {doUnmountPrevious: true}) {
         this.game = game;
-        this.actors = {};
         this._beforeMountFuncs = constructorOptions(this, options);
     }
 
     get interactive() {
         return this._interactive;
     }
-
+    
     set interactive(value: boolean) {
-        for (let actorName in this.actors) {
-            this.actors[actorName].interactive = value;
-        }
+        setInteractive(this, value);
+        this._interactive = value;
     }
-
+    
     tick(delta: number, keyboard: IKeyboard) {
-        for (let actorName in this.actors) {
-            this.actors[actorName].tick(delta, keyboard);
-        }
+        return tick(this, delta, keyboard);
     }
-
+    
     mount(container: PIXI.Container) {
-        this.mounted = container;
-        for (let func of this._beforeMountFuncs) {
-            func(container);
-        }
-        for (let actorName in this.actors) {
-            container.addChild(this.actors[actorName]);
-        }
+        return mount(this, container);
     }
     
     unmount(container: PIXI.Container) {
-        this.mounted = null;
-        for (let actorName in this.actors) {
-            container.removeChild(this.actors[actorName]);
-        }
+        return unmount(this, container);
     }
-
+    
     beforeMount(func: (container: PIXI.Container) => void): (container: PIXI.Container) => void {
         return beforeMount(this, func);
     }
 
     addActors(actors: IActor[]): Array<string> {
         return addActors(this, actors);
+    }
+}
+
+
+export function constructorOptions(scene: IScene, options: SceneOptions) {
+    return options?.doUnmountPrevious? [
+        (container: PIXI.Container) => {scene.game.prevScene.unmount(container)},
+    ] : [];
+}
+
+
+export function setInteractive(scene: IScene, value: boolean) {
+    for (let actorName in scene.actors) {
+        scene.actors[actorName].interactive = value;
+    }
+    for (let subscene of scene.subscenes) {
+        subscene.interactive = value;
+    }
+}
+
+
+export function tick(scene: IScene, delta: number, keyboard: IKeyboard) {
+    for (let actorName in scene.actors) {
+        scene.actors[actorName].tick(delta, keyboard);
+    }
+    for (let subscene of scene.subscenes) {
+        subscene.tick(delta, keyboard);
+    }
+}
+
+
+export function mount(scene: IScene, container: PIXI.Container) {
+    scene.mounted = container;
+    for (let func of scene._beforeMountFuncs) {
+        func(container);
+    }
+    const subcontainer = scene.subcontainer == null ? container : scene.subcontainer;
+    for (let actorName in scene.actors) {
+        subcontainer.addChild(scene.actors[actorName]);
+    }
+    if (subcontainer !== container) {
+        container.addChild(subcontainer);
+    }
+    for (let subscene of scene.subscenes) {
+        subscene.mount(subcontainer);
+    }
+}
+
+
+export function unmount(scene: IScene, container: PIXI.Container) {
+    scene.mounted = null;
+    const subcontainer = scene.subcontainer == null ? container : scene.subcontainer;
+    for (let actorName in scene.actors) {
+        subcontainer.removeChild(scene.actors[actorName]);
+    }
+    for (let subscene of scene.subscenes) {
+        subscene.unmount(subcontainer);
+    }
+    if (subcontainer !== container) {
+        container.removeChild(subcontainer);
     }
 }
 
@@ -84,11 +133,4 @@ export function addActors(scene: IScene, actors: IActor[]): Array<string> {
         }
     }
     return Array.from(names);
-}
-
-
-export function constructorOptions(scene: IScene, options: SceneOptions) {
-    return options?.doUnmountPrevious? [
-        (container: PIXI.Container) => {scene.game.prevScene.unmount(container)},
-    ] : [];
 }

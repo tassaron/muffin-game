@@ -7,6 +7,8 @@ export default interface IScene {
     game: IGame,
     actors: {[name: string]: IActor},
     mounted: PIXI.Container | null,
+    subscenes: IScene[],
+    subcontainer: PIXI.Container | null,
     interactive: boolean,
     beforeMount(func: (container: PIXI.Container) => void): (container: PIXI.Container) => void,
     _beforeMountFuncs: ((container: PIXI.Container) => void)[],
