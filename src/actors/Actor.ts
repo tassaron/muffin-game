@@ -7,6 +7,7 @@ import IKeyboard from "../interfaces/IKeyboard";
 export default class Actor extends PIXI.Sprite implements IActor {
     game: IGame;
     interactive = false;
+    pointertap?(e: Event): void;
 
     constructor(game: IGame, texture: PIXI.Texture | undefined = undefined) {
         super(texture);
