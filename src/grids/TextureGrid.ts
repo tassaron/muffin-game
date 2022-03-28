@@ -1,7 +1,6 @@
 import * as PIXI from "pixi.js";
-import { Grid, createGrid } from "./Grid";
-import IGrid from "../interfaces/IGrid";
 import { logger } from "../logger";
+import Grid from "./Grid";
 
 
 const setFrame = (self: TextureGrid, x: number, y: number): (texture: PIXI.Texture) => void => {
@@ -13,17 +12,10 @@ const setFrame = (self: TextureGrid, x: number, y: number): (texture: PIXI.Textu
 };
 
 
-export default class TextureGrid implements IGrid<PIXI.Rectangle> {
-    gridSize: number;
-    cols: number;
-    rows: number;
-    _grid: Grid<PIXI.Rectangle>;
-    setFrame: Grid<(texture: PIXI.Texture) => void>;
+export default class TextureGrid extends Grid<PIXI.Rectangle> {
+    setFrame: Array<Array<(texture: PIXI.Texture) => void>>;
 
     constructor(cols: number, rows: number, gridSize: number) {
-        this.cols = cols;
-        this.rows = rows;
-        
         let x = -1;
         let y = 0;
         const initial = () => {
@@ -35,8 +27,10 @@ export default class TextureGrid implements IGrid<PIXI.Rectangle> {
             logger.verbose(`Creating rectangle for TextureGrid x${x * gridSize}, y${y * gridSize}`);
             return new PIXI.Rectangle(x * gridSize, y * gridSize, gridSize, gridSize);
         }
-        this._grid = createGrid(this, initial);
 
+        super(cols, rows, gridSize, initial);
+        
+        // Create grid of setFrame() funcs parallel to grid of Rectangles
         const frames = Array(rows);
         for (let y = 0; y < this.rows; y++) {
             frames[y] = [];
@@ -44,8 +38,6 @@ export default class TextureGrid implements IGrid<PIXI.Rectangle> {
                 frames[y][x] = setFrame(this, x, y);
             }
         }
-
         this.setFrame = frames;
-        this.gridSize = gridSize;
     }
 }
