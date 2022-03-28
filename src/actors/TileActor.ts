@@ -3,12 +3,11 @@ import { logger } from "../logger";
 import IGame from "../interfaces/IGame";
 import Actor from "./Actor";
 import TextureGrid from "../grids/TextureGrid";
-import { Grid } from "../grids/Grid";
 
 
 export default class TileActor extends Actor {
     textureGrid: TextureGrid;
-    setFrame: Grid<() => void>;
+    setFrame: Array<Array<() => void>>;
 
     constructor(game: IGame, texture: PIXI.Texture, textureGrid: TextureGrid) {
         super(game);

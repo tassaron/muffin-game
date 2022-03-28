@@ -30,7 +30,7 @@ My game template (sort of an engine) for an HTML5 game using [PixiJS](https://pi
 
 ### Grids
 -  A Grid is an array of arrays storing the contents of a grid logically
--  The `ActorGrid` is halfway between actor and scene -- it can't be added to a container directly, but it can `mount` containers like a scene and `tick` like an actor.
+-  The `GridScene` is halfway between actor and scene -- it can't be added to a container directly, but it can `mount` containers like a scene and `tick` like an actor.
 -  The `TextureGrid` is used to supply a `TileActor` with a grid of textures.
 
 ## Building

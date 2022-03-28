@@ -7,15 +7,20 @@ import { SceneOptions, constructorOptions, beforeMount } from "../scenes/Scene";
 import Grid from "./Grid";
 
 
-export default class ActorGrid extends Grid<IActor> implements IScene {
+export class GridSceneOptions extends SceneOptions {
+    initial?: (() => IActor | null) | null;
+}
+
+
+export default class GridScene extends Grid<IActor> implements IScene {
     game: IGame;
     actors: {[name: string]: IActor};
     mounted: PIXI.Container | null = null;
     _beforeMountFuncs: ((container: PIXI.Container) => void)[];
     _interactive = false;
 
-    constructor(game: IGame, cols: number, rows: number, gridSize: number, options: SceneOptions = {}, initial: (() => IActor | null) | null = null) {
-        super(cols, rows, gridSize, initial);
+    constructor(game: IGame, cols: number, rows: number, gridSize: number, options: GridSceneOptions = {}) {
+        super(cols, rows, gridSize, options.initial == undefined ? null : options.initial);
         this.game = game;
         this.actors = {};
         for (let x = 0; x < this._grid.length; x++) {
