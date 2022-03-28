@@ -4,13 +4,13 @@ import IGame from "../interfaces/IGame";
 import Scene from "./Scene";
 import RectangleActor from "../actors/RectangleActor";
 import IKeyboard from "../interfaces/IKeyboard";
-import ActorGrid from "../grids/ActorGrid";
+import GridScene from "../grids/GridScene";
 import { newBackButton } from "./MenuScene";
 
 
 export default class PipesScene extends Scene {
     gridContainer = new PIXI.Container();
-    grid: ActorGrid;
+    grid: GridScene;
 
     constructor(game: IGame) {
         super(game);
@@ -34,10 +34,10 @@ export default class PipesScene extends Scene {
             return pipe;
         }
 
-        // Create an ActorGrid with some pipes and junk
+        // Create an GridScene with some pipes and junk
         this.gridContainer.x = 36;
         this.gridContainer.y = 36;
-        this.grid = new ActorGrid(6, 9, 72, newPipe);
+        this.grid = new GridScene(this.game, 6, 9, 72, { initial: newPipe });
         this.grid[3][3] = new RectangleActor(game, 72, 72, 0x666666);
         this.grid[4][4] = new RectangleActor(game, 72, 72, 0x666666);
 

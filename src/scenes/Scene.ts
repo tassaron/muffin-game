@@ -5,7 +5,7 @@ import IKeyboard from "../interfaces/IKeyboard";
 import IActor from "../interfaces/IActor";
 
 
-export type SceneOptions = {doUnmountPrevious?: boolean};
+export class SceneOptions {doUnmountPrevious?: boolean};
 
 
 export default class Scene implements IScene {
