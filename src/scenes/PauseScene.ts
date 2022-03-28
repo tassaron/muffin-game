@@ -7,29 +7,29 @@ import RectangleActor from "../actors/RectangleActor";
 
 
 export default class PauseScene extends Scene {
-    actors: any = {};
+    interactive: Array<{interactive: boolean}>;
 
     constructor(game: IGame) {
-        super(game);
+        super(game, {});
 
         this.actors.text = new Button(game, RectangleActor, 399, 133, "Paused");
         this.actors.text.anchor.x = 0.5;
         this.actors.text.anchor.y = 0.5;
         this.actors.text.x = game.width / 2;
         this.actors.text.y = game.height / 2;
-        this.actors.interactive = [];
+        this.interactive = [];
 
         logger.info("Created Pause scene");
     }
 
 
     mount(container: PIXI.Container) {
-        container.addChild(this.actors.text);
+        super.mount(container);
         const disable = (container: PIXI.Container) => {
             for (let child of container.children) {
                 if (child.hasOwnProperty("interactive")) {
                     (child as any).interactive = false;
-                    this.actors.interactive.push(child);
+                    this.interactive.push(child as any);
                 } else if (child instanceof PIXI.Container) {
                     disable(child);
                 }
@@ -39,8 +39,8 @@ export default class PauseScene extends Scene {
     }
 
     unmount(container: PIXI.Container) {
-        container.removeChild(this.actors.text);
-        for (let child of this.actors.interactive) {
+        super.unmount(container);
+        for (let child of this.interactive) {
             child.interactive = true;
         }
     }

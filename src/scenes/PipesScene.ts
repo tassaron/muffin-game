@@ -9,7 +9,8 @@ import { newBackButton } from "./MenuScene";
 
 
 export default class PipesScene extends Scene {
-    actors: any = {};
+    gridContainer = new PIXI.Container();
+    grid: ActorGrid;
 
     constructor(game: IGame) {
         super(game);
@@ -22,7 +23,7 @@ export default class PipesScene extends Scene {
             pipe.interactive = true;
             let y = 0;
             let x = 0;
-            pipe.click = (_: Event) => {
+            pipe.pointertap = (_: Event) => {
                 pipe.setFrame[y][x]?.();
                 x++;
                 if (x == pipe.textureGrid.cols - 1) {
@@ -34,30 +35,29 @@ export default class PipesScene extends Scene {
         }
 
         // Create an ActorGrid with some pipes and junk
-        this.actors.gridContainer = new PIXI.Container();
-        this.actors.gridContainer.x = 36;
-        this.actors.gridContainer.y = 36;
-        this.actors.grid = new ActorGrid(6, 9, 72, newPipe);
-        this.actors.grid[3][3] = new RectangleActor(game, 72, 72, 0x666666);
-        this.actors.grid[4][4] = new RectangleActor(game, 72, 72, 0x666666);
+        this.gridContainer.x = 36;
+        this.gridContainer.y = 36;
+        this.grid = new ActorGrid(6, 9, 72, newPipe);
+        this.grid[3][3] = new RectangleActor(game, 72, 72, 0x666666);
+        this.grid[4][4] = new RectangleActor(game, 72, 72, 0x666666);
 
         logger.info("Created Pipes scene");
     }
 
     mount(container: PIXI.Container) {
-        this.game.prevScene.unmount(container);
-        container.addChild(this.actors.backButton);
-        container.addChild(this.actors.gridContainer);
-        this.actors.grid.mount(this.actors.gridContainer);
+        super.mount(container);
+        this.grid.mount(this.gridContainer);
+        container.addChild(this.gridContainer);
     }
 
     unmount(container: PIXI.Container) {
-        container.removeChild(this.actors.backButton);
-        container.removeChild(this.actors.gridContainer);
-        this.actors.grid.unmount(this.actors.gridContainer);
+        super.unmount(container);
+        container.removeChild(this.gridContainer);
+        this.grid.unmount(this.gridContainer);
     }
 
     tick(delta: number, keyboard: IKeyboard) {
-        this.actors.grid.tick(delta, keyboard);
+        super.tick(delta, keyboard);
+        this.grid.tick(delta, keyboard);
     }
 }

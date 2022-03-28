@@ -32,7 +32,7 @@ class Ball extends CollisionActor {
 
 
 export default class BallsScene extends Scene {
-    actors: any = {};
+    balls: Ball[];
 
     constructor(game: IGame) {
         super(game);
@@ -40,26 +40,28 @@ export default class BallsScene extends Scene {
         this.actors.backButton = newBackButton(game);
 
         // Create balls to bounce around the screen
-        this.actors.balls = [
+        this.balls = [
             new Ball(game, new EllipseActor(game, 30, 30, 0x666666, null), 60, 60),
             new Ball(game, new RectangleActor(game, 60, 60, 0x666666, null), 60, 60)
-        ];
+        ]
+        this.addActors(this.balls);
         this.placeBalls();
         
         // A clickable sprite that triggers a game over
         this.actors.fuel = game.sprites.fuel();
         this.actors.fuel.interactive = true;
-        this.actors.fuel.click = (_: Event) => game.gameOver();
+        this.actors.fuel.pointertap = (_: Event) => game.gameOver();
         this.actors.fuel.x = this.game.width - 100;
         this.actors.fuel.y = this.game.height - 100;
         this.actors.fuel.anchor.x = 0.5;
         this.actors.fuel.anchor.y = 0.5;
+        // this.actors.fuel.blendMode = PIXI.BLEND_MODES.ADD;
 
         logger.info("Created Balls scene");
     }
 
     placeBalls() {
-        for (let ball of this.actors.balls) {
+        for (let ball of this.balls) {
             ball.x = Math.min(Math.max(60, Math.random() * this.game.width), this.game.width - 60);
             ball.y = Math.min(Math.max(60, Math.random() * this.game.height), this.game.height - 60);
             ball.dx = Math.max(Math.random() * 10, 1.0);
@@ -67,38 +69,21 @@ export default class BallsScene extends Scene {
         }
     }
 
-    mount(container: PIXI.Container) {
-        this.game.prevScene.unmount(container);
-        container.addChild(this.actors.backButton);
-        container.addChild(this.actors.fuel);
-        for (let ball of this.actors.balls) {
-            container.addChild(ball);
-        }
-    }
-
-    unmount(container: PIXI.Container) {
-        for (let ball of this.actors.balls) {
-            container.removeChild(ball);
-        }
-        container.removeChild(this.actors.backButton);
-        container.removeChild(this.actors.fuel);
-    }
-
     tick(delta: number, keyboard: IKeyboard) {
+        super.tick(delta, keyboard);
         this.actors.fuel.rotation += 0.01 * delta;
-        for (let ball of this.actors.balls) {
-            ball.tick(delta, keyboard);
-        }
         if (keyboard.number == 1) {
             this.placeBalls();
             keyboard.disable(5.0);
         }
-        for (let i = 0; i < this.actors.balls.length; i++) {
-            for (let j = 0; j < this.actors.balls.length; j++) {
-                if (i == j) continue;
-                if (this.actors.balls[i].collides(this.actors.balls[j])) {
-                    this.actors.balls[i].dx = -this.actors.balls[i].dx;
-                    this.actors.balls[i].dy = -this.actors.balls[i].dy;
+        const collisions = new Set();
+        for (let i = 0; i < this.balls.length; i++) {
+            for (let j = 0; j < this.balls.length; j++) {
+                if (i == j || collisions.has(j)) continue;
+                collisions.add([i, j]);
+                if (this.balls[i].collides(this.balls[j])) {
+                    this.balls[i].dx = -this.balls[i].dx;
+                    this.balls[i].dy = -this.balls[i].dy;
                 }
             }
         }

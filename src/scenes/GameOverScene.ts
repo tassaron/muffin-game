@@ -7,10 +7,8 @@ import Scene from "./Scene";
 
 
 export default class GameOverScene extends Scene {
-    actors: any = {};
-
     constructor(game: IGame) {
-        super(game);
+        super(game, {});
 
         this.actors.text = new Button(game, EllipseActor, 399, 133, "Game Over", null, 0x00ff00, 0x0000ff);
         this.actors.text.anchor.x = 0.5;
@@ -18,16 +16,8 @@ export default class GameOverScene extends Scene {
         this.actors.text.x = game.width / 2;
         this.actors.text.y = game.height / 2;
         this.actors.text.interactive = true;
-        this.actors.text.click = (_: Event) => game.reset();
+        this.actors.text.pointertap = (_: Event) => game.reset();
 
         logger.info("Created GameOver scene");
-    }
-
-    mount(container: PIXI.Container) {
-        container.addChild(this.actors.text);
-    }
-
-    unmount(container: PIXI.Container) {
-        container.removeChild(this.actors.text);
     }
 }

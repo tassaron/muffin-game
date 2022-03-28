@@ -5,8 +5,6 @@ import Scene from "./Scene";
 
 
 export default class LoadingScene extends Scene {
-    actors: any = {};
-
     constructor(game: IGame) {
         super(game);
         logger.info("Created Loading scene");
