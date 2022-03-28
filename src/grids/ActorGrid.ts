@@ -12,6 +12,7 @@ export default class ActorGrid implements IGrid<IActor> {
     rows: number;
     _grid: Grid<IActor>;
     _interactive = false;
+    [key: number]: Array<IActor>;
 
     constructor(cols: number, rows: number, gridSize: number, initial: any = null) {
         this.cols = cols;
