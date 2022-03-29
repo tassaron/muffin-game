@@ -4,10 +4,11 @@ import IGame from "../interfaces/IGame";
 import Scene from "./Scene";
 import Button from "../actors/ButtonActor";
 import RectangleActor from "../actors/RectangleActor";
+import IActor from "../interfaces/IActor";
 
 
 export default class PauseScene extends Scene {
-    interactiveActors: Array<{interactive: boolean}>;
+    interactiveActors: Array<IActor>;
 
     constructor(game: IGame) {
         super(game, {});
@@ -24,18 +25,18 @@ export default class PauseScene extends Scene {
 
 
     mount(container: PIXI.Container) {
-        super.mount(container);
         const disable = (container: PIXI.Container) => {
-            for (let child of container.children) {
-                if (child.hasOwnProperty("interactive")) {
-                    (child as any).interactive = false;
-                    this.interactiveActors.push(child as any);
-                } else if (child instanceof PIXI.Container) {
+            for (let child of <(IActor | PIXI.Container)[]>container.children) {
+                if (!child.hasOwnProperty("interactive")) {
                     disable(child);
+                } else if ((child as IActor).interactive) {
+                    this.interactiveActors.push((child as IActor));
+                    (child as IActor).interactive = false;
                 }
             }
         }
         disable(container);
+        super.mount(container);
     }
 
     unmount(container: PIXI.Container) {
