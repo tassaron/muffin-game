@@ -7,11 +7,13 @@ import ICollisionActor from "../interfaces/ICollisionActor";
 export default class CollisionActor extends Actor implements ICollisionActor {
     collisionWidth: number;
     collisionHeight: number;
+    graphic: IActor;
 
     constructor(game: IGame, graphic: IActor, w: number, h: number) {
         super(game);
         this.collisionWidth = w;
         this.collisionHeight = h;
+        this.graphic = graphic;
         this.addChild(graphic);
         graphic.x = 0;
         graphic.y = 0;
