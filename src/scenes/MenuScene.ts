@@ -6,6 +6,7 @@ import IAnimatedActor from "../interfaces/IAnimatedActor";
 import Scene from "./Scene";
 import BallsScene from "./BallsScene";
 import PipesScene from "./PipesScene";
+import BallsAndPipesScene from "./BallsAndPipesScene";
 import RectangleActor from "../actors/RectangleActor";
 import Button from "../actors/ButtonActor";
 
@@ -30,27 +31,25 @@ export default class MenuScene extends Scene {
         super(game);
         this.scenes = [
             BallsScene,
-            PipesScene
+            PipesScene,
+            BallsAndPipesScene,
         ];
         this.explosions = [
             undefined,
             undefined
         ];
         this.buttons = [
-            new Button(game, RectangleActor, 300, 50, "Balls Example"),
-            new Button(game, RectangleActor, 300, 50, "Pipes Example"),
+            new Button(game, RectangleActor, 320, 50, "Balls Scene"),
+            new Button(game, RectangleActor, 320, 50, "Pipes Scene"),
+            new Button(game, RectangleActor, 320, 50, "Balls + Pipes Scene"),
         ];
-        this.buttons[0].x = game.width / 2;
-        this.buttons[1].x = game.width / 2;
-        this.buttons[0].y = (game.height / 2) - 25;
-        this.buttons[1].y = (game.height / 2) + 25;
-        this.addActors(this.buttons);
-
-        // Hook events to buttons
-        for (let i = 0; i < this.buttons.length; i++) {
+        for (let i = this.buttons.length - 1; i > -1; i--) {
+            this.buttons[i].x = game.width / 2;
+            this.buttons[i].y = (game.height / 3)*2 - (this.buttons.length * 50) + (i * 50);
             this.buttons[i].interactive = true;
             this.buttons[i].pointertap = (_: Event) => this.mountExplosion(i, (i * 25) - 25);
         }
+        this.addActors(this.buttons);
         
         logger.info("Created Menu scene");
     }
