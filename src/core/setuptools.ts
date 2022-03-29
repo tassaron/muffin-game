@@ -23,7 +23,6 @@ export function createGame(
         textures: string[],
         afterPreload: (loader: PIXI.Loader, resources: PIXI.utils.Dict<PIXI.LoaderResource>, sprites: {}) => void,
         entryScene: typeof Scene,
-        sceneList: MenuSceneList | undefined = undefined,
         assetPrefix = "assets/",
         )
     {
@@ -88,7 +87,7 @@ export function createGame(
         .load((loader, resources) => afterPreload(loader, resources, sprites))
         .onComplete.add(() => {
             app.ticker.remove(textTicker);
-            const game = new Game(app, sprites, keyboard, entryScene, sceneList);
+            const game = new Game(app, sprites, keyboard, entryScene);
             const pauseButton: HTMLElement | null = document.getElementById("pause_button");
             pauseButton && pauseButton.addEventListener('click', () => game.pause(keyboard), false);
             addEventListeners(gameDiv);

@@ -40,7 +40,7 @@ export class Game implements IGame {
     state = getInitialGameState();
     entryScene: typeof Scene;
 
-    constructor(app: PIXI.Application, sprites: {[key: string]: (game: IGame) => IActor}, keyboard: IKeyboard, entryScene: typeof Scene, sceneList?: MenuSceneList) {
+    constructor(app: PIXI.Application, sprites: {[key: string]: (game: IGame) => IActor}, keyboard: IKeyboard, entryScene: typeof Scene) {
         this._app = app;
         this.renderer = app.renderer;
         for (let sprite of Object.keys(sprites)) {
@@ -56,14 +56,6 @@ export class Game implements IGame {
         logger.info(`Game created with dimensions ${this.width}x${this.height}`);
         this.entryScene = entryScene;
         this.scene = new entryScene(this);
-        if (sceneList) {
-            if (!("sceneList" in this.scene)) {
-                logger.error(
-                    "'sceneList' property does not exist on the entryscene. This means the entryscene does not extend MenuScene. If you do not wish to extend MenuScene, suppress this message by declaring the 'sceneList' property on the Scene-like object passed to 'createGame'."
-                );
-            }
-            (this.scene as MenuScene).sceneList = sceneList;
-        }
         this.prevScene = new LoadingScene(this);
         this.scene.mount(this.containers.root);
 
