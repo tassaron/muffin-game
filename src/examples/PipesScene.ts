@@ -4,14 +4,14 @@ import IGame from "../interfaces/IGame";
 import Scene from "../scenes/Scene";
 import RectangleActor from "../actors/RectangleActor";
 import GridScene from "../grids/GridScene";
-import { ExampleSceneList, newBackButton } from "../scenes/MenuScene";
+import MenuScene, { newBackButton } from "../scenes/MenuScene";
 
 
 export default class PipesScene extends Scene {
     constructor(game: IGame) {
         super(game);
 
-        this.actors.backButton = newBackButton(game, ExampleSceneList);
+        this.actors.backButton = newBackButton(game, MenuScene);
         
         // A pipe factory :P
         const newPipe = () => {
