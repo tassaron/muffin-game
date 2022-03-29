@@ -1,15 +1,16 @@
 import * as PIXI from "pixi.js";
 import { logger } from "./logger";
-import IGame from "./interfaces/IGame";
-import IGameContainers from "./interfaces/IGameContainers";
-import IGameState from "./interfaces/IGameState";
-import IKeyboard from "./interfaces/IKeyboard";
-import IScene from "./interfaces/IScene";
-import IActor from "./interfaces/IActor";
-import LoadingScene from "./scenes/LoadingScene";
-import PauseScene from "./scenes/PauseScene";
-import GameOverScene from "./scenes/GameOverScene";
-import Scene from "./scenes/Scene";
+import IGame from "../interfaces/IGame";
+import IGameContainers from "../interfaces/IGameContainers";
+import IGameState from "../interfaces/IGameState";
+import IKeyboard from "../interfaces/IKeyboard";
+import IScene from "../interfaces/IScene";
+import IActor from "../interfaces/IActor";
+import LoadingScene from "../scenes/LoadingScene";
+import PauseScene from "../scenes/PauseScene";
+import GameOverScene from "../scenes/GameOverScene";
+import Scene from "../scenes/Scene";
+import MenuScene, { MenuSceneList } from "../scenes/MenuScene";
 
 
 const KEYBOARD_DISABLE_FRAMES = 30.0;
@@ -39,7 +40,7 @@ export class Game implements IGame {
     state = getInitialGameState();
     entryScene: typeof Scene;
 
-    constructor(app: PIXI.Application, sprites: {[key: string]: (game: IGame) => IActor}, keyboard: IKeyboard, entryScene: typeof Scene) {
+    constructor(app: PIXI.Application, sprites: {[key: string]: (game: IGame) => IActor}, keyboard: IKeyboard, entryScene: typeof Scene, sceneList?: MenuSceneList) {
         this._app = app;
         this.renderer = app.renderer;
         for (let sprite of Object.keys(sprites)) {
@@ -55,6 +56,14 @@ export class Game implements IGame {
         logger.info(`Game created with dimensions ${this.width}x${this.height}`);
         this.entryScene = entryScene;
         this.scene = new entryScene(this);
+        if (sceneList) {
+            if (!("sceneList" in this.scene)) {
+                logger.error(
+                    "'sceneList' property does not exist on the entryscene. This means the entryscene does not extend MenuScene. If you do not wish to extend MenuScene, suppress this message by declaring the 'sceneList' property on the Scene-like object passed to 'createGame'."
+                );
+            }
+            (this.scene as MenuScene).sceneList = sceneList;
+        }
         this.prevScene = new LoadingScene(this);
         this.scene.mount(this.containers.root);
 

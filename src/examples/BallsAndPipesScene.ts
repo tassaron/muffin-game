@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import IGame from "../interfaces/IGame";
-import Scene from "./Scene";
+import Scene from "../scenes/Scene";
 import BallsScene from "./BallsScene";
 import PipesScene from "./PipesScene";
 import IKeyboard from "../interfaces/IKeyboard";

@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { logger } from "../logger";
+import { logger } from "../core/logger";
 import IGame from "../interfaces/IGame";
 import Actor from "./Actor";
 import GridRectangle from "../grids/GridRectangle";

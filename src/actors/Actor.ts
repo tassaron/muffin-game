@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { logger } from "../logger";
+import { logger } from "../core/logger";
 import IGame from "../interfaces/IGame";
 import IActor from "../interfaces/IActor";
 import IKeyboard from "../interfaces/IKeyboard";

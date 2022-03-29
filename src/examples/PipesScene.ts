@@ -1,17 +1,17 @@
 import * as PIXI from "pixi.js";
-import { logger } from "../logger";
+import { logger } from "../core/logger";
 import IGame from "../interfaces/IGame";
-import Scene from "./Scene";
+import Scene from "../scenes/Scene";
 import RectangleActor from "../actors/RectangleActor";
 import GridScene from "../grids/GridScene";
-import { newBackButton } from "./MenuScene";
+import { ExampleSceneList, newBackButton } from "../scenes/MenuScene";
 
 
 export default class PipesScene extends Scene {
     constructor(game: IGame) {
         super(game);
 
-        this.actors.backButton = newBackButton(game);
+        this.actors.backButton = newBackButton(game, ExampleSceneList);
         
         // A pipe factory :P
         const newPipe = () => {

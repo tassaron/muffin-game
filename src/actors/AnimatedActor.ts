@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 import IAnimatedActor from "../interfaces/IAnimatedActor";
 import IGame from "../interfaces/IGame";
 import Actor from "./Actor";
-import { logger } from '../logger';
+import { logger } from '../core/logger';
 
 
 function setFrame(texture: PIXI.Texture, w: number, h: number, number: number) {

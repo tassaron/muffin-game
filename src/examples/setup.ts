@@ -1,11 +1,11 @@
 
 import * as PIXI from "pixi.js";
-import IGame from "./interfaces/IGame";
-import Actor from "./actors/Actor";
-import AnimatedActor from './actors/AnimatedActor';
-import TileActor from "./actors/TileActor";
-import { createGame, getTexture } from "./main";
-import MenuScene from "./scenes/MenuScene";
+import IGame from "../interfaces/IGame";
+import Actor from "../actors/Actor";
+import AnimatedActor from '../actors/AnimatedActor';
+import TileActor from "../actors/TileActor";
+import { createGame, getTexture } from "../core/setuptools";
+import MenuScene, { ExampleSceneList } from "../scenes/MenuScene";
 
 
 const textures = [
@@ -26,5 +26,4 @@ function afterPreload(loader: PIXI.Loader, resources: PIXI.utils.Dict<PIXI.Loade
     sprites.pipe = (game: IGame) => new TileActor(game, getTexture(resources.pipes.texture, "pipes"), 4, 4, 73);
 };
 
-
-createGame(textures, afterPreload, MenuScene);
+createGame(textures, afterPreload, MenuScene, ExampleSceneList);

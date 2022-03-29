@@ -1,5 +1,5 @@
 import { logger } from "./logger";
-import IKeyboard from "./interfaces/IKeyboard";
+import IKeyboard from "../interfaces/IKeyboard";
 
 class Keyboard implements IKeyboard {
     up = false;
