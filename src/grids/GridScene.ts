@@ -3,7 +3,7 @@ import IActor from "../interfaces/IActor";
 import IGame from "../interfaces/IGame";
 import IKeyboard from "../interfaces/IKeyboard";
 import IScene from "../interfaces/IScene";
-import { SceneOptions, constructorOptions, beforeMount } from "../scenes/Scene";
+import { SceneOptions, constructorOptions, setInteractive, tick, mount, unmount, beforeMount } from "../scenes/Scene";
 import Grid from "./Grid";
 
 
@@ -25,15 +25,11 @@ export default class GridScene extends Grid<IActor> implements IScene {
         super(cols, rows, gridSize, options.initial == undefined ? null : options.initial);
         this.game = game;
         this.actors = {};
-        for (let x = 0; x < this._grid.length; x++) {
-            for (let y = 0; y < this._grid[x].length; y++) {
-                if (this._grid[y][x] !== null) this.actors[`${y},${x}`] = (this._grid[y][x] as IActor);
-            }
-        }
         this._beforeMountFuncs = constructorOptions(this, options);
     }
 
     tick(delta: number, keyboard: IKeyboard) {
+        tick(this, delta, keyboard);
         for (let row of this._grid) {
             for (let cell of row) {
                 cell?.tick(delta, keyboard);
@@ -46,6 +42,7 @@ export default class GridScene extends Grid<IActor> implements IScene {
     }
 
     set interactive(value: boolean) {
+        setInteractive(this, value);
         let cell: IActor | null = null;
         for (let x = 0; x < this._grid.length; x++) {
             for (let y = 0; y < this._grid[x].length; y++) {
@@ -58,10 +55,7 @@ export default class GridScene extends Grid<IActor> implements IScene {
     }
 
     mount(container: PIXI.Container) {
-        this.mounted = container;
-        for (let func of this._beforeMountFuncs) {
-            func(container);
-        }
+        mount(this, container);
         const subcontainer = this.subcontainer == null ? container : this.subcontainer;
         let cell: IActor | null = null;
         for (let x = 0; x < this._grid.length; x++) {
@@ -73,13 +67,10 @@ export default class GridScene extends Grid<IActor> implements IScene {
                 cell.y = subcontainer.y + (y * this.gridSize);
             }
         }
-        if (subcontainer !== container) {
-            container.addChild(subcontainer);
-        }
     }
 
     unmount(container: PIXI.Container) {
-        this.mounted = null;
+        unmount(this, container);
         const subcontainer = this.subcontainer == null ? container : this.subcontainer;
         let cell: IActor | null = null;
         for (let x = 0; x < this._grid.length; x++) {
@@ -88,9 +79,6 @@ export default class GridScene extends Grid<IActor> implements IScene {
                 if (!cell) continue;
                 subcontainer.removeChild(cell);
             }
-        }
-        if (subcontainer !== container) {
-            container.removeChild(subcontainer);
         }
     }
 
