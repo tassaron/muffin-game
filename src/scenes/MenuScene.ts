@@ -11,7 +11,7 @@ import PipesScene from "../examples/PipesScene";
 import BallsAndPipesScene from "../examples/BallsAndPipesScene";
 
 
-export const ExampleSceneList: MenuSceneList = [
+export let ExampleSceneList: MenuSceneList = [
     [BallsScene, "Balls Scene"],
     [PipesScene, "Pipes Scene"],
     [BallsAndPipesScene, "Balls + Pipes Scene"],
@@ -20,77 +20,87 @@ export type MenuSceneOption = [typeof Scene, string];
 export type MenuSceneList = MenuSceneOption[];
 
 
-export function newBackButton(game: IGame, sceneList: MenuSceneList) {
+export function newBackButton(game: IGame, scene: typeof Scene) {
     const backButton = new Button(game, RectangleActor, 120, 50, "< Back");
     backButton.x = 60;
     backButton.y = 25;
     backButton.interactive = true;
-    const menuScene = new MenuScene(game);
-    if (sceneList) menuScene.sceneList = sceneList;
+    const menuScene = new scene(game);
     backButton.pointertap = (_: Event) => game.changeScene(menuScene);
     return backButton;
 }
 
 
-export default class MenuScene extends Scene {
-    _scenes: typeof Scene[];
-    timer: null | number = null;
-    buttons: Button[];
-    explosions: (string | undefined)[];
-    sceneList: MenuSceneList = ExampleSceneList;
+export function addNewMenuButtonsToScene(scene: MenuScene) {
+    scene.timer = null;
+    scene.explosions = [
+        undefined,
+        undefined
+    ];
+    if (scene.sceneList === undefined) {
+        logger.error("Using the example scene list for this menu scene");
+        scene.sceneList = ExampleSceneList;
+    }
+    scene.buttons = scene.sceneList.map(
+        (arr: [typeof Scene, string]) =>  new Button(scene.game, RectangleActor, 320, 50, arr[1])
+    );
 
-    constructor(game: IGame) {
-        super(game);
-        this._scenes = this.sceneList.map(
-            (arr: [typeof Scene, string]) => arr[0]
-        );
-        this.explosions = [
-            undefined,
-            undefined
-        ];
-        this.buttons = this.sceneList.map(
-            (arr: [typeof Scene, string]) =>  new Button(game, RectangleActor, 320, 50, arr[1])
-        );
-        for (let i = this.buttons.length - 1; i > -1; i--) {
-            this.buttons[i].x = game.width / 2;
-            this.buttons[i].y = (game.height / 3)*2 - (this.buttons.length * 50) + (i * 50);
-            this.buttons[i].interactive = true;
-            this.buttons[i].pointertap = (_: Event) => this.mountExplosion(i, (i * 25) - 25);
+    const mountExplosion = (i: number, offset: number) => {
+        if (scene.mounted && scene.explosions[i] === undefined) {
+            const explosion = scene.game.sprites.explosion();
+            explosion.x = scene.game.width / 2;
+            explosion.y = (scene.game.height / 2) + offset;
+            scene.mounted.addChild(explosion);
+            scene.mounted.removeChild(scene.buttons[i]);
+            scene.explosions[i] = scene.addActors([explosion])[0];
         }
-        this.addActors(this.buttons);
-        
-        logger.info("Created Menu scene");
     }
 
-    tick(delta: number, keyboard: IKeyboard) {
-        if (!this.mounted) return;
-        super.tick(delta, keyboard);
+    for (let i = scene.buttons.length - 1; i > -1; i--) {
+        scene.buttons[i].x = scene.game.width / 2;
+        scene.buttons[i].y = (scene.game.height / 3)*2 - (scene.buttons.length * 50) + (i * 50);
+        scene.buttons[i].interactive = true;
+        scene.buttons[i].pointertap = (_: Event) => mountExplosion(i, (i * 25) - 25);
+    }
+    scene.addActors(scene.buttons);
+    
+    const _scenes = scene.sceneList.map(
+        (arr: [typeof Scene, string]) => arr[0]
+    );
+
+    const tickExplosions = (delta: number, keyboard: IKeyboard) => {
         if (keyboard.number == 1) {
             // @ts-ignore -_-
-            this.buttons[0].pointertap();
+            scene.buttons[0].pointertap();
         }
-        for (let i = 0; i < this.explosions.length; i++) {
-            if (this.explosions[i] === undefined) continue;
-            const explosion = (this.actors[<string>this.explosions[i]] as IAnimatedActor);
+        for (let i = 0; i < scene.explosions.length; i++) {
+            if (scene.explosions[i] === undefined) continue;
+            const explosion = (scene.actors[<string>scene.explosions[i]] as IAnimatedActor);
             if (explosion.loops > 0) {
-                (this.mounted as PIXI.Container).removeChild(explosion);
-                delete this.actors[<string>this.explosions[i]]
-                this.mounted = null;
-                if (!this.timer) {
-                    this.timer = this.game.startTimer(() => this.game.changeScene(new this._scenes[i](this.game)), 10.0);
+                (scene.mounted as PIXI.Container).removeChild(explosion);
+                delete scene.actors[<string>scene.explosions[i]]
+                scene.mounted = null;
+                if (!scene.timer) {
+                    scene.timer = scene.game.startTimer(() => scene.game.changeScene(new _scenes[i](scene.game)), 10.0);
                 }
             }
         }
     }
+    scene.beforeTick(tickExplosions);
+}
 
-    mountExplosion(i: number, offset: number) {
-        if (this.mounted && this.explosions[i] === undefined) {
-            const explosion = this.game.sprites.explosion();
-            explosion.x = this.game.width / 2;
-            explosion.y = (this.game.height / 2) + offset;
-            this.mounted.addChild(explosion);
-            this.mounted.removeChild(this.buttons[i]);
-            this.explosions[i] = this.addActors([explosion])[0];
-        }
+
+export default class MenuScene extends Scene {
+    timer: null | number = null;
+    sceneList: MenuSceneList = ExampleSceneList;
+    _scenes!: typeof Scene[];
+    buttons!: Button[];
+    explosions!: (string | undefined)[];
+    mountExplosion!: (i: number, offset: number) => void;
+
+    constructor(game: IGame) {
+        super(game);
+        addNewMenuButtonsToScene(this);
+        logger.info("Created Menu scene");
     }
 }
