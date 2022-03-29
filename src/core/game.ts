@@ -10,7 +10,6 @@ import LoadingScene from "../scenes/LoadingScene";
 import PauseScene from "../scenes/PauseScene";
 import GameOverScene from "../scenes/GameOverScene";
 import Scene from "../scenes/Scene";
-import MenuScene, { MenuSceneList } from "../scenes/MenuScene";
 
 
 const KEYBOARD_DISABLE_FRAMES = 30.0;
