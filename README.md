@@ -1,9 +1,13 @@
-# Muffin Game Template
-My game template (sort of an engine) for an HTML5 game using [PixiJS](https://pixijs.io). Evolved from what I learned making the [canvas-game](https://github.com/tassaron/canvas-game) template. This repo has some code for an example project to act as a starting point.
+# Muffin Game Engine
+My game engine for an HTML5/WebGL game using [PixiJS](https://pixijs.io). Evolved from what I learned making the [canvas-game](https://github.com/tassaron/canvas-game) template. This repo has some code for an example project to act as a starting point.
 
 ## [Click to play the Example Project](https://rainey.tech/static/muffin-game/)
 
-## How to Create a Game (using as an NPM package)
+## Getting Started
+- Fork the [muffin-game-js](https://github.com/tassaron/muffin-game-js) repo for a minimal JavaScript project using NPM.
+
+## How to Create a Game 
+### JavaScript, using as an NPM package
 1. `npm install muffin-game`
 1. `import { createGame, getTexture } from "muffin-game/core/setuptools"`
 1. `createGame` has 4 positional arguments:
@@ -12,7 +16,7 @@ My game template (sort of an engine) for an HTML5 game using [PixiJS](https://pi
   1. the classname of the first Scene
   1. (optional) a string with URL prefix for assets, defaults to `assets/`
 
-## How to Create a Game (using this git repo as template)
+### TypeScript, using this repo as template
 1. `npm install` to get the dependencies
 1. All source code goes in `/src`
 1. Load assets by copy-pasting and/or editing `examples/setup.ts`
