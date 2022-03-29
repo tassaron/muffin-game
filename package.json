@@ -1,8 +1,8 @@
 {
   "name": "muffin-game",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "game engine using PixiJS",
-  "main": "main.ts",
+  "main": "src/main.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack --progress --mode=development --config webpack.config.js",

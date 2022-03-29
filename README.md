@@ -3,7 +3,16 @@ My game template (sort of an engine) for an HTML5 game using [PixiJS](https://pi
 
 ## [Click to play the Example Project](https://rainey.tech/static/muffin-game/)
 
-## How to Create a Game
+## How to Create a Game (using as an NPM package)
+1. `npm install muffin-game`
+1. `import { createGame } from "muffin-game"`
+1. `createGame` has 4 positional arguments:
+  1. an array of strings: filenames of all the PNGs that must be preloaded
+  1. a callback function to receive resources (PNGs) and return an object of sprite factory functions: see [`examplePreload` in `setup.ts`](/src/setup.ts) for an example
+  1. the classname of the first Scene
+  1. (optional) a string with URL prefix for assets, defaults to `assets/`
+
+## How to Create a Game (using this git repo as template)
 1. `npm install` to get the dependencies
 1. All source code goes in `/src`
 1. Load assets by editing `setup.ts`
