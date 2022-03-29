@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+//import * as PIXI from "pixi.js";
 import { logger } from "../core/logger";
 import IGame from "../interfaces/IGame";
 import Scene from "../scenes/Scene";
@@ -6,14 +6,15 @@ import EllipseActor from "../actors/EllipseActor";
 import RectangleActor from "../actors/RectangleActor";
 import CollisionActor from "../actors/CollisionActor";
 import IKeyboard from "../interfaces/IKeyboard";
-import { newBackButton, ExampleSceneList } from "../scenes/MenuScene";
+import MenuScene, { newBackButton } from "../scenes/MenuScene";
 
 
-class Ball extends CollisionActor {
+export class Ball extends CollisionActor {
     dx = 0.0;
     dy = 0.0;
 
     tick(delta: number, keyboard: IKeyboard) {
+        super.tick(delta, keyboard);
         if (this.x < 0.0) {
             this.dx = Math.abs(this.dx);
         } else if (this.x + this.collisionWidth > this.game.width) {
@@ -37,7 +38,7 @@ export default class BallsScene extends Scene {
     constructor(game: IGame) {
         super(game);
 
-        this.actors.backButton = newBackButton(game, ExampleSceneList);
+        this.actors.backButton = newBackButton(game, MenuScene);
 
         // Create balls to bounce around the screen
         this.balls = [

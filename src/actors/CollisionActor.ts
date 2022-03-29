@@ -2,6 +2,8 @@ import IActor from "../interfaces/IActor";
 import IGame from "../interfaces/IGame";
 import Actor from "./Actor";
 import ICollisionActor from "../interfaces/ICollisionActor";
+import { keyboard } from "../core/ui";
+import IKeyboard from "../interfaces/IKeyboard";
 
 
 export default class CollisionActor extends Actor implements ICollisionActor {
@@ -28,5 +30,8 @@ export default class CollisionActor extends Actor implements ICollisionActor {
         );
     }
 
-    //tick(delta: number) {}
+    tick(delta: number, keyboard: IKeyboard) {
+        super.tick(delta, keyboard);
+        this.graphic.tick(delta, keyboard);
+    }
 }
