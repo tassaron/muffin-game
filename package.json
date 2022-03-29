@@ -1,8 +1,8 @@
 {
-  "name": "muffin-game-engine",
-  "version": "0.0.0",
+  "name": "muffin-game",
+  "version": "0.0.1",
   "description": "game engine using PixiJS",
-  "main": "main.js",
+  "main": "main.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack --progress --mode=development --config webpack.config.js",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tassaron/muffin-game-engine.git"
+    "url": "git+https://github.com/tassaron/muffin-game.git"
   },
   "keywords": [
     "pixi.js"
@@ -18,9 +18,9 @@
   "author": "tassaron",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tassaron/muffin-game-engine/issues"
+    "url": "https://github.com/tassaron/muffin-game/issues"
   },
-  "homepage": "https://github.com/tassaron/muffin-game-engine#readme",
+  "homepage": "https://github.com/tassaron/muffin-game#readme",
   "dependencies": {
     "pixi.js": "^6.2.2"
   },
