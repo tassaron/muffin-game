@@ -5,7 +5,7 @@ const TerserPlugin =  require('terser-webpack-plugin')
 module.exports = (env, argv) => {
     const config = {
         context: path.resolve(__dirname, 'src'),
-        entry: ['./setup.ts'],
+        entry: ['./examples/setup.ts'],
         module: {
             rules: [
                 /*{
