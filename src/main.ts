@@ -15,7 +15,7 @@ const PREFIX = "assets/";
 *  Create the canvas
 */
 const app = new PIXI.Application({
-    width: 800, height: 600, backgroundColor: 0xbcbcf2, useContextAlpha: false, resolution: window.devicePixelRatio || 1,
+    width: 800, height: 600, backgroundColor: 0xbcbcf2, useContextAlpha: false, resolution: 1,
 });
 function loadingText(app: PIXI.Application): (delta: number) => void {
     const skewStyle = new PIXI.TextStyle({
