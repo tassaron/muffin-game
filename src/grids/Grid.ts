@@ -12,21 +12,23 @@ export default class Grid<T> implements IGrid<T> {
         this.cols = cols;
         this.rows = rows;
         this.gridSize = gridSize;
-        this._grid = createGrid<T>(this, initial);
+        this._grid = createGrid<T>(cols, rows, initial);
+        for (let y = 0; y < rows; y++) {
+            Object.defineProperty(this, y, {
+                value: this._grid[y]
+            });
+        }
     }
 }
 
 
-export function createGrid<T>(self: IGrid<T>, initial: (() => T | null) | null) {
-    const _grid: Array<Array<T | null>> = Array(self.rows);
-    for (let y = 0; y < self.rows; y++) {
+export function createGrid<T>(cols: number, rows: number, initial: (() => T | null) | null = null) {
+    const _grid: Array<Array<T | null>> = Array(rows);
+    for (let y = 0; y < rows; y++) {
         _grid[y] = [];
-        for (let x = 0; x < self.cols; x++) {
+        for (let x = 0; x < cols; x++) {
             _grid[y][x] = initial ? initial() : null;
         }
-        Object.defineProperty(self, y, {
-            value: _grid[y]
-        });
     }
     return _grid;
 }
