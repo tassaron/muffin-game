@@ -4,9 +4,12 @@ import Button from "../actors/ButtonActor";
 import EllipseActor from "../actors/EllipseActor";
 import IGame from "../interfaces/IGame";
 import Scene from "./Scene";
+import { Pauser } from "./PauseScene";
 
 
 export default class GameOverScene extends Scene {
+    pauser: Pauser | null = null;
+
     constructor(game: IGame) {
         super(game, {});
 
@@ -19,5 +22,16 @@ export default class GameOverScene extends Scene {
         this.actors.text.pointertap = (_: Event) => game.reset();
 
         logger.info("Created GameOver scene");
+    }
+
+    mount(container: PIXI.Container) {
+        this.pauser = new Pauser(container);
+        this.pauser.pause();
+        super.mount(container);
+    }
+
+    unmount(container: PIXI.Container) {
+        this.pauser?.unpause();
+        super.unmount(container);
     }
 }
