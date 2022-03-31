@@ -62,8 +62,7 @@ export class Game implements IGame {
     };
 
     changeScene(scene: IScene) {
-        let prevScene = this.scene;
-        this.prevScene = prevScene;
+        this.prevScene = Object.assign(this.scene);
         this.scene = scene;
         if (scene.mounted === null) {
             try {
@@ -100,12 +99,12 @@ export class Game implements IGame {
     }
 
     reset() {
-        logger.debug("RESET GAME: Stopping all timers");
-        this.timers = [];
-
         logger.debug("RESET GAME: Unmounting scene and prevScene");
         this.scene.mounted && this.scene.unmount(this.scene.mounted);
         this.prevScene.mounted && this.prevScene.unmount(this.prevScene.mounted);
+
+        logger.debug("RESET GAME: Stopping all timers");
+        this.timers = [];
 
         logger.debug("RESET GAME: Resetting state object to defaults");
         this.state = getInitialGameState();
