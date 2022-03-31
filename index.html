@@ -12,11 +12,23 @@
         :root {
             --arcade-font: "Ubuntu", "Roboto", sans-serif;
         }
+
+        a, a:visited {
+            color: lavender;
+            text-underline-offset: 0.175rem;
+            text-decoration-thickness: 0.075rem;
+            text-decoration-skip-ink: none;
+        }
+
+        a:hover, a:focus {
+            text-underline-offset: 0.375rem;
+            text-decoration-thickness: 0.125rem;
+        }
         
         body {
             padding: 0;
             margin: auto auto;
-            background: #993f70;
+            background: #6d4a82;
             color: #eee;
             text-align: center;
             margin-top: 2em;
@@ -24,12 +36,25 @@
         }
         
         canvas {
-            border: 2px solid black;
+            border: 8px dashed #4e315e;
             margin: auto;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 0 0.75rem 0.375rem rgba(78, 49, 94, 0.3);
         }
         
         main {
             margin: auto;
+        }
+
+        #pause_button {
+            padding: 1rem 2rem;
+            border-radius: 0;
+        }
+
+        #pause_button:focus-within, #pause_button:hover {
+            box-shadow: 0 0.375rem 0.5rem rgba(78, 49, 94, 0.4);
+            outline: rgba(78, 49, 94, 0.4) solid 0.375rem;
         }
     </style>
 </head>
