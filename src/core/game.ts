@@ -38,6 +38,9 @@ export class Game implements IGame {
     timers: Array<[f: () => any, time: number]> = [];
     state = getInitialGameState();
     entryScene: typeof Scene;
+    gameOverScene: typeof Scene = GameOverScene;
+    pauseScene: typeof Scene = PauseScene;
+    loadingScene: typeof Scene = LoadingScene;
 
     constructor(app: PIXI.Application, sprites: {[key: string]: (game: IGame) => IActor}, keyboard: IKeyboard, entryScene: typeof Scene) {
         this._app = app;
@@ -55,7 +58,7 @@ export class Game implements IGame {
         logger.info(`Game created with dimensions ${this.width}x${this.height}`);
         this.entryScene = entryScene;
         this.scene = new entryScene(this);
-        this.prevScene = new LoadingScene(this);
+        this.prevScene = new this.loadingScene(this);
         this.scene.mount(this.containers.root);
 
         app.ticker.add((delta) => this.state.functions.tick(this, delta, keyboard));
@@ -78,7 +81,7 @@ export class Game implements IGame {
             this.state.flags.gameOver = true;
             keyboard?.disable(KEYBOARD_DISABLE_FRAMES);
             this.state.functions.tick = gameOverTick;
-            this.changeScene(new GameOverScene(this));
+            this.changeScene(new this.gameOverScene(this));
         }
     }
 
@@ -95,7 +98,7 @@ export class Game implements IGame {
         }
         keyboard?.disable(KEYBOARD_DISABLE_FRAMES);
         this.state.functions.tick = pauseTick;
-        this.changeScene(new PauseScene(this));
+        this.changeScene(new this.pauseScene(this));
     }
 
     reset() {
@@ -110,7 +113,7 @@ export class Game implements IGame {
         this.state = getInitialGameState();
 
         this.scene = new this.entryScene(this);
-        this.prevScene = new LoadingScene(this);
+        this.prevScene = new this.loadingScene(this);
         logger.verbose("RESET GAME: Created entryscene; mounting root container");
         logger.verbose("RESET GAME: The prevScene is currently LoadingScene");
         this.scene.mount(this.containers.root);
