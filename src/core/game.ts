@@ -100,10 +100,20 @@ export class Game implements IGame {
     }
 
     reset() {
+        logger.debug("RESET GAME: Stopping all timers");
+        this.timers = [];
+
+        logger.debug("RESET GAME: Unmounting scene and prevScene");
+        this.scene.mounted && this.scene.unmount(this.scene.mounted);
+        this.prevScene.mounted && this.prevScene.unmount(this.prevScene.mounted);
+
+        logger.debug("RESET GAME: Resetting state object to defaults");
         this.state = getInitialGameState();
 
         this.scene = new this.entryScene(this);
         this.prevScene = new LoadingScene(this);
+        logger.verbose("RESET GAME: Created entryscene; mounting root container");
+        logger.verbose("RESET GAME: The prevScene is currently LoadingScene");
         this.scene.mount(this.containers.root);
     }
 
