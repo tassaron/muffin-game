@@ -81,7 +81,7 @@ export function addNewMenuButtonsToScene(scene: MenuScene) {
                 delete scene.actors[<string>scene.explosions[i]]
                 scene.mounted = null;
                 if (!scene.timer) {
-                    scene.timer = scene.game.startTimer(() => scene.game.changeScene(new _scenes[i](scene.game)), 10.0);
+                    scene.timer = scene.game.startTimer(() => scene.game.changeScene(new _scenes[i](scene.game)), 10.0, "leave menu");
                 }
             }
         }

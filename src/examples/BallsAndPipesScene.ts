@@ -17,7 +17,7 @@ export default class BallsAndPipesScene extends Scene {
         this.subscenes = [new BallsScene(game), pipesScene];
         const changeDirection = () => {
             this.direction = this.direction == 1 ? -1 : 1;
-            this.game.startTimer(changeDirection, 60.0);
+            this.game.startTimer(changeDirection, 60.0, "change direction");
         }
         changeDirection();
     }
