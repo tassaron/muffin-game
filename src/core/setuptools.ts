@@ -5,10 +5,31 @@
 */
 import * as PIXI from "pixi.js";
 import { addEventListeners, keyboard } from "./ui";
-import { Game } from "./game";
+import Game from "./game";
 import { MissingHTMLElementError, MissingTextureError } from "./exceptions";
-import Scene from "../scenes/Scene";
-import { MenuSceneList } from "../scenes/MenuScene";
+import IGame from "../interfaces/IGame";
+import IActor from "../interfaces/IActor";
+
+
+export function connectHTMLButton(func: () => void, elem: string) {
+    const pauseButton: HTMLElement | null = document.getElementById(elem);
+    pauseButton && pauseButton.addEventListener('click', () => func, false);
+}
+
+
+export class GameOptions {
+    assetPrefix? = "assets/";
+    gameClass? = Game;
+    postInit?: (game: IGame) => void = (game: IGame) => {
+        connectHTMLButton(
+            () => game.pause(keyboard),
+            "pause_button"
+        );
+    }
+}
+
+
+export const DefaultGameOptions = new GameOptions();
 
 
 export function getTexture(texture: PIXI.Texture | undefined, name: string) : PIXI.Texture {
@@ -21,9 +42,8 @@ export function getTexture(texture: PIXI.Texture | undefined, name: string) : PI
 
 export function createGame(
         textures: string[],
-        afterPreload: (loader: PIXI.Loader, resources: PIXI.utils.Dict<PIXI.LoaderResource>, sprites: {}) => void,
-        entryScene: typeof Scene,
-        assetPrefix = "assets/",
+        afterPreload: (loader: PIXI.Loader, resources: PIXI.utils.Dict<PIXI.LoaderResource>, sprites: {[key: string]: (game: IGame) => IActor}) => void,
+        options = DefaultGameOptions,
         )
     {
     /*
@@ -78,19 +98,23 @@ export function createGame(
     /*
     *  Preload assets
     */
+    if (!options.assetPrefix) options.assetPrefix = DefaultGameOptions.assetPrefix;
     const sprites = {};
     const loader = PIXI.Loader.shared;
     for (let texture of textures) {
-        loader.add(texture, assetPrefix + texture + ".png");
+        loader.add(texture, options.assetPrefix + texture + ".png");
     };
     loader
         .load((loader, resources) => afterPreload(loader, resources, sprites))
         .onComplete.add(() => {
             app.ticker.remove(textTicker);
-            const game = new Game(app, sprites, keyboard, entryScene);
-            const pauseButton: HTMLElement | null = document.getElementById("pause_button");
-            pauseButton && pauseButton.addEventListener('click', () => game.pause(keyboard), false);
+
+            if (!options.gameClass) options.gameClass = DefaultGameOptions.gameClass;
+            const game = new options.gameClass!(app, sprites, keyboard);
             addEventListeners(gameDiv);
+
+            if (!options.postInit) options.postInit = DefaultGameOptions.postInit;
+            options.postInit!(game);
         })
     ;
 }

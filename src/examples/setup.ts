@@ -5,7 +5,6 @@ import Actor from "../actors/Actor";
 import AnimatedActor from '../actors/AnimatedActor';
 import TileActor from "../actors/TileActor";
 import { createGame, getTexture } from "../core/setuptools";
-import MenuScene from "../scenes/MenuScene";
 
 
 const textures = [
@@ -26,4 +25,4 @@ function afterPreload(loader: PIXI.Loader, resources: PIXI.utils.Dict<PIXI.Loade
     sprites.pipe = (game: IGame) => new TileActor(game, getTexture(resources.pipes.texture, "pipes"), 4, 4, 73);
 };
 
-createGame(textures, afterPreload, MenuScene);
+createGame(textures, afterPreload);
