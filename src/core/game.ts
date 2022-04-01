@@ -127,13 +127,13 @@ export class Game implements IGame {
     }
 
     stopTimer(i: number) {
-        logger.debug(`Stopping timer for "${this.timers[i].name}"`);
+        logger.debug(`Stopping the "${this.timers[i].name}" Timer early`);
         this.timers[i] = new Timer();
     }
 }
 
 
-function playTick(game: IGame, delta: number, keyboard: IKeyboard) {
+export function playTick(game: IGame, delta: number, keyboard: IKeyboard) {
     logger.spam(`Delta: ${delta}`);
     delta = Math.min(delta, 2.0);
 
@@ -155,7 +155,7 @@ function playTick(game: IGame, delta: number, keyboard: IKeyboard) {
 }
 
 
-function pauseTick(game: IGame, delta: number, keyboard: IKeyboard) {
+export function pauseTick(game: IGame, delta: number, keyboard: IKeyboard) {
     keyboard.tick(delta);
     if (keyboard.p) {
         game.pause(keyboard);
@@ -163,5 +163,5 @@ function pauseTick(game: IGame, delta: number, keyboard: IKeyboard) {
 }
 
 
-function gameOverTick(game: IGame, delta: number, keyboard: IKeyboard) {
+export function gameOverTick(game: IGame, delta: number, keyboard: IKeyboard) {
 }
