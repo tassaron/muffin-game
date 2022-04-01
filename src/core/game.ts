@@ -11,6 +11,7 @@ import LoadingScene from "../scenes/LoadingScene";
 import PauseScene from "../scenes/PauseScene";
 import GameOverScene from "../scenes/GameOverScene";
 import Scene from "../scenes/Scene";
+import MenuScene from "../scenes/MenuScene";
 
 
 export const KEYBOARD_DISABLE_FRAMES = 30.0;
@@ -29,7 +30,7 @@ export function getInitialGameState(): IGameState {
 }
 
 
-export class Game implements IGame {
+export default class Game implements IGame {
     _app: PIXI.Application;
     renderer: PIXI.AbstractRenderer;
     width: number;
@@ -40,12 +41,12 @@ export class Game implements IGame {
     sprites: any = {};
     timers: Timer[] = [];
     state = getInitialGameState();
-    entryScene: typeof Scene;
-    gameOverScene: typeof Scene = GameOverScene;
-    pauseScene: typeof Scene = PauseScene;
-    loadingScene: typeof Scene = LoadingScene;
+    static entryScene: typeof Scene = MenuScene;
+    static gameOverScene: typeof Scene = GameOverScene;
+    static pauseScene: typeof Scene = PauseScene;
+    static loadingScene: typeof Scene = LoadingScene;
 
-    constructor(app: PIXI.Application, sprites: {[key: string]: (game: IGame) => IActor}, keyboard: IKeyboard, entryScene: typeof Scene) {
+    constructor(app: PIXI.Application, sprites: {[key: string]: (game: IGame) => IActor}, keyboard: IKeyboard) {
         this._app = app;
         this.renderer = app.renderer;
         for (let sprite of Object.keys(sprites)) {
@@ -59,9 +60,8 @@ export class Game implements IGame {
         };
 
         logger.info(`Game created with dimensions ${this.width}x${this.height}`);
-        this.entryScene = entryScene;
-        this.scene = new entryScene(this);
-        this.prevScene = new this.loadingScene(this);
+        this.scene = new Game.entryScene(this);
+        this.prevScene = new Game.loadingScene(this);
         this.scene.mount(this.containers.root);
 
         app.ticker.add((delta) => this.state.functions.tick(this, delta, keyboard));
@@ -84,7 +84,7 @@ export class Game implements IGame {
             this.state.flags.gameOver = true;
             keyboard?.disable(KEYBOARD_DISABLE_FRAMES);
             this.state.functions.tick = gameOverTick;
-            this.changeScene(new this.gameOverScene(this));
+            this.changeScene(new Game.gameOverScene(this));
         }
     }
 
@@ -101,7 +101,7 @@ export class Game implements IGame {
         }
         keyboard?.disable(KEYBOARD_DISABLE_FRAMES);
         this.state.functions.tick = pauseTick;
-        this.changeScene(new this.pauseScene(this));
+        this.changeScene(new Game.pauseScene(this));
     }
 
     reset() {
@@ -115,14 +115,14 @@ export class Game implements IGame {
         logger.debug("RESET GAME: Resetting state object to defaults");
         this.state = getInitialGameState();
 
-        this.scene = new this.entryScene(this);
-        this.prevScene = new this.loadingScene(this);
+        this.scene = new Game.entryScene(this);
+        this.prevScene = new Game.loadingScene(this);
         logger.verbose("RESET GAME: Created entryscene; mounting root container");
         logger.verbose("RESET GAME: The prevScene is currently LoadingScene");
         this.scene.mount(this.containers.root);
     }
 
-    startTimer(f: () => any, ms: number, name?: string) {
+    startTimer(f: () => void, ms: number, name?: string) {
         return this.timers.push(new Timer(f, ms, name)) - 1;
     }
 
