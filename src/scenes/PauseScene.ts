@@ -56,14 +56,17 @@ export class Pauser {
 
 
 export function pauseContainer(container: PIXI.Container) {
-    const interactiveActors = [];
-    for (let child of <(IActor | PIXI.Container)[]>container.children) {
-        if (!child.hasOwnProperty("interactive")) {
-            pauseContainer(child);
-        } else if ((child as IActor).interactive) {
-            interactiveActors.push((child as IActor));
-            (child as IActor).interactive = false;
+    const interactiveActors: IActor[] = [];
+    const pauseChild = (container: IActor | PIXI.Container) => {
+        for (let child of <(IActor | PIXI.Container)[]>container.children) {
+            if (!child.hasOwnProperty("interactive")) {
+                pauseChild(child);
+            } else if ((child as IActor).interactive) {
+                interactiveActors.push((child as IActor));
+                (child as IActor).interactive = false;
+            }
         }
     }
+    pauseChild(container);
     return interactiveActors;
 }
