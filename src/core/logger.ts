@@ -7,7 +7,7 @@ export default class Logger {
         error: 3,
         disabled: 5,
     };
-    minimum = 0;
+    minimum = 2;
     namespace = "";
 
     constructor(namespace = "") {
