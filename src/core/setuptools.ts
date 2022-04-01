@@ -13,7 +13,7 @@ import IActor from "../interfaces/IActor";
 
 export function connectHTMLButton(func: () => void, elem: string) {
     const pauseButton: HTMLElement | null = document.getElementById(elem);
-    pauseButton && pauseButton.addEventListener('click', () => func, false);
+    pauseButton && pauseButton.addEventListener('click', func, false);
 }
 
 
