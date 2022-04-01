@@ -6,14 +6,17 @@ import IGameState from "../interfaces/IGameState";
 import IKeyboard from "../interfaces/IKeyboard";
 import IScene from "../interfaces/IScene";
 import IActor from "../interfaces/IActor";
+import Timer from "./timer";
 import LoadingScene from "../scenes/LoadingScene";
 import PauseScene from "../scenes/PauseScene";
 import GameOverScene from "../scenes/GameOverScene";
 import Scene from "../scenes/Scene";
 
 
-const KEYBOARD_DISABLE_FRAMES = 30.0;
-function getInitialGameState(): IGameState {
+export const KEYBOARD_DISABLE_FRAMES = 30.0;
+
+
+export function getInitialGameState(): IGameState {
     return {
         flags: {
             gameOver: false,
@@ -35,7 +38,7 @@ export class Game implements IGame {
     scene: IScene;
     prevScene: IScene;
     sprites: any = {};
-    timers: Array<[f: () => any, time: number]> = [];
+    timers: Timer[] = [];
     state = getInitialGameState();
     entryScene: typeof Scene;
     gameOverScene: typeof Scene = GameOverScene;
@@ -119,12 +122,13 @@ export class Game implements IGame {
         this.scene.mount(this.containers.root);
     }
 
-    startTimer(f: () => any, ms: number) {
-        return this.timers.push([f, ms]) - 1;
+    startTimer(f: () => any, ms: number, name?: string) {
+        return this.timers.push(new Timer(f, ms, name)) - 1;
     }
 
     stopTimer(i: number) {
-        this.timers[i][0] = () => {};
+        logger.debug(`Stopping timer for "${this.timers[i].name}"`);
+        this.timers[i] = new Timer();
     }
 }
 
@@ -136,16 +140,9 @@ function playTick(game: IGame, delta: number, keyboard: IKeyboard) {
     // Tick game timers
     let timersActive = false;
     for (let i = 0; i < game.timers.length; i++) {
-        if (game.timers[i][1] == 0.0) {
-            game.timers[i][0]();
-            game.timers[i][0] = () => {};
-            continue;
-        }
+        if (game.timers[i].called) continue;
         timersActive = true;
-        game.timers[i][1] -= delta;
-        if (game.timers[i][1] <= 0.0) {
-            game.timers[i][1] = 0.0;
-        }
+        game.timers[i].tick(delta);
     }
     if (!timersActive) {
         game.timers = [];
@@ -164,6 +161,7 @@ function pauseTick(game: IGame, delta: number, keyboard: IKeyboard) {
         game.pause(keyboard);
     }
 }
+
 
 function gameOverTick(game: IGame, delta: number, keyboard: IKeyboard) {
 }
