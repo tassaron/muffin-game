@@ -9,6 +9,9 @@ export default class RectangleActor extends Actor {
         super(game);
         let graphic: PIXI.Graphics;
         graphic = this.newGraphic(w, h, colour, outline);
+        if (game.renderer === undefined) {
+            logger.error("Tried to draw graphic before the Pixi renderer exists. To fix this, delay instantiation of this actor");
+        }
         this.texture = game.renderer.generateTexture(graphic);
         logger.debug(`Created primitive texture with dimensions ${this.texture.width}x${this.texture.height}`);
     }
