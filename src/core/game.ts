@@ -38,7 +38,7 @@ export default class Game implements IGame {
     containers: IGameContainers;
     scene: IScene;
     prevScene: IScene;
-    sprites: any = {};
+    sprites: {[key: string]: () => IActor} = {};
     timers: Timer[] = [];
     state = getInitialGameState();
     static entryScene: typeof Scene = MenuScene;

@@ -5,6 +5,7 @@ import Actor from "../actors/Actor";
 import AnimatedActor from '../actors/AnimatedActor';
 import TileActor from "../actors/TileActor";
 import { createGame, getTexture } from "../core/setuptools";
+import IActor from "../interfaces/IActor";
 
 
 const textures = [
@@ -14,7 +15,7 @@ const textures = [
 ];
 
 
-function afterPreload(loader: PIXI.Loader, resources: PIXI.utils.Dict<PIXI.LoaderResource>, sprites: any) {
+function afterPreload(loader: PIXI.Loader, resources: PIXI.utils.Dict<PIXI.LoaderResource>, sprites: {[key: string]: (game: IGame) => IActor} = {}) {
     // sprite
     sprites.fuel = (game: IGame) => new Actor(game, getTexture(resources.fuel.texture, "fuel"));
 
