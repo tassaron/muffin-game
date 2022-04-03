@@ -5,6 +5,7 @@ import Scene from "../scenes/Scene";
 import RectangleActor from "../actors/RectangleActor";
 import GridScene from "../grids/GridScene";
 import MenuScene, { newBackButton } from "../scenes/MenuScene";
+import TileActor from "../actors/TileActor";
 
 
 export default class PipesScene extends Scene {
@@ -15,7 +16,7 @@ export default class PipesScene extends Scene {
         
         // A pipe factory :P
         const newPipe = () => {
-            const pipe = game.sprites.pipe();
+            const pipe = (game.sprites.pipe() as TileActor);
             pipe.interactive = true;
             let y = 0;
             let x = 0;
