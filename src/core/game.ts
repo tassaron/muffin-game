@@ -1,7 +1,6 @@
 import * as PIXI from "pixi.js";
 import { logger } from "./logger";
 import IGame from "../interfaces/IGame";
-import IGameContainers from "../interfaces/IGameContainers";
 import IGameState from "../interfaces/IGameState";
 import IKeyboard from "../interfaces/IKeyboard";
 import IScene from "../interfaces/IScene";
@@ -33,9 +32,9 @@ export function getInitialGameState(): IGameState {
 export default class Game implements IGame {
     _app: PIXI.Application;
     renderer: PIXI.AbstractRenderer;
+    stage: PIXI.Container;
     width: number;
     height: number;
-    containers: IGameContainers;
     scene: IScene;
     prevScene: IScene;
     sprites: {[key: string]: () => IActor} = {};
@@ -54,15 +53,12 @@ export default class Game implements IGame {
         }
         this.width = app.view.width;
         this.height = app.view.height;
-
-        this.containers = {
-            root: app.stage,
-        };
+        this.stage = app.stage;
 
         logger.info(`Game created with dimensions ${this.width}x${this.height}`);
         this.scene = new Game.entryScene(this);
         this.prevScene = new Game.loadingScene(this);
-        this.scene.mount(this.containers.root);
+        this.scene.mount(this.stage);
 
         app.ticker.add((delta) => this.state.functions.tick(this, delta, keyboard));
     };
@@ -72,7 +68,7 @@ export default class Game implements IGame {
         this.scene = scene;
         if (scene.mounted === null) {
             try {
-                scene.mount(this.containers.root);
+                scene.mount(this.stage);
             } catch (TypeError) {
                 logger.error("Failed to add an undefined Actor to the container. The scene cannot mount.");
             }
@@ -95,7 +91,7 @@ export default class Game implements IGame {
         if (!this.state.flags.paused) {
             this.state.functions.tick = playTick;
             keyboard?.disable(KEYBOARD_DISABLE_FRAMES);
-            this.scene.unmount(this.containers.root);
+            this.scene.unmount(this.stage);
             this.changeScene(this.prevScene);
             return;
         }
@@ -119,7 +115,7 @@ export default class Game implements IGame {
         this.prevScene = new Game.loadingScene(this);
         logger.verbose("RESET GAME: Created entryscene; mounting root container");
         logger.verbose("RESET GAME: The prevScene is currently LoadingScene");
-        this.scene.mount(this.containers.root);
+        this.scene.mount(this.stage);
     }
 
     startTimer(f: () => void, ms: number, name?: string) {

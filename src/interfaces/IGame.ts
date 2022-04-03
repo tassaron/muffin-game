@@ -1,10 +1,10 @@
 import * as PIXI from "pixi.js";
-import IGameContainers from "./IGameContainers";
 import IGameState from "./IGameState";
 import IScene from "./IScene";
 import IKeyboard from "./IKeyboard";
 import Timer from "../core/timer";
 import IActor from "./IActor";
+
 
 export default interface IGame {
     _app: PIXI.Application,
@@ -12,7 +12,7 @@ export default interface IGame {
     width: number,
     height: number,
     sprites: {[key: string]: () => IActor},
-    containers: IGameContainers,
+    stage: PIXI.Container,
     state: IGameState,
     scene: IScene,
     prevScene: IScene,
