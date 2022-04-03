@@ -86,7 +86,7 @@ export function addNewMenuButtonsToScene(scene: MenuScene) {
             }
         }
     }
-    scene.beforeTick(tickExplosions);
+    scene.beforeTick.add(tickExplosions);
 }
 
 

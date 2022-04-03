@@ -3,7 +3,7 @@ import IActor from "../interfaces/IActor";
 import IGame from "../interfaces/IGame";
 import IKeyboard from "../interfaces/IKeyboard";
 import IScene from "../interfaces/IScene";
-import { SceneOptions, sceneConstructor, setInteractive, tick, mount, unmount, beforeMount, beforeUnmount, beforeTick } from "../scenes/Scene";
+import { SceneOptions, sceneConstructor, setInteractive, tick, mount, unmount, Lifecycle } from "../scenes/Scene";
 import Grid from "./Grid";
 
 
@@ -18,9 +18,9 @@ export default class GridScene extends Grid<IActor> implements IScene {
     subscenes: IScene[] = [];
     mounted: PIXI.Container | null = null;
     subcontainer: PIXI.Container | null = null;
-    _beforeMountFuncs: ((container: PIXI.Container) => void)[] = [];
-    _beforeUnmountFuncs: ((container: PIXI.Container) => void)[] = [];
-    _beforeTickFuncs: ((delta: number, keyboard: IKeyboard) => void)[] = [];
+    beforeMount = new Lifecycle<((container: PIXI.Container) => void)>();
+    beforeUnmount = new Lifecycle<((container: PIXI.Container) => void)>();
+    beforeTick = new Lifecycle<((delta: number, keyboard: IKeyboard) => void)>();
     _interactive = false;
 
     constructor(game: IGame, cols: number, rows: number, gridSize: number, options: GridSceneOptions = {}) {
@@ -99,15 +99,5 @@ export default class GridScene extends Grid<IActor> implements IScene {
             }
         }
         return Array.from(names);
-    }
-
-    beforeMount(func: (container: PIXI.Container) => void): (container: PIXI.Container) => void {
-        return beforeMount(this, func);
-    }
-    beforeUnmount(func: (container: PIXI.Container) => void): (container: PIXI.Container) => void {
-        return beforeUnmount(this, func);
-    }
-    beforeTick(func: (delta: number, keyboard: IKeyboard) => void): (delta: number, keyboard: IKeyboard) => void {
-        return beforeTick(this, func);
     }
 }

@@ -3,21 +3,26 @@ import IActor from "./IActor";
 import IGame from "./IGame";
 import IKeyboard from "./IKeyboard";
 
+
+export interface ILifecycle<T> {
+    funcs: T[],
+    add(func: T): T,
+    remove(func: T): boolean,
+}
+
+
 export default interface IScene {
     game: IGame,
     actors: {[name: string]: IActor},
-    mounted: PIXI.Container | null,
     subscenes: IScene[],
+    mounted: PIXI.Container | null,
     subcontainer: PIXI.Container | null,
     interactive: boolean,
-    beforeMount(func: (container: PIXI.Container) => void): (container: PIXI.Container) => void,
-    _beforeMountFuncs: ((container: PIXI.Container) => void)[],
-    beforeUnmount(func: (container: PIXI.Container) => void): (container: PIXI.Container) => void,
-    _beforeUnmountFuncs: ((container: PIXI.Container) => void)[],
-    beforeTick(func: (delta: number, keyboard: IKeyboard) => void): (delta: number, keyboard: IKeyboard) => void,
-    _beforeTickFuncs: (((delta: number, keyboard: IKeyboard) => void))[],
+    beforeUnmount: ILifecycle<(container: PIXI.Container) => void>,
+    beforeMount: ILifecycle<(container: PIXI.Container) => void>,
+    beforeTick: ILifecycle<(delta: number, keyboard: IKeyboard) => void>,
     mount(container: PIXI.Container): void,
     unmount(container: PIXI.Container): void,
-    addActors(actors: IActor[]): Array<string>,
     tick(delta: number, keyboard: IKeyboard): void,
+    addActors(actors: IActor[]): Array<string>,
 }
