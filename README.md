@@ -1,14 +1,15 @@
 # Muffin Game Engine
 A game engine for web-playable video games using [PixiJS](https://pixijs.io).
 
-This is alpha software. Until v1.0.0 I do not guarantee stability of the API.
+This is alpha software I'm making for [my online arcade](https://rainey.tech/arcade). The end-goal is to make something useable for other people too, but the design isn't finalized yet.
 
 ## Features
-- Game Scenes contain Actors or other Scenes inside of them
+- A simple game loop - scenes get mounted, actors get ticked
+- Scenes contain Actors or other Scenes inside of them
+- Actors are [PixiJS Sprites](https://pixijs.download/release/docs/PIXI.Sprite.html) that can be moved, tinted, scaled, rotated, etc.
 - Create Actors by extending base classes, using builder functions, and/or nesting them
-- Actors can be moved, tinted, scaled, rotated, translucent, etc.
-- Keyboard, mouse, and touchscreen support
-- No sound (yet!)
+- Control Actors with timers or temporary functions attached to the game loop (i.e., beforeTick)
+- PixiJS has event-based mouse/touchscreen support with accessibility options like tabbing between elements
 
 ## Getting Started
 - Fork the [muffin-game-js](https://github.com/tassaron/muffin-game-js) repo for a minimal JavaScript project using NPM.
