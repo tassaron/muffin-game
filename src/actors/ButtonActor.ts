@@ -5,6 +5,10 @@ import RectangleActor from "./RectangleActor";
 
 
 export default class Button extends Actor {
+    accessible = true;
+    accessibleTitle: string;
+    buttonMode = true;
+
     constructor(game: IGame, Shape: typeof RectangleActor, w: number, h: number, text="", style: null | PIXI.TextStyle = null, colour=0xffffff,  outline: number = 0x000000) {
         super(game);
         const shape = new Shape(game, w, h, colour, outline);
@@ -18,8 +22,6 @@ export default class Button extends Actor {
         pixi_text.anchor.y = 0.5;
         this.addChild(shape);
         shape.addChild(pixi_text);
-        (this as any).buttonMode = true;
+        this.accessibleTitle = text;
     }
-
-    //tick(delta: number) {}
 }
