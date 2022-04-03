@@ -59,12 +59,11 @@ export function pauseContainer(container: PIXI.Container) {
     const interactiveActors: IActor[] = [];
     const pauseChild = (container: IActor | PIXI.Container) => {
         for (let child of <(IActor | PIXI.Container)[]>container.children) {
-            if (!child.hasOwnProperty("interactive")) {
-                pauseChild(child);
-            } else if ((child as IActor).interactive) {
-                interactiveActors.push((child as IActor));
+            if ((child as IActor).interactive == true) {
                 (child as IActor).interactive = false;
+                interactiveActors.push((child as IActor));
             }
+            pauseChild(child);
         }
     }
     pauseChild(container);

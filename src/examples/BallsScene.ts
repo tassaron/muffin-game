@@ -1,4 +1,4 @@
-//import * as PIXI from "pixi.js";
+import * as PIXI from "pixi.js";
 import { logger } from "../core/logger";
 import IGame from "../interfaces/IGame";
 import Scene from "../scenes/Scene";
@@ -56,7 +56,16 @@ export default class BallsScene extends Scene {
         this.actors.fuel.y = this.game.height - 100;
         this.actors.fuel.anchor.x = 0.5;
         this.actors.fuel.anchor.y = 0.5;
-        // this.actors.fuel.blendMode = PIXI.BLEND_MODES.ADD;
+        
+        // Make another clickable fuel as a child of another actor
+        // this allows to test how nesting actors work in the engine. 
+        const fuel = game.sprites.fuel();
+        fuel.x = this.balls[0]._width / 2;
+        fuel.y = 0;
+        this.balls[0].addChild(fuel);
+        fuel.blendMode = PIXI.BLEND_MODES.ADD;
+        fuel.interactive = true;
+        fuel.pointertap = (e: Event) => {fuel.width += 10; logger.error("DDS")}
 
         logger.info("Created Balls scene");
     }
