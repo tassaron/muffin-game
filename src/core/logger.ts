@@ -4,7 +4,8 @@ export default class Logger {
         verbose: 0,
         debug: 1,
         info: 2,
-        error: 3,
+        warning: 3,
+        error: 4,
         disabled: 5,
     };
     minimum = 2;
@@ -32,6 +33,10 @@ export default class Logger {
     
     info(msg: string) {
         this.minimum < 3 ? console.info(this.formatMsg(msg)) : null;
+    }
+        
+    warning(msg: string) {
+        this.minimum < 3 ? console.error(this.formatMsg(msg)) : null;
     }
     
     error(msg: string) {
