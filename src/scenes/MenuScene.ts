@@ -25,8 +25,7 @@ export function newBackButton(game: IGame, scene: typeof Scene) {
     backButton.x = 60;
     backButton.y = 25;
     backButton.interactive = true;
-    const menuScene = new scene(game);
-    backButton.pointertap = (_: Event) => game.changeScene(menuScene);
+    backButton.pointertap = (_: Event) => game.changeScene(new scene(game));
     return backButton;
 }
 
