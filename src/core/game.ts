@@ -64,14 +64,24 @@ export default class Game implements IGame {
     };
 
     changeScene(scene: IScene) {
+        /* Assign current `scene` to `prevScene` & change current `scene`
+         * This method mounts the new scene to `game.stage` but does not unmount anything
+         * The new scene usually unmounts the prevScene in its beforeMount funcs
+         */
         this.prevScene = Object.assign(this.scene);
         this.scene = scene;
-        if (scene.mounted === null) {
-            try {
-                scene.mount(this.stage);
-            } catch (TypeError) {
+        if (scene.mounted !== null) {
+            logger.error("Tried to mount a scene that is already mounted.");
+        }
+        try {
+            scene.mount(this.stage);
+        } catch (e) {
+            if (e instanceof TypeError) {
                 logger.error("Failed to add an undefined Actor to the container. The scene cannot mount.");
+                return;
             }
+            logger.error(`${(e as Error).name}: ${(e as Error).message}`);
+            throw e;
         }
     }
 
