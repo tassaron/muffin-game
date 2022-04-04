@@ -138,11 +138,15 @@ export function unmount(scene: IScene, container: PIXI.Container) {
 }
 
 
-export function addActors(scene: IScene, actors: IActor[]): Array<string> {
+export function addActors(scene: IScene, actors: IActor[] | IActor): Array<string> {
     /* Allows to register multiple actors and returns the names assigned to them */
     const names: Set<string> = new Set();
     let randomName;
-    for (let actor of actors) {
+    if (!(typeof (actors as any)[Symbol.iterator] === 'function')) {
+        logger.warning("Argument to addActors is not iterable.")
+        actors = [<IActor>actors];
+    }
+    for (let actor of (actors as IActor[])) {
         while (true) {
             randomName = String.fromCharCode(97+Math.floor(Math.random() * 26))+ String(Math.random() * 1000);
             if (scene.actors.hasOwnProperty(randomName)) continue;
