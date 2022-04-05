@@ -3,7 +3,7 @@ import { logger } from "../core/logger";
 import IGame from "../interfaces/IGame";
 import Scene from "../scenes/Scene";
 import RectangleActor from "../actors/RectangleActor";
-import CollisionAction from "../actors/actions/CollisionAction";
+import RectangleCollisionAction from "../actors/actions/RectangleCollisionAction";
 import IKeyboard from "../interfaces/IKeyboard";
 import MenuScene, { newBackButton } from "../scenes/MenuScene";
 
@@ -11,11 +11,11 @@ import MenuScene, { newBackButton } from "../scenes/MenuScene";
 export class Ball extends RectangleActor {
     dx = 0.0;
     dy = 0.0;
-    collision: CollisionAction;
+    collision: RectangleCollisionAction;
 
     constructor(game: IGame) {
         super(game, 60, 60, 0x666666, null);
-        this.collision = new CollisionAction(this);
+        this.collision = new RectangleCollisionAction(this);
     }
 
     tick(delta: number, keyboard: IKeyboard) {
