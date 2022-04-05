@@ -2,29 +2,34 @@ import * as PIXI from "pixi.js";
 import { logger } from "../core/logger";
 import IGame from "../interfaces/IGame";
 import Scene from "../scenes/Scene";
-import EllipseActor from "../actors/EllipseActor";
 import RectangleActor from "../actors/RectangleActor";
-import CollisionActor from "../actors/CollisionActor";
+import CollisionAction from "../actors/actions/CollisionAction";
 import IKeyboard from "../interfaces/IKeyboard";
 import MenuScene, { newBackButton } from "../scenes/MenuScene";
 
 
-export class Ball extends CollisionActor {
+export class Ball extends RectangleActor {
     dx = 0.0;
     dy = 0.0;
+    collision: CollisionAction;
+
+    constructor(game: IGame) {
+        super(game, 60, 60, 0x666666, null);
+        this.collision = new CollisionAction(this);
+    }
 
     tick(delta: number, keyboard: IKeyboard) {
         super.tick(delta, keyboard);
         if (this.x < 0.0) {
             this.dx = Math.abs(this.dx);
-        } else if (this.x + this.collisionWidth > this.game.width) {
+        } else if (this.x + this.width > this.game.width) {
             this.dx = Math.abs(this.dx) * -1;
         }
         this.x += this.dx * delta;
 
         if (this.y < 0.0) {
             this.dy = Math.abs(this.dy);
-        } else if (this.y + this.collisionHeight > this.game.height) {
+        } else if (this.y + this.height > this.game.height) {
             this.dy = Math.abs(this.dy) * -1;
         }
         this.y += this.dy * delta;
@@ -42,8 +47,9 @@ export default class BallsScene extends Scene {
 
         // Create balls to bounce around the screen
         this.balls = [
-            new Ball(game, new EllipseActor(game, 30, 30, 0x666666, null), 60, 60),
-            new Ball(game, new RectangleActor(game, 60, 60, 0x666666, null), 60, 60)
+            new Ball(game),
+            new Ball(game),
+            new Ball(game),
         ]
         this.addActors(this.balls);
         this.placeBalls();
@@ -91,7 +97,7 @@ export default class BallsScene extends Scene {
             for (let j = 0; j < this.balls.length; j++) {
                 if (i == j || collisions.has(j)) continue;
                 collisions.add([i, j]);
-                if (this.balls[i].collides(this.balls[j])) {
+                if (this.balls[i].collision.collides(this.balls[j].collision)) {
                     this.balls[i].dx = -this.balls[i].dx;
                     this.balls[i].dy = -this.balls[i].dy;
                 }
