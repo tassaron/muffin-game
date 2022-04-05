@@ -1,18 +1,15 @@
 import IActorAction from "../../interfaces/IActorAction";
 import IActor from "../../interfaces/IActor";
-import IGame from "../../interfaces/IGame";
 import IKeyboard from "../../interfaces/IKeyboard";
 
 
 export default class WiggleAction implements IActorAction {
-    game: IGame;
     actor: IActor;
     _wiggle = 0;
     direction = 0;
     targetAngle = 3;
 
-    constructor(game: IGame, actor: IActor, targetAngle = 3) {
-        this.game = game;
+    constructor(actor: IActor, targetAngle = 3) {
         this.actor = actor;
         this.targetAngle = targetAngle;
     }
