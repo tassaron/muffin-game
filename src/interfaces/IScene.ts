@@ -25,4 +25,5 @@ export default interface IScene {
     unmount(container: PIXI.Container): void,
     tick(delta: number, keyboard: IKeyboard): void,
     addActors(actors: IActor[]): Array<string>,
+    resize(): void,
 }

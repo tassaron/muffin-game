@@ -7,7 +7,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Muffin Game Template</title>
+    <title>Muffin Game Engine Examples & Tests</title>
     <style>
         :root {
             --arcade-font: "Ubuntu", "Roboto", sans-serif;
@@ -27,7 +27,6 @@
         
         body {
             padding: 0;
-            margin: auto auto;
             background: #6d4a82;
             color: #eee;
             text-align: center;
@@ -35,16 +34,22 @@
             font-family: sans;
         }
         
-        canvas {
+        main {
+            margin: auto;
+        }
+
+        #game {
+            min-width: 400px;
+            min-height: 400px;
+            width: 90%;
+            height: 80vh;
+            /*width: 800px;
+            height: 600px;*/
             border: 8px dashed #4e315e;
             margin: auto;
             margin-top: 1rem;
             margin-bottom: 1rem;
             box-shadow: 0 0 0.75rem 0.375rem rgba(78, 49, 94, 0.3);
-        }
-        
-        main {
-            margin: auto;
         }
 
         #pause_button {
@@ -61,10 +66,10 @@
 
 <body>
     <main>
-        <h1>Muffin Game Template</h1>
-        <div id="help_text">Boilerplate for a simple HTML5 game using PixiJS</div>
         <div id="game"></div>
         <button type="button" id="pause_button">Pause</button>
+        <h1>Muffin Game Engine</h1>
+        <div id="help_text">examples and test scenes</div>
         <p>
             <small>
                 <a href="https://rainey.tech">made by tassaron</a> - <a href="https://github.com/tassaron/muffin-game">source code on github</a>

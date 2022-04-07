@@ -48,13 +48,25 @@ export default class Game implements IGame {
     constructor(app: PIXI.Application, sprites: {[key: string]: (game: IGame) => IActor}, keyboard: IKeyboard) {
         this._app = app;
         this.renderer = app.renderer;
+        this.stage = app.stage;
+        this.width = app.view.width;
+        this.height = app.view.height;
+
+        // Resize scenes when the renderer is resized
+        (app.renderer as any).on("resize", (width: number, height: number) => {
+            logger.info(`Renderer resized to ${width}x${height}`);
+            this.width = width;
+            this.height = height;
+            this.prevScene.resize();
+            this.scene.resize();
+        });
+
+        // Make sprite builders by giving this Game instance to all the functions
         for (let sprite of Object.keys(sprites)) {
             this.sprites[sprite] = (): IActor => sprites[sprite](this);
         }
-        this.width = app.view.width;
-        this.height = app.view.height;
-        this.stage = app.stage;
 
+        // Create scenes
         logger.info(`Game created with dimensions ${this.width}x${this.height}`);
         this.scene = new Game.entryScene(this);
         this.prevScene = new Game.loadingScene(this);

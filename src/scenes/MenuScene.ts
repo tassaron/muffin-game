@@ -30,7 +30,10 @@ export function newBackButton(game: IGame, scene: typeof Scene) {
 }
 
 
-export function addNewMenuButtonsToScene(scene: MenuScene) {
+export function newMenuButtons(scene: MenuScene) {
+    /*
+     * Creates menu buttons as actors on the given scene object
+    */
     scene.timer = null;
     scene.explosions = [
         undefined,
@@ -56,8 +59,6 @@ export function addNewMenuButtonsToScene(scene: MenuScene) {
     }
 
     for (let i = scene.buttons.length - 1; i > -1; i--) {
-        scene.buttons[i].x = scene.game.width / 2;
-        scene.buttons[i].y = (scene.game.height / 3)*2 - (scene.buttons.length * 50) + (i * 50);
         scene.buttons[i].interactive = true;
         scene.buttons[i].pointertap = (_: Event) => mountExplosion(i, (i * 25) - 25);
     }
@@ -89,6 +90,15 @@ export function addNewMenuButtonsToScene(scene: MenuScene) {
 }
 
 
+export function placeMenuButtons(scene: MenuScene) {
+    console.log(scene.game.width);
+    for (let i = scene.buttons.length - 1; i > -1; i--) {
+        scene.buttons[i].x = scene.game.width / 2;
+        scene.buttons[i].y = (scene.game.height / 3)*2 - (scene.buttons.length * 50) + (i * 50);
+    }
+}
+
+
 export default class MenuScene extends Scene {
     timer: null | number = null;
     sceneList: MenuSceneList = ExampleSceneList;
@@ -99,7 +109,8 @@ export default class MenuScene extends Scene {
 
     constructor(game: IGame) {
         super(game);
-        addNewMenuButtonsToScene(this);
+        newMenuButtons(this);
+        this.beforeMount.add(() => placeMenuButtons(this));
         logger.info("Created Menu scene");
     }
 }

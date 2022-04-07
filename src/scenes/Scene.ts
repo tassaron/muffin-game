@@ -66,6 +66,10 @@ export default class Scene implements IScene {
     addActors(actors: IActor[]): Array<string> {
         return addActors(this, actors);
     }
+
+    resize() {
+        return resize(this);
+    }
 }
 
 
@@ -158,4 +162,13 @@ export function addActors(scene: IScene, actors: IActor[] | IActor): Array<strin
     const nameArray = Array.from(names);
     logger.info(`Registered anonymous actors: ${nameArray}`)
     return nameArray;
+}
+
+
+export function resize(scene: IScene) {
+    if (!scene.mounted) return
+    logger.info(`Resized scene (${scene.game.width}x${scene.game.height}) using default behaviour (unmount/remount)`);
+    const container = scene.mounted;
+    scene.unmount(container);
+    scene.mount(container);
 }

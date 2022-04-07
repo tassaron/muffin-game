@@ -36,6 +36,10 @@ This is alpha software I'm making for [my online arcade](https://rainey.tech/arc
     - `pauseScene`: The default PauseScene is similar, but its tick function checks if the letter "P" is pressed, and it goes back to the prevScene when `game.state.flags.paused` is false.
 1. To create a custom menu scene, try "`Game.entryScene = MyCustomMenuScene`" before calling createGame()
 1. See [setup.js](https://github.com/tassaron/pipe-puzzle/blob/main/src/setup.js) from "Pipe Puzzle" for an example
+1. Look at `index.html` for an example of how to embed the game in a webpage
+  - Basically you need `<script src="bundle.js">` and a `<div id="game">` somewhere
+  - `/assets` must be accessible on the web
+  - Width and height is determined by CSS applied to the game div. Scenes are resized when the div is resized.
 
 ### TypeScript, developing the engine itself
 1. `npm install` to get the dependencies
@@ -46,11 +50,6 @@ This is alpha software I'm making for [my online arcade](https://rainey.tech/arc
     - Development build: `npm run dev`
     - Production build: `npm run build`
 
-### Integration on a website
-- Look at `index.html` for an example of how to embed the game in a webpage
-  - Basically you need `<script src="bundle.js">` and a `<div id="game">` somewhere
-  - `/assets` must be accessible on the web
--  Score-sending functionality can be adapted using functions `send_score` and `hide_send_score_button`. See `compat.rainey_arcade.js` for an example of how I'm doing this with [Rainey Arcade](https://rainey.tech)
 
 ### How it works, slightly more in depth
 

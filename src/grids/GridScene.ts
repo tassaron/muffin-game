@@ -1,9 +1,10 @@
 import * as PIXI from "pixi.js";
+import { logger } from "../core/logger";
 import IActor from "../interfaces/IActor";
 import IGame from "../interfaces/IGame";
 import IKeyboard from "../interfaces/IKeyboard";
 import IScene from "../interfaces/IScene";
-import { SceneOptions, sceneConstructor, setInteractive, tick, mount, unmount, Lifecycle } from "../scenes/Scene";
+import { Lifecycle, SceneOptions, sceneConstructor, setInteractive, tick, mount, unmount, resize } from "../scenes/Scene";
 import Grid from "./Grid";
 
 
@@ -99,5 +100,9 @@ export default class GridScene extends Grid<IActor> implements IScene {
             }
         }
         return Array.from(names);
+    }
+
+    resize() {
+        return resize(this);
     }
 }
