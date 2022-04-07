@@ -58,20 +58,23 @@ export default class BallsScene extends Scene {
         this.actors.fuel = game.sprites.fuel();
         this.actors.fuel.interactive = true;
         this.actors.fuel.pointertap = (_: Event) => game.gameOver();
-        this.actors.fuel.x = this.game.width - 100;
-        this.actors.fuel.y = this.game.height - 100;
         this.actors.fuel.anchor.x = 0.5;
         this.actors.fuel.anchor.y = 0.5;
         
         // Make another clickable fuel as a child of another actor
         // this allows to test how nesting actors work in the engine. 
         const fuel = game.sprites.fuel();
-        fuel.x = this.balls[0]._width / 2;
-        fuel.y = 0;
         this.balls[0].addChild(fuel);
         fuel.blendMode = PIXI.BLEND_MODES.ADD;
         fuel.interactive = true;
         fuel.pointertap = (e: Event) => {fuel.width += 10; logger.error("DDS")}
+
+        this.beforeMount.add((container: PIXI.Container) => {
+            this.actors.fuel.x = this.game.width - 100;
+            this.actors.fuel.y = this.game.height - 100;
+            fuel.x = this.balls[0]._width / 2;
+            fuel.y = 0;
+        });
 
         logger.info("Created Balls scene");
     }

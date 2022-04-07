@@ -25,13 +25,13 @@ export default class PauseScene extends Scene {
     }
 
     mount(container: PIXI.Container) {
-        super.mount(container);
         this.pauser.pause(container);
+        super.mount(container);
     }
 
     unmount(container: PIXI.Container) {
-        super.unmount(container);
         this.pauser.unpause();
+        super.unmount(container);
     }
 }
 
