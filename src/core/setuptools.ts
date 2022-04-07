@@ -18,6 +18,21 @@ export function connectHTMLButton(func: () => void, elem: string) {
 
 
 export class GameOptions {
+    applicationOptions: PIXI.IApplicationOptions = {
+        resizeTo: ((id) => {
+            /* Default div has the CSS id "game"
+             * Set this property to whatever HTMLElement you want
+            */
+            const div = document.getElementById(id);
+            if (div === null) {
+                throw new MissingHTMLElementError(id);
+            }
+            return div;
+        })("game"),
+        backgroundColor: 0xbcbcf2,
+        backgroundAlpha: 1,
+        resolution: 1,
+    };
     assetPrefix? = "assets/";
     gameClass? = Game;
     postInit?: (game: IGame) => void = (game: IGame) => {
@@ -47,11 +62,10 @@ export function createGame(
         )
     {
     /*
-    *  Create the canvas
+     * Create the Pixi Application object which creates the canvas and ticker
     */
-    const app = new PIXI.Application({
-        width: 800, height: 600, backgroundColor: 0xbcbcf2, useContextAlpha: false, resolution: 1,
-    });
+    if (!options.applicationOptions) options.applicationOptions = DefaultGameOptions.applicationOptions;
+    const app = new PIXI.Application(options.applicationOptions);
     function loadingText(app: PIXI.Application): (delta: number) => void {
         const skewStyle = new PIXI.TextStyle({
             fontFamily: 'var(--arcade-font)',
@@ -89,11 +103,12 @@ export function createGame(
     const textTicker = loadingText(app);
     app.ticker.add(textTicker);
 
-    const gameDiv: HTMLElement | null = document.getElementById("game");
-    if (gameDiv === null) {
-        throw new MissingHTMLElementError("game");
+    // Add renderer view to DOM
+    if (app.resizeTo instanceof Window) {
+        app.resizeTo.document.body.appendChild(app.view);
+    } else {
+        app.resizeTo.appendChild(app.view);
     }
-    gameDiv.appendChild(app.view);
 
     /*
     *  Preload assets
@@ -111,7 +126,7 @@ export function createGame(
 
             if (!options.gameClass) options.gameClass = DefaultGameOptions.gameClass;
             const game = new options.gameClass!(app, sprites, keyboard);
-            addEventListeners(gameDiv);
+            addEventListeners(app.view);
 
             if (!options.postInit) options.postInit = DefaultGameOptions.postInit;
             options.postInit!(game);
