@@ -8,7 +8,7 @@ import { Pauser } from "./PauseScene";
 
 
 export default class GameOverScene extends Scene {
-    pauser: Pauser | null = null;
+    pauser = new Pauser();
 
     constructor(game: IGame) {
         super(game, {});
@@ -25,13 +25,12 @@ export default class GameOverScene extends Scene {
     }
 
     mount(container: PIXI.Container) {
-        this.pauser = new Pauser(container);
-        this.pauser.pause();
         super.mount(container);
+        this.pauser.pause(container);
     }
 
     unmount(container: PIXI.Container) {
-        this.pauser?.unpause();
         super.unmount(container);
+        this.pauser.unpause();
     }
 }

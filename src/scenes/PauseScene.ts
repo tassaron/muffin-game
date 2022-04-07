@@ -8,46 +8,45 @@ import IActor from "../interfaces/IActor";
 
 
 export default class PauseScene extends Scene {
-    pauser: Pauser | null = null;
+    pauser = new Pauser();
 
     constructor(game: IGame) {
         super(game, {});
 
         this.actors.text = new Button(game, RectangleActor, 399, 133, "Paused");
+        this.beforeMount.add((container: PIXI.Container) => {
+            this.actors.text.x = this.game.width / 2;
+            this.actors.text.y = this.game.height / 2;
+        });
         this.actors.text.anchor.x = 0.5;
         this.actors.text.anchor.y = 0.5;
-        this.actors.text.x = game.width / 2;
-        this.actors.text.y = game.height / 2;
 
         logger.info("Created Pause scene");
     }
 
     mount(container: PIXI.Container) {
-        this.pauser = new Pauser(container);
-        this.pauser.pause();
         super.mount(container);
+        this.pauser.pause(container);
     }
 
     unmount(container: PIXI.Container) {
-        this.pauser?.unpause();
         super.unmount(container);
+        this.pauser.unpause();
     }
 }
 
 
 export class Pauser {
     interactiveActors: Array<IActor> = [];
-    container: PIXI.Container;
+    mounted: PIXI.Container | null = null;
 
-    constructor(container: PIXI.Container) {
-        this.container = container;
-    }
-
-    pause() {
-        this.interactiveActors = pauseContainer(this.container);
+    pause(container: PIXI.Container) {
+        this.mounted = container;
+        this.interactiveActors = pauseContainer(container);
     }
 
     unpause() {
+        if (!this.mounted) logger.warning("Unpaused a scene that was not paused.");
         for (let child of this.interactiveActors) {
             child.interactive = true;
         }
