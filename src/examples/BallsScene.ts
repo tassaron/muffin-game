@@ -22,14 +22,14 @@ export class Ball extends RectangleActor {
         super.tick(delta, keyboard);
         if (this.x < 0.0) {
             this.dx = Math.abs(this.dx);
-        } else if (this.x + this.width > this.game.width) {
+        } else if (this.x + this.width > this.game.width(100)) {
             this.dx = Math.abs(this.dx) * -1;
         }
         this.x += this.dx * delta;
 
         if (this.y < 0.0) {
             this.dy = Math.abs(this.dy);
-        } else if (this.y + this.height > this.game.height) {
+        } else if (this.y + this.height > this.game.height(100)) {
             this.dy = Math.abs(this.dy) * -1;
         }
         this.y += this.dy * delta;
@@ -70,8 +70,8 @@ export default class BallsScene extends Scene {
         fuel.pointertap = (e: Event) => {fuel.width += 10; logger.error("DDS")}
 
         this.beforeMount.add((container: PIXI.Container) => {
-            this.actors.fuel.x = this.game.width - 100;
-            this.actors.fuel.y = this.game.height - 100;
+            this.actors.fuel.x = this.game.width(100) - 100;
+            this.actors.fuel.y = this.game.height(100) - 100;
             fuel.x = this.balls[0]._width / 2;
             fuel.y = 0;
         });
@@ -81,8 +81,8 @@ export default class BallsScene extends Scene {
 
     placeBalls() {
         for (let ball of this.balls) {
-            ball.x = Math.min(Math.max(60, Math.random() * this.game.width), this.game.width - 60);
-            ball.y = Math.min(Math.max(60, Math.random() * this.game.height), this.game.height - 60);
+            ball.x = Math.min(Math.max(60, Math.random() * this.game.width(100)), this.game.width(100) - 60);
+            ball.y = Math.min(Math.max(60, Math.random() * this.game.height(100)), this.game.height(100) - 60);
             ball.dx = Math.max(Math.random() * 10, 1.0);
             ball.dy = Math.max(Math.random() * 10, 1.0);
         }

@@ -15,8 +15,8 @@ export default class PauseScene extends Scene {
 
         this.actors.text = new Button(game, RectangleActor, 399, 133, "Paused");
         this.beforeMount.add((container: PIXI.Container) => {
-            this.actors.text.x = this.game.width / 2;
-            this.actors.text.y = this.game.height / 2;
+            this.actors.text.x = this.game.width(50);
+            this.actors.text.y = this.game.height(50);
         });
         this.actors.text.anchor.x = 0.5;
         this.actors.text.anchor.y = 0.5;

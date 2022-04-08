@@ -29,12 +29,18 @@ export function getInitialGameState(): IGameState {
 }
 
 
+function getDimensionPercent(element: HTMLCanvasElement, dimension: "width" | "height", percentage: number): number {
+    percentage = Math.min(Math.max(percentage, 0), 100);
+    return element[dimension] * (percentage / 100);
+}
+
+
 export default class Game implements IGame {
     _app: PIXI.Application;
     renderer: PIXI.AbstractRenderer;
     stage: PIXI.Container;
-    width: number;
-    height: number;
+    width: (percentage: number) => number;
+    height: (percentage: number) => number;
     scene: IScene;
     prevScene: IScene;
     sprites: {[key: string]: () => IActor} = {};
@@ -50,15 +56,12 @@ export default class Game implements IGame {
         this._app = app;
         this.renderer = app.renderer;
         this.stage = app.stage;
-        this.width = app.view.width;
-        this.height = app.view.height;
+        this.width = (percentage: number) => getDimensionPercent(app.view, "width", percentage);
+        this.height = (percentage: number) => getDimensionPercent(app.view, "height", percentage);
 
         // Resize scenes when the renderer is resized
         (app.renderer as any).on("resize", (width: number, height: number) => {
             logger.info(`Renderer resized to ${width}x${height}`);
-            this.width = width;
-            this.height = height;
-            this.prevScene.resize();
             this.scene.resize();
         });
 
@@ -81,11 +84,10 @@ export default class Game implements IGame {
          * This method mounts the new scene to `game.stage` but does not unmount anything
          * The new scene usually unmounts the prevScene in its beforeMount funcs
          */
-        this.prevScene = Object.assign(this.scene);
+        this.prevScene = this.scene;
         this.scene = scene;
         if (scene.mounted !== null) {
-            logger.warning("Tried to mount a scene that is already mounted.");
-            return;
+            logger.debug("Remounted a scene.");
         }
         try {
             scene.mount(this.stage);

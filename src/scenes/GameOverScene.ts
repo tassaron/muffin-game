@@ -20,8 +20,8 @@ export default class GameOverScene extends Scene {
         this.actors.text.pointertap = (_: Event) => game.reset();
 
         this.beforeMount.add((container: PIXI.Container) => {
-            this.actors.text.x = game.width / 2;
-            this.actors.text.y = game.height / 2;
+            this.actors.text.x = game.width(100) / 2;
+            this.actors.text.y = game.height(100) / 2;
         });
 
         logger.info("Created GameOver scene");

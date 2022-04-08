@@ -9,8 +9,8 @@ import IActor from "./IActor";
 export default interface IGame {
     _app: PIXI.Application,
     renderer: PIXI.AbstractRenderer,
-    width: number,
-    height: number,
+    width: (percentage: number) => number,
+    height: (percentage: number) => number,
     sprites: {[key: string]: () => IActor},
     stage: PIXI.Container,
     state: IGameState,

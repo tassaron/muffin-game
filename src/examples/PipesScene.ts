@@ -38,8 +38,8 @@ export default class PipesScene extends Scene {
         grid.subcontainer = new PIXI.Container();
         this.subscenes = [grid];
         this.beforeMount.add((container: PIXI.Container) => {
-            grid.subcontainer!.x = (this.game.width - (grid.gridSize * grid.rows)) / 4;
-            grid.subcontainer!.y = this.game.height > 500 ? this.game.height / 16 : this.game.height / 32;
+            grid.subcontainer!.x = (this.game.width(100) - (grid.gridSize * grid.rows)) / 4;
+            grid.subcontainer!.y = this.game.height(100) > 500 ? this.game.height(8) : this.game.height(4);
         });
 
         logger.info("Created Pipes scene");

@@ -50,8 +50,8 @@ export function newMenuButtons(scene: MenuScene) {
     const mountExplosion = (i: number, offset: number) => {
         if (scene.mounted && scene.explosions[i] === undefined) {
             const explosion = scene.game.sprites.explosion();
-            explosion.x = scene.game.width / 2;
-            explosion.y = (scene.game.height / 2) + offset;
+            explosion.x = scene.game.width(100) / 2;
+            explosion.y = (scene.game.height(100) / 2) + offset;
             scene.mounted.addChild(explosion);
             scene.mounted.removeChild(scene.buttons[i]);
             scene.explosions[i] = scene.addActors([explosion])[0];
@@ -91,10 +91,10 @@ export function newMenuButtons(scene: MenuScene) {
 
 
 export function placeMenuButtons(scene: MenuScene) {
-    console.log(scene.game.width);
+    console.log(scene.game.width(100));
     for (let i = scene.buttons.length - 1; i > -1; i--) {
-        scene.buttons[i].x = scene.game.width / 2;
-        scene.buttons[i].y = (scene.game.height / 3)*2 - (scene.buttons.length * 50) + (i * 50);
+        scene.buttons[i].x = scene.game.width(100) / 2;
+        scene.buttons[i].y = (scene.game.height(100) / 3)*2 - (scene.buttons.length * 50) + (i * 50);
     }
 }
 
