@@ -39,6 +39,7 @@ export default class Game implements IGame {
     prevScene: IScene;
     sprites: {[key: string]: () => IActor} = {};
     timers: Timer[] = [];
+    _prevTick = playTick;
     state = getInitialGameState();
     static entryScene: typeof Scene = MenuScene;
     static gameOverScene: typeof Scene = GameOverScene;
@@ -112,13 +113,14 @@ export default class Game implements IGame {
         this.state.flags.paused = !this.state.flags.paused;
         
         if (!this.state.flags.paused) {
-            this.state.functions.tick = playTick;
+            this.state.functions.tick = this._prevTick;
             keyboard?.disable(KEYBOARD_DISABLE_FRAMES);
             this.scene.unmount(this.stage);
             this.changeScene(this.prevScene);
             return;
         }
         keyboard?.disable(KEYBOARD_DISABLE_FRAMES);
+        this._prevTick = Object.assign(this.state.functions.tick);
         this.state.functions.tick = pauseTick;
         this.changeScene(new Game.pauseScene(this));
     }
