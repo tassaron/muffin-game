@@ -76,7 +76,11 @@ export default class Scene implements IScene {
 export function sceneConstructor(scene: IScene, game: IGame, options: SceneOptions) {
     scene.game = game;
     scene.beforeMount.funcs = options?.doUnmountPrevious? [
-        (container: PIXI.Container) => {scene.game.prevScene.unmount(container)},
+        (container: PIXI.Container) => {
+            if (!(scene.game.prevScene == scene)) {
+                scene.game.prevScene.unmount(container)
+            }
+        },
     ] : [];
 }
 
@@ -167,8 +171,12 @@ export function addActors(scene: IScene, actors: IActor[] | IActor): Array<strin
 
 export function resize(scene: IScene) {
     if (!scene.mounted) return
-    logger.info(`Resized scene (${scene.game.width}x${scene.game.height}) using default behaviour (unmount/remount)`);
+    logger.info(`Resized scene (${scene.game.width(100)}x${scene.game.height(100)}) using default behaviour (unmount/remount)`);
     const container = scene.mounted;
     scene.unmount(container);
+    if (scene.game.prevScene.mounted) {
+        scene.game.prevScene.unmount(container);
+        scene.game.prevScene.mount(container);
+    }
     scene.mount(container);
 }
