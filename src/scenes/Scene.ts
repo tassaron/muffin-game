@@ -175,8 +175,7 @@ export function resize(scene: IScene) {
     const container = scene.mounted;
     scene.unmount(container);
     if (scene.game.prevScene.mounted) {
-        scene.game.prevScene.unmount(container);
-        scene.game.prevScene.mount(container);
+        scene.game.prevScene.resize()
     }
     scene.mount(container);
 }
