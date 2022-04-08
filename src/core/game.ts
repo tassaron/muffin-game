@@ -87,7 +87,8 @@ export default class Game implements IGame {
         this.prevScene = this.scene;
         this.scene = scene;
         if (scene.mounted !== null) {
-            logger.debug("Remounted a scene.");
+            logger.info("Tried to remount a scene that is already mounted.");
+            return
         }
         try {
             scene.mount(this.stage);
