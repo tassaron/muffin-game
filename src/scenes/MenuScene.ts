@@ -91,7 +91,6 @@ export function newMenuButtons(scene: MenuScene) {
 
 
 export function placeMenuButtons(scene: MenuScene) {
-    console.log(scene.game.width(100));
     for (let i = scene.buttons.length - 1; i > -1; i--) {
         scene.buttons[i].x = scene.game.width(100) / 2;
         scene.buttons[i].y = (scene.game.height(100) / 3)*2 - (scene.buttons.length * 50) + (i * 50);
