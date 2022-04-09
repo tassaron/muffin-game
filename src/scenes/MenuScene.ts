@@ -9,12 +9,14 @@ import Button from "../actors/ButtonActor";
 import BallsScene from "../examples/BallsScene";
 import PipesScene from "../examples/PipesScene";
 import BallsAndPipesScene from "../examples/BallsAndPipesScene";
+import ScrollScene from "../examples/ScrollScene";
 
 
 export let ExampleSceneList: MenuSceneList = [
     [BallsScene, "Balls Scene"],
     [PipesScene, "Pipes Scene"],
     [BallsAndPipesScene, "Balls + Pipes Scene"],
+    [ScrollScene, "Scroll Test"],
 ];
 export type MenuSceneOption = [typeof Scene, string];
 export type MenuSceneList = MenuSceneOption[];
