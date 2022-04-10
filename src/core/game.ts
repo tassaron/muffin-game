@@ -21,6 +21,8 @@ export function getInitialGameState(): IGameState {
         flags: {
             gameOver: false,
             paused: false,
+            doGameOver: true,
+            doPause: true,
         },
         functions: {
             tick: playTick,
@@ -103,18 +105,17 @@ export default class Game implements IGame {
     }
 
     gameOver(keyboard: IKeyboard | undefined = undefined) {
-        if (!this.state.flags.gameOver) {
-            this.state.flags.gameOver = true;
-            keyboard?.disable(KEYBOARD_DISABLE_FRAMES);
-            this.state.functions.tick = gameOverTick;
-            this.changeScene(new Game.gameOverScene(this));
-        }
+        if (this.state.flags.gameOver || !this.state.flags.doGameOver) return;
+        this.state.flags.gameOver = true;
+        keyboard?.disable(KEYBOARD_DISABLE_FRAMES);
+        this.state.functions.tick = gameOverTick;
+        this.changeScene(new Game.gameOverScene(this));
     }
 
     pause(keyboard: IKeyboard | undefined = undefined) {
-        if (this.state.flags.gameOver) return
+        if (this.state.flags.gameOver || !this.state.flags.doPause) return;
         this.state.flags.paused = !this.state.flags.paused;
-        
+
         if (!this.state.flags.paused) {
             this.state.functions.tick = this._prevTick;
             keyboard?.disable(KEYBOARD_DISABLE_FRAMES);
