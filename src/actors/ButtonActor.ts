@@ -4,7 +4,7 @@ import Actor from "./Actor";
 import RectangleActor from "./RectangleActor";
 
 
-export default class Button extends Actor {
+export default class ButtonActor extends Actor {
     accessible = true;
     accessibleTitle: string;
     buttonMode = true;
