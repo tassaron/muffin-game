@@ -10,6 +10,8 @@ import BallsScene from "../examples/BallsScene";
 import PipesScene from "../examples/PipesScene";
 import BallsAndPipesScene from "../examples/BallsAndPipesScene";
 import ScrollScene from "../examples/ScrollScene";
+import ModalTestScene from "../examples/ModalScene";
+
 
 
 export let ExampleSceneList: MenuSceneList = [
@@ -17,6 +19,7 @@ export let ExampleSceneList: MenuSceneList = [
     [PipesScene, "Pipes Scene"],
     [BallsAndPipesScene, "Balls + Pipes Scene"],
     [ScrollScene, "Scroll Test"],
+    [ModalTestScene, "Modal Test"],
 ];
 export type MenuSceneOption = [typeof Scene, string];
 export type MenuSceneList = MenuSceneOption[];
