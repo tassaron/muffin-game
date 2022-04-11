@@ -6,66 +6,85 @@ import Scene from "../scenes/Scene";
 import MenuScene, { newBackButton } from "../scenes/MenuScene";
 import { logger } from "../core/logger";
 import { Pauser } from "../scenes/PauseScene";
+import IActor from "../interfaces/IActor";
 
 
 export default class ModalTestScene extends Scene {
     constructor(game: IGame) {
         super(game);
-        this.actors.backButton = newBackButton(game, MenuScene);
-        this.actors.button = new ButtonActor(game, RectangleActor, 200, 100, "Open Modal");
+        this.actors.backButton = newBackButton(game, ModalBackScene);
+        this.actors.button1 = new ButtonActor(game, RectangleActor, 400, 100, "Modal w/ 0 options");
+        this.actors.button2 = new ButtonActor(game, RectangleActor, 400, 100, "Modal w/ 1 option");
 
         // Anchor everything by centrepoint
-        this.actors.button.anchor.x = 0.5;
-        this.actors.button.anchor.y = 0.5;
+        this.actors.button1.anchor.x = 0.5;
+        this.actors.button1.anchor.y = 0.5;
+        this.actors.button2.anchor.x = 0.5;
+        this.actors.button2.anchor.y = 0.5;
 
-        // Clicking button opens modal popup
-        this.actors.button.interactive = true;
-        this.actors.button.pointertap = () => {
-            game.changeScene(new ModalPopupScene(game));
+        // Clicking buttons open modal popups
+        this.actors.button1.interactive = true;
+        this.actors.button1.pointertap = () => {
+            game.changeScene(new ModalPopupScene(game, "This is a modal", null));
+        };
+        this.actors.button2.interactive = true;
+        this.actors.button2.pointertap = () => {
+            game.changeScene(new ModalPopupScene(game, "This is another modal", new ButtonActor(game, RectangleActor, 200, 100, "OK")));
         };
     }
 
     mount(container: PIXI.Container) {
         super.mount(container);
         // Place actors in mount() so they get repositioned when the scene is resized
-        this.actors.button.x = this.game.width(50);
-        this.actors.button.y = this.game.height(50);
+        this.actors.button1.x = this.game.width(50);
+        this.actors.button1.y = this.game.height(50) - 50;
+        this.actors.button2.x = this.game.width(50);
+        this.actors.button2.y = this.game.height(50) + 50;
     }
 }
 
 
 export class ModalPopupScene extends Scene {
+    static buttonWidth = 200;
+    static buttonHeight = 100;
     pauser = new Pauser();
+    actionId: string | null;
 
-    constructor(game: IGame, width?: number, height?: number, colour?: number, outline?: number) {
+    constructor(game: IGame, text: string, actionButton: ButtonActor | null, width?: number, height?: number, colour?: number, outline?: number) {
         super(game, {});
         if (width === undefined) width = game.width(40);
         if (height === undefined) height = game.height(40);
 
+        this.actionId = null;
         this.actors.backdrop = this.newBackdrop();
-        this.actors.rectangle = new RectangleActor(game, width, height, colour, outline);
-        this.actors.button = new ButtonActor(game, RectangleActor, 200, 100, "Close");
+        this.actors.mainWindow = new RectangleActor(game, width, height, colour, outline);
+        this.actors.closeButton = new ButtonActor(game, RectangleActor, ModalPopupScene.buttonWidth, ModalPopupScene.buttonHeight, "Close");
+        if (actionButton != null) this.actionId = this.addActors([actionButton])[0];
 
         // Anchor everything by centrepoint
-        this.actors.rectangle.anchor.x = 0.5;
-        this.actors.rectangle.anchor.y = 0.5;
-        this.actors.button.anchor.x = 0.5;
-        this.actors.button.anchor.y = 0.5;
+        this.actors.mainWindow.anchor.x = 0.5;
+        this.actors.mainWindow.anchor.y = 0.5;
+        this.actors.closeButton.anchor.x = 0.5;
+        this.actors.closeButton.anchor.y = 0.5;
+        if (this.actionId != null) {
+            this.actors[this.actionId].anchor.x = 0.5;
+            this.actors[this.actionId].anchor.y = 0.5;
+        }
 
-        // Clicking button closes the popup
-        this.actors.button.interactive = true;
-        this.actors.button.pointertap = () => {
+        // Clicking close button closes the popup
+        this.actors.closeButton.interactive = true;
+        this.actors.closeButton.pointertap = () => {
             game.changeScene(game.prevScene);
             this.mounted && this.unmount(this.mounted);
         };
 
         // Disable pausing when this scene is mounted!
         // Also pause anything still on-screen from previous scene
-        this.beforeMount.add((container: PIXI.Container)=> {
+        this.beforeMount.add((container: PIXI.Container) => {
             game.state.flags.doPause = false;
             this.pauser.pause(container);
         });
-        this.beforeUnmount.add(()=> {
+        this.beforeUnmount.add(() => {
             game.state.flags.doPause = true;
             this.pauser.unpause();
         });
@@ -80,10 +99,19 @@ export class ModalPopupScene extends Scene {
             this.actors.backdrop = this.newBackdrop();
         }
         super.mount(container);
-        this.actors.rectangle.x = this.game.width(50);
-        this.actors.rectangle.y = this.game.height(50);
-        this.actors.button.x = this.game.width(50);
-        this.actors.button.y = this.game.height(50);
+        this.actors.mainWindow.x = this.game.width(50);
+        this.actors.mainWindow.y = this.game.height(50);
+
+        // Place buttons relative to each other
+        const yPos = (this.actors.mainWindow.y + (this.actors.mainWindow.height / 2)) - (ModalPopupScene.buttonHeight * 1.5);
+        let xPos = this.actors.mainWindow.x;
+        if (this.actionId) {
+            this.actors[this.actionId].x = xPos - ModalPopupScene.buttonWidth;
+            this.actors[this.actionId].y = yPos;
+            xPos = xPos + ModalPopupScene.buttonWidth;
+        }
+        this.actors.closeButton.x = xPos;
+        this.actors.closeButton.y = yPos;
     }
 
     newBackdrop() {
@@ -92,5 +120,20 @@ export class ModalPopupScene extends Scene {
         backdrop.x = 0;
         backdrop.y = 0;
         return backdrop
+    }
+}
+
+
+export class ModalBackScene extends ModalPopupScene {
+    constructor(game: IGame) {
+        const button = new ButtonActor(game, RectangleActor, 200, 100, "OK");
+        super(game, "Are you sure you want to quit?", button);
+
+        // Clicking OK goes back to menu
+        button.interactive = true;
+        button.pointertap = (_: Event) => {
+            if (game.prevScene.mounted) game.prevScene.unmount(game.prevScene.mounted);
+            game.changeScene(new MenuScene(game));
+        };
     }
 }
