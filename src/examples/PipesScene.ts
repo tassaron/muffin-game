@@ -12,7 +12,7 @@ export default class PipesScene extends Scene {
     constructor(game: IGame) {
         super(game);
 
-        this.actors.backButton = newBackButton(game, MenuScene);
+        this.actors.backButton = newBackButton(game, (game) => new MenuScene(game));
         
         // A pipe factory :P
         const newPipe = () => {

@@ -48,7 +48,7 @@ class OuterScrollScene extends Scene {
         topWall.addChild(upArrow);
         bottomWall.addChild(downArrow);
         this.subcontainer.addChild(leftWall, rightWall, topWall, bottomWall);
-        this.actors.backButton = newBackButton(game, MenuScene);
+        this.actors.backButton = newBackButton(game, (game) => new MenuScene(game));
 
         this.beforeMount.add(() => {
             if (topWall.width != game.width(100)) {

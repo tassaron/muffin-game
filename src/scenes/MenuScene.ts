@@ -11,6 +11,7 @@ import PipesScene from "../examples/PipesScene";
 import BallsAndPipesScene from "../examples/BallsAndPipesScene";
 import ScrollScene from "../examples/ScrollScene";
 import ModalTestScene from "../examples/ModalScene";
+import IScene from "../interfaces/IScene";
 
 
 
@@ -25,12 +26,12 @@ export type MenuSceneOption = [typeof Scene, string];
 export type MenuSceneList = MenuSceneOption[];
 
 
-export function newBackButton(game: IGame, scene: typeof Scene) {
+export function newBackButton(game: IGame, scene: (game: IGame) => IScene) {
     const backButton = new Button(game, RectangleActor, 120, 50, "< Back");
     backButton.x = 60;
     backButton.y = 25;
     backButton.interactive = true;
-    backButton.pointertap = (_: Event) => game.changeScene(new scene(game));
+    backButton.pointertap = (_: Event) => game.changeScene(scene(game));
     return backButton;
 }
 

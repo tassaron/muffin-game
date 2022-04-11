@@ -43,7 +43,7 @@ export default class BallsScene extends Scene {
     constructor(game: IGame) {
         super(game);
 
-        this.actors.backButton = newBackButton(game, MenuScene);
+        this.actors.backButton = newBackButton(game, (game) => new MenuScene(game));
 
         // Create balls to bounce around the screen
         this.balls = [

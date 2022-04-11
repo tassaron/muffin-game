@@ -7,12 +7,13 @@ import Scene from "../scenes/Scene";
 import MenuScene, { newBackButton } from "../scenes/MenuScene";
 import { logger } from "../core/logger";
 import { Pauser } from "../scenes/PauseScene";
+import IScene from "../interfaces/IScene";
 
 
 export default class ModalTestScene extends Scene {
     constructor(game: IGame) {
         super(game);
-        this.actors.backButton = newBackButton(game, ModalBackScene);
+        this.actors.backButton = newBackButton(game, (game) => new SceneChangingModalPopupScene(game, (game) => new MenuScene(game)));
         this.actors.button1 = new ButtonActor(game, RectangleActor, 500, 100, "Wide modal w/ 0 options");
         this.actors.button2 = new ButtonActor(game, RectangleActor, 500, 100, "Tall modal w/ 1 option");
 
@@ -154,8 +155,8 @@ export class ModalPopupScene extends Scene {
 }
 
 
-export class ModalBackScene extends ModalPopupScene {
-    constructor(game: IGame) {
+export class SceneChangingModalPopupScene extends ModalPopupScene {
+    constructor(game: IGame, scene: (game: IGame) => IScene) {
         const button = new ButtonActor(game, RectangleActor, 200, 100, "OK");
         super(game, "Are you sure you want to quit?", button);
 
@@ -163,7 +164,7 @@ export class ModalBackScene extends ModalPopupScene {
         button.interactive = true;
         button.pointertap = (_: Event) => {
             if (game.prevScene.mounted) game.prevScene.unmount(game.prevScene.mounted);
-            game.changeScene(new MenuScene(game));
+            game.changeScene(scene(game));
         };
     }
 }
