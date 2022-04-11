@@ -39,6 +39,7 @@ export class ModalPopupScene extends Scene {
         if (width === undefined) width = game.width(40);
         if (height === undefined) height = game.height(40);
 
+        this.actors.backdrop = this.newBackdrop();
         this.actors.rectangle = new RectangleActor(game, width, height, colour, outline);
         this.actors.button = new ButtonActor(game, RectangleActor, 200, 100, "Close");
 
@@ -61,10 +62,24 @@ export class ModalPopupScene extends Scene {
     }
 
     mount(container: PIXI.Container) {
+        // Create new backdrop if screen size got larger
+        if (this.actors.backdrop.width < this.game.width(100) || this.actors.backdrop.height < this.game.height(100)) {
+            super.unmount(container);
+            this.actors.backdrop = this.newBackdrop();
+        }
         super.mount(container);
         this.actors.rectangle.x = this.game.width(50);
         this.actors.rectangle.y = this.game.height(50);
         this.actors.button.x = this.game.width(50);
         this.actors.button.y = this.game.height(50);
+    }
+
+    newBackdrop() {
+        // adding 4px to compensate for some padding/outline
+        const backdrop = new RectangleActor(this.game, this.game.width(100) + 4, this.game.height(100) + 4, 0x000000, null);
+        backdrop.alpha = 0.3;
+        backdrop.x = 0;
+        backdrop.y = 0;
+        return backdrop
     }
 }
