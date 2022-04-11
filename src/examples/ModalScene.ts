@@ -108,11 +108,14 @@ export class ModalPopupScene extends Scene {
 
         // Disable pausing when this scene is mounted!
         // Also pause anything still on-screen from previous scene
+        const prevTick = Object.assign(game.state.functions.tick);
         this.beforeMount.add((container: PIXI.Container) => {
+            game.state.functions.tick = () => {};
             game.state.flags.doPause = false;
             this.pauser.pause(container);
         });
         this.beforeUnmount.add(() => {
+            game.state.functions.tick = prevTick;
             game.state.flags.doPause = true;
             this.pauser.unpause();
         });
@@ -156,14 +159,15 @@ export class ModalPopupScene extends Scene {
 
 
 export class SceneChangingModalPopupScene extends ModalPopupScene {
-    constructor(game: IGame, scene: (game: IGame) => IScene) {
+    constructor(game: IGame, scene: (game: IGame) => IScene, width?: number, height?: number) {
         const button = new ButtonActor(game, RectangleActor, 200, 100, "OK");
-        super(game, "Are you sure you want to quit?", button);
+        super(game, "Are you sure you want to quit?", button, width, height);
 
         // Clicking OK goes back to menu
         button.interactive = true;
         button.pointertap = (_: Event) => {
-            if (game.prevScene.mounted) game.prevScene.unmount(game.prevScene.mounted);
+            game.changeScene(game.prevScene);
+            this.mounted && this.unmount(this.mounted);
             game.changeScene(scene(game));
         };
     }
