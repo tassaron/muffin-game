@@ -147,7 +147,7 @@ export class ModalPopupScene extends Scene {
 
     newBackdrop() {
         const backdrop = new RectangleActor(this.game, this.game.width(100), this.game.height(100), 0x000000, null);
-        backdrop.alpha = 0.3;
+        backdrop.alpha = 0.5;
         backdrop.x = 0;
         backdrop.y = 0;
         return backdrop
