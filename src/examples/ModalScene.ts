@@ -13,8 +13,8 @@ export default class ModalTestScene extends Scene {
     constructor(game: IGame) {
         super(game);
         this.actors.backButton = newBackButton(game, ModalBackScene);
-        this.actors.button1 = new ButtonActor(game, RectangleActor, 400, 100, "Modal w/ 0 options");
-        this.actors.button2 = new ButtonActor(game, RectangleActor, 400, 100, "Modal w/ 1 option");
+        this.actors.button1 = new ButtonActor(game, RectangleActor, 500, 100, "Wide modal w/ 0 options");
+        this.actors.button2 = new ButtonActor(game, RectangleActor, 500, 100, "Tall modal w/ 1 option");
 
         // Anchor everything by centrepoint
         this.actors.button1.anchor.x = 0.5;
@@ -25,15 +25,22 @@ export default class ModalTestScene extends Scene {
         // Clicking buttons open modal popups
         this.actors.button1.interactive = true;
         this.actors.button1.pointertap = () => {
-            game.changeScene(new ModalPopupScene(game, "This is a modal", null));
+            game.changeScene(new ModalPopupScene(
+                game,
+                "This is a modal.",
+                null,
+                game.width(65),
+            ));
         };
         this.actors.button2.interactive = true;
         this.actors.button2.pointertap = () => {
             game.changeScene(new ModalPopupScene(
                 game,
                 "This is another modal, this time with extra long unnecessarily long text which definitely wraps onto multiple lines!",
-                new ButtonActor(game, RectangleActor, 200, 100, "OK"))
-            );
+                new ButtonActor(game, RectangleActor, 200, 100, "OK"),
+                game.width(25),
+                game.height(80),
+            ));
         };
     }
 
@@ -129,9 +136,9 @@ export class ModalPopupScene extends Scene {
         const yPos = (this.actors.mainWindow.y + (this.actors.mainWindow.height / 2)) - ModalPopupScene.buttonHeight;
         let xPos = this.actors.mainWindow.x;
         if (this.actionId) {
-            this.actors[this.actionId].x = xPos - ModalPopupScene.buttonWidth;
+            this.actors[this.actionId].x = xPos - (ModalPopupScene.buttonWidth * 0.66);
             this.actors[this.actionId].y = yPos;
-            xPos = xPos + ModalPopupScene.buttonWidth;
+            xPos = xPos + (ModalPopupScene.buttonWidth * 0.66);
         }
         this.actors.closeButton.x = xPos;
         this.actors.closeButton.y = yPos;
