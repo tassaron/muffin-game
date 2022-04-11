@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import Actor from "../actors/Actor";
 import ButtonActor from "../actors/ButtonActor";
 import RectangleActor from "../actors/RectangleActor";
 import IGame from "../interfaces/IGame";
@@ -6,7 +7,6 @@ import Scene from "../scenes/Scene";
 import MenuScene, { newBackButton } from "../scenes/MenuScene";
 import { logger } from "../core/logger";
 import { Pauser } from "../scenes/PauseScene";
-import IActor from "../interfaces/IActor";
 
 
 export default class ModalTestScene extends Scene {
@@ -29,7 +29,11 @@ export default class ModalTestScene extends Scene {
         };
         this.actors.button2.interactive = true;
         this.actors.button2.pointertap = () => {
-            game.changeScene(new ModalPopupScene(game, "This is another modal", new ButtonActor(game, RectangleActor, 200, 100, "OK")));
+            game.changeScene(new ModalPopupScene(
+                game,
+                "This is another modal, this time with extra long unnecessarily long text which definitely wraps onto multiple lines!",
+                new ButtonActor(game, RectangleActor, 200, 100, "OK"))
+            );
         };
     }
 
@@ -49,15 +53,31 @@ export class ModalPopupScene extends Scene {
     static buttonHeight = 100;
     pauser = new Pauser();
     actionId: string | null;
+    textWidth: number;
 
     constructor(game: IGame, text: string, actionButton: ButtonActor | null, width?: number, height?: number, colour?: number, outline?: number) {
         super(game, {});
         if (width === undefined) width = game.width(40);
         if (height === undefined) height = game.height(40);
 
-        this.actionId = null;
+        // MainWindow and backdrop (behind the window)
         this.actors.backdrop = this.newBackdrop();
         this.actors.mainWindow = new RectangleActor(game, width, height, colour, outline);
+
+        this.actors.text = new Actor(game);
+        this.actors.text.anchor.x = 0.5;
+        this.actors.text.anchor.y = 0.5;
+        const textStyle = new PIXI.TextStyle({
+            align: "center",
+            wordWrap: true,
+            wordWrapWidth: this.actors.mainWindow.width - ModalPopupScene.buttonWidth,
+        });
+        const textSprite = new PIXI.Text(text, textStyle);
+        this.textWidth = PIXI.TextMetrics.measureText(text, textStyle).width;
+        this.actors.text.addChild(textSprite);
+
+        // Button actors
+        this.actionId = null;
         this.actors.closeButton = new ButtonActor(game, RectangleActor, ModalPopupScene.buttonWidth, ModalPopupScene.buttonHeight, "Close");
         if (actionButton != null) this.actionId = this.addActors([actionButton])[0];
 
@@ -71,7 +91,7 @@ export class ModalPopupScene extends Scene {
             this.actors[this.actionId].anchor.y = 0.5;
         }
 
-        // Clicking close button closes the popup
+        // Clicking close button closes the popup represented by this scene
         this.actors.closeButton.interactive = true;
         this.actors.closeButton.pointertap = () => {
             game.changeScene(game.prevScene);
@@ -102,8 +122,11 @@ export class ModalPopupScene extends Scene {
         this.actors.mainWindow.x = this.game.width(50);
         this.actors.mainWindow.y = this.game.height(50);
 
+        this.actors.text.x = this.actors.mainWindow.x - (this.textWidth / 2);
+        this.actors.text.y = this.actors.mainWindow.y - ModalPopupScene.buttonHeight;
+
         // Place buttons relative to each other
-        const yPos = (this.actors.mainWindow.y + (this.actors.mainWindow.height / 2)) - (ModalPopupScene.buttonHeight * 1.5);
+        const yPos = (this.actors.mainWindow.y + (this.actors.mainWindow.height / 2)) - ModalPopupScene.buttonHeight;
         let xPos = this.actors.mainWindow.x;
         if (this.actionId) {
             this.actors[this.actionId].x = xPos - ModalPopupScene.buttonWidth;
