@@ -64,6 +64,7 @@ export class ModalPopupScene extends Scene {
     mount(container: PIXI.Container) {
         // Create new backdrop if screen size got larger
         if (this.actors.backdrop.width < this.game.width(100) || this.actors.backdrop.height < this.game.height(100)) {
+            logger.debug(`Re-creating modal backdrop (was ${this.actors.backdrop.width}x${this.actors.backdrop.height})`);
             super.unmount(container);
             this.actors.backdrop = this.newBackdrop();
         }
@@ -75,8 +76,7 @@ export class ModalPopupScene extends Scene {
     }
 
     newBackdrop() {
-        // adding 4px to compensate for some padding/outline
-        const backdrop = new RectangleActor(this.game, this.game.width(100) + 4, this.game.height(100) + 4, 0x000000, null);
+        const backdrop = new RectangleActor(this.game, this.game.width(100), this.game.height(100), 0x000000, null);
         backdrop.alpha = 0.3;
         backdrop.x = 0;
         backdrop.y = 0;

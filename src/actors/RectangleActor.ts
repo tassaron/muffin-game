@@ -17,15 +17,13 @@ export default class RectangleActor extends Actor {
     }
 
     newGraphic(w: number, h: number, colour: number, outline: number | null) {
-        let outlineThickness: number;
-        const graphic = new PIXI.Graphics();
+        let outlineThickness = 4;
         if (outline === null) {
-            outlineThickness = 0;
-            graphic.lineStyle(outlineThickness, 0x000000)
-        } else {
-            outlineThickness = 4;
-            graphic.lineStyle(outlineThickness, outline)
+            outlineThickness =  0;
+            outline = 0x000000;
         }
+        const graphic = new PIXI.Graphics();
+        if (outlineThickness) graphic.lineStyle(outlineThickness, outline)
         graphic.beginFill(colour)
         this.drawShape(graphic, w, h, outlineThickness);
         return graphic;
