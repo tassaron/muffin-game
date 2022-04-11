@@ -5,6 +5,7 @@ import IGame from "../interfaces/IGame";
 import Scene from "../scenes/Scene";
 import MenuScene, { newBackButton } from "../scenes/MenuScene";
 import { logger } from "../core/logger";
+import { Pauser } from "../scenes/PauseScene";
 
 
 export default class ModalTestScene extends Scene {
@@ -34,6 +35,8 @@ export default class ModalTestScene extends Scene {
 
 
 export class ModalPopupScene extends Scene {
+    pauser = new Pauser();
+
     constructor(game: IGame, width?: number, height?: number, colour?: number, outline?: number) {
         super(game, {});
         if (width === undefined) width = game.width(40);
@@ -57,14 +60,22 @@ export class ModalPopupScene extends Scene {
         };
 
         // Disable pausing when this scene is mounted!
-        this.beforeMount.add(()=> {game.state.flags.doPause = false});
-        this.beforeUnmount.add(()=> {game.state.flags.doPause = true});
+        // Also pause anything still on-screen from previous scene
+        this.beforeMount.add((container: PIXI.Container)=> {
+            game.state.flags.doPause = false;
+            this.pauser.pause(container);
+        });
+        this.beforeUnmount.add(()=> {
+            game.state.flags.doPause = true;
+            this.pauser.unpause();
+        });
     }
 
     mount(container: PIXI.Container) {
         // Create new backdrop if screen size got larger
         if (this.actors.backdrop.width < this.game.width(100) || this.actors.backdrop.height < this.game.height(100)) {
             logger.debug(`Re-creating modal backdrop (was ${this.actors.backdrop.width}x${this.actors.backdrop.height})`);
+            logger.info("Re-mounting modal popup so backdrop is at the bottom.");
             super.unmount(container);
             this.actors.backdrop = this.newBackdrop();
         }
