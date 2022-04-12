@@ -30,20 +30,29 @@ class OuterScrollScene extends Scene {
         const rightWall = vertWall();
         let topWall = horiWall();
         let bottomWall = horiWall();
-        const arrow = (angle: number) => {
-            const arrow = new TriangleActor(game, game.width(2), game.width(2), 0xffffff, 0x6600ee);
+
+        const newTriangle = () => {
+            return new TriangleActor(game, game.width(4), game.height(4), 0xffffff, 0x6600ee);
+        }
+        const newArrow = (angle: number) => {
+            const arrow = newTriangle();
             arrow.angle = angle;
             arrow.anchor.x = 0.5;
             arrow.anchor.y = 0.5;
             return arrow
         };
-        const upArrow = arrow(180);
-        const downArrow = arrow(0);
-
-        upArrow.interactive = true;
-        downArrow.interactive = true;
-        upArrow.pointertap = () => this.scrollY(1);
-        downArrow.pointertap = () => this.scrollY(-1);
+        const newNavArrow = (direction: "x" | "y", amt: number) => {
+            const arrow = newArrow(direction == "y" ? amt > 0 ? 180 : 0 : amt > 0 ? 270 : 90);
+            arrow.interactive = true;
+            if (direction == "y") {
+                arrow.pointertap = (e: Event) => this.scrollY(amt);
+            } else {
+                // this.scrollX(amt);
+            }
+            return arrow;
+        };
+        let upArrow = newNavArrow("y", 1);
+        let downArrow = newNavArrow("y", -1);
 
         topWall.addChild(upArrow);
         bottomWall.addChild(downArrow);
@@ -58,6 +67,8 @@ class OuterScrollScene extends Scene {
                 bottomWall = horiWall();
                 this.subcontainer.addChild(topWall);
                 this.subcontainer.addChild(bottomWall);
+                upArrow = newNavArrow("y", 1);
+                downArrow = newNavArrow("y", -1);
                 topWall.addChild(upArrow);
                 bottomWall.addChild(downArrow);
             }
