@@ -45,7 +45,7 @@ class OuterScrollScene extends Scene {
             const arrow = newArrow(direction == "y" ? amt > 0 ? 180 : 0 : amt > 0 ? 270 : 90);
             arrow.interactive = true;
             if (direction == "y") {
-                arrow.pointertap = (e: Event) => this.scrollY(amt);
+                arrow.onTap((e: Event) => this.scrollY(amt));
             } else {
                 // this.scrollX(amt);
             }
@@ -133,14 +133,14 @@ export default class ScrollScene extends Scene {
             pipe.interactive = true;
             let y = 0;
             let x = 0;
-            pipe.pointertap = (_: Event) => {
+            pipe.onTap((_: Event) => {
                 pipe.setFrame[y][x]?.();
                 x++;
                 if (x == pipe.gridRectangle.cols - 1) {
                     x = 0;
                     y = y == 1 ? 0 : 1;
                 }
-            }
+            });
             return pipe;
         }
 

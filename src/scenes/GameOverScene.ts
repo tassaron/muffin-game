@@ -17,7 +17,7 @@ export default class GameOverScene extends Scene {
         this.actors.text.anchor.x = 0.5;
         this.actors.text.anchor.y = 0.5;
         this.actors.text.interactive = true;
-        this.actors.text.pointertap = (_: Event) => game.reset();
+        this.actors.text.onTap((_: Event) => game.reset());
 
         this.beforeMount.add((container: PIXI.Container) => {
             this.actors.text.x = game.width(100) / 2;

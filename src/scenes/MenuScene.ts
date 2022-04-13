@@ -31,7 +31,7 @@ export function newBackButton(game: IGame, scene: (game: IGame) => IScene) {
     backButton.x = 60;
     backButton.y = 25;
     backButton.interactive = true;
-    backButton.pointertap = (_: Event) => game.changeScene(scene(game));
+    backButton.onTap((_: Event) => game.changeScene(scene(game)));
     return backButton;
 }
 
@@ -66,7 +66,7 @@ export function newMenuButtons(scene: MenuScene) {
 
     for (let i = scene.buttons.length - 1; i > -1; i--) {
         scene.buttons[i].interactive = true;
-        scene.buttons[i].pointertap = (_: Event) => mountExplosion(i, (i * 25) - 25);
+        scene.buttons[i].onTap((_: Event) => mountExplosion(i, (i * 25) - 25));
     }
     scene.addActors(scene.buttons);
     

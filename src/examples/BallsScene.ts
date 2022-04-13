@@ -57,7 +57,7 @@ export default class BallsScene extends Scene {
         // A clickable sprite that triggers a game over
         this.actors.fuel = game.sprites.fuel();
         this.actors.fuel.interactive = true;
-        this.actors.fuel.pointertap = (_: Event) => game.gameOver();
+        this.actors.fuel.onTap((_: Event) => game.gameOver());
         this.actors.fuel.anchor.x = 0.5;
         this.actors.fuel.anchor.y = 0.5;
         
@@ -67,7 +67,7 @@ export default class BallsScene extends Scene {
         this.balls[0].addChild(fuel);
         fuel.blendMode = PIXI.BLEND_MODES.ADD;
         fuel.interactive = true;
-        fuel.pointertap = (e: Event) => {fuel.width += 10; logger.error("DDS")}
+        fuel.onTap((e: Event) => {fuel.width += 10; logger.error("DDS")});
 
         this.beforeMount.add((container: PIXI.Container) => {
             this.actors.fuel.x = this.game.width(100) - 100;

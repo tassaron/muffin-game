@@ -7,7 +7,6 @@ import IKeyboard from "../interfaces/IKeyboard";
 export default class Actor extends PIXI.Sprite implements IActor {
     game: IGame;
     interactive = false;
-    pointertap?(e: Event): void;
 
     constructor(game: IGame, texture: PIXI.Texture | undefined = undefined) {
         super(texture);
@@ -15,4 +14,12 @@ export default class Actor extends PIXI.Sprite implements IActor {
     }
 
     tick(delta: number, keyboard: IKeyboard) {}
+
+    onTap(callback: (e: Event) => void) {
+        (this as any).pointertap = callback;
+    }
+
+    onHover(overCallback: (e: Event) => void, outCallback: (e: Event) => void) {
+
+    }
 }

@@ -25,16 +25,16 @@ export default class ModalTestScene extends Scene {
 
         // Clicking buttons open modal popups
         this.actors.button1.interactive = true;
-        this.actors.button1.pointertap = () => {
+        this.actors.button1.onTap(() => {
             game.changeScene(new ModalPopupScene(
                 game,
                 "This is a modal.",
                 null,
                 game.width(65),
             ));
-        };
+        });
         this.actors.button2.interactive = true;
-        this.actors.button2.pointertap = () => {
+        this.actors.button2.onTap(() => {
             game.changeScene(new ModalPopupScene(
                 game,
                 "This is another modal, this time with extra long unnecessarily long text which definitely wraps onto multiple lines!",
@@ -42,7 +42,7 @@ export default class ModalTestScene extends Scene {
                 game.width(25),
                 game.height(80),
             ));
-        };
+        });
     }
 
     mount(container: PIXI.Container) {
@@ -101,10 +101,10 @@ export class ModalPopupScene extends Scene {
 
         // Clicking close button closes the popup represented by this scene
         this.actors.closeButton.interactive = true;
-        this.actors.closeButton.pointertap = () => {
+        this.actors.closeButton.onTap(() => {
             game.changeScene(game.prevScene);
             this.mounted && this.unmount(this.mounted);
-        };
+        });
 
         // Disable pausing when this scene is mounted!
         // Also pause anything still on-screen from previous scene
@@ -165,10 +165,10 @@ export class SceneChangingModalPopupScene extends ModalPopupScene {
 
         // Clicking OK goes back to menu
         button.interactive = true;
-        button.pointertap = (_: Event) => {
+        button.onTap((_: Event) => {
             game.changeScene(game.prevScene);
             this.mounted && this.unmount(this.mounted);
             game.changeScene(scene(game));
-        };
+        });
     }
 }
