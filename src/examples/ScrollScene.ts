@@ -46,6 +46,10 @@ class OuterScrollScene extends Scene {
             arrow.interactive = true;
             if (direction == "y") {
                 arrow.onTap((e: Event) => this.scrollY(amt));
+                arrow.onHover(
+                    () => console.log("in"),
+                    () => console.log("out")
+                );
             } else {
                 // this.scrollX(amt);
             }

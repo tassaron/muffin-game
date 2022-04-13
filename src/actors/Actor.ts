@@ -20,6 +20,7 @@ export default class Actor extends PIXI.Sprite implements IActor {
     }
 
     onHover(overCallback: (e: Event) => void, outCallback: (e: Event) => void) {
-
+        (this as any).pointerover = overCallback;
+        (this as any).pointerout = outCallback;
     }
 }
