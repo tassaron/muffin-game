@@ -45,10 +45,15 @@ class OuterScrollScene extends Scene {
             const arrow = newArrow(direction == "y" ? amt > 0 ? 180 : 0 : amt > 0 ? 270 : 90);
             arrow.interactive = true;
             if (direction == "y") {
-                arrow.onTap((e: Event) => this.scrollY(amt));
+                arrow.onTap(
+                    () => this.scrollY(amt)
+                );
                 arrow.onHover(
-                    () => console.log("in"),
-                    () => console.log("out")
+                    () => this.scrollY((amt^4) - 1),
+                    () => {
+                        this.scrollYDest = this.scrollContainer.y;
+                        this.scrollYSpeed = 0;
+                    },
                 );
             } else {
                 // this.scrollX(amt);
