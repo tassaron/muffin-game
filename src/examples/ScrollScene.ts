@@ -8,6 +8,7 @@ import MenuScene, { newBackButton } from "../scenes/MenuScene";
 import TileActor from "../actors/TileActor";
 import TriangleActor from "../actors/TriangleActor";
 import IKeyboard from "../interfaces/IKeyboard";
+import IActor from "../interfaces/IActor";
 
 
 class OuterScrollScene extends Scene {
@@ -21,15 +22,35 @@ class OuterScrollScene extends Scene {
 
     constructor(game: IGame, container: PIXI.Container, scrollStepSize: number) {
         super(game);
+
+        const buildScrollControl = (actor: IActor, direction: "x" | "y", amt: number) => {
+            actor.interactive = true;
+            if (direction == "y") {
+                actor.onTap(
+                    () => this.scrollY(amt)
+                );
+                actor.onHover(
+                    () => this.scrollY((amt^4) - 1),
+                    () => {
+                        this.scrollYDest = this.scrollContainer.y;
+                        this.scrollYSpeed = 0;
+                    },
+                );
+            } else {
+                // this.scrollX(amt);
+            }
+            return actor;
+        }
+
         this.scrollContainer = container;
         this.scrollStepSize = scrollStepSize;
         this.scrollYMax = game.height(50);
         const vertWall = () => new RectangleActor(game, game.width(5), game.height(100), 0x000000, null);
-        const horiWall = () => new RectangleActor(game, game.width(100), game.height(5), 0x000000, null);
+        const horiWall = (amt: number) => buildScrollControl(new RectangleActor(game, game.width(100), game.height(5), 0x000000, null), "y", amt);
         const leftWall = vertWall();
         const rightWall = vertWall();
-        let topWall = horiWall();
-        let bottomWall = horiWall();
+        let topWall = horiWall(1);
+        let bottomWall = horiWall(-1);
 
         const newTriangle = () => {
             return new TriangleActor(game, game.width(4), game.height(4), 0xffffff, 0x6600ee);
@@ -41,25 +62,8 @@ class OuterScrollScene extends Scene {
             arrow.anchor.y = 0.5;
             return arrow
         };
-        const newNavArrow = (direction: "x" | "y", amt: number) => {
-            const arrow = newArrow(direction == "y" ? amt > 0 ? 180 : 0 : amt > 0 ? 270 : 90);
-            arrow.interactive = true;
-            if (direction == "y") {
-                arrow.onTap(
-                    () => this.scrollY(amt)
-                );
-                arrow.onHover(
-                    () => this.scrollY((amt^4) - 1),
-                    () => {
-                        this.scrollYDest = this.scrollContainer.y;
-                        this.scrollYSpeed = 0;
-                    },
-                );
-            } else {
-                // this.scrollX(amt);
-            }
-            return arrow;
-        };
+        const newNavArrow = (direction: "x" | "y", amt: number) => 
+            buildScrollControl(newArrow(direction == "y" ? amt > 0 ? 180 : 0 : amt > 0 ? 270 : 90), direction, amt);
         let upArrow = newNavArrow("y", 1);
         let downArrow = newNavArrow("y", -1);
 
@@ -72,8 +76,8 @@ class OuterScrollScene extends Scene {
             if (topWall.width != game.width(100)) {
                 this.subcontainer.removeChild(topWall);
                 this.subcontainer.removeChild(bottomWall);
-                topWall = horiWall();
-                bottomWall = horiWall();
+                topWall = horiWall(1);
+                bottomWall = horiWall(-1);
                 this.subcontainer.addChild(topWall);
                 this.subcontainer.addChild(bottomWall);
                 upArrow = newNavArrow("y", 1);
