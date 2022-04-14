@@ -14,11 +14,17 @@ import IActor from "../interfaces/IActor";
 class OuterScrollScene extends Scene {
     subcontainer = new PIXI.Container();
     scrollContainer: PIXI.Container;
-    scrollYMax: number;
     scrollStepSize: number;
-    scrollYDest = 0;
+
     scrollYSpeed = 0;
+    scrollYMax: number;
+    scrollYDest = 0;
     prevScrollYDest = 0;
+    
+    scrollXSpeed = 0;
+    scrollXMax: number;
+    scrollXDest = 0;
+    prevScrollXDest = 0;
 
     constructor(game: IGame, container: PIXI.Container, scrollStepSize: number) {
         super(game);
@@ -37,7 +43,16 @@ class OuterScrollScene extends Scene {
                     },
                 );
             } else {
-                // this.scrollX(amt);
+                actor.onTap(
+                    () => this.scrollX(amt)
+                );
+                actor.onHover(
+                    () => this.scrollX((amt^4) - 1),
+                    () => {
+                        this.scrollXDest = this.scrollContainer.x;
+                        this.scrollXSpeed = 0;
+                    },
+                );
             }
             return actor;
         }
@@ -45,10 +60,11 @@ class OuterScrollScene extends Scene {
         this.scrollContainer = container;
         this.scrollStepSize = scrollStepSize;
         this.scrollYMax = game.height(50);
-        const vertWall = () => new RectangleActor(game, game.width(5), game.height(100), 0x000000, null);
+        this.scrollXMax = game.width(50);
+        const vertWall = (amt: number) => buildScrollControl(new RectangleActor(game, game.width(5), game.height(100), 0x000000, null), "x", amt);
         const horiWall = (amt: number) => buildScrollControl(new RectangleActor(game, game.width(100), game.height(5), 0x000000, null), "y", amt);
-        const leftWall = vertWall();
-        const rightWall = vertWall();
+        let leftWall = vertWall(1);
+        let rightWall = vertWall(-1);
         let topWall = horiWall(1);
         let bottomWall = horiWall(-1);
 
@@ -63,16 +79,35 @@ class OuterScrollScene extends Scene {
             return arrow
         };
         const newNavArrow = (direction: "x" | "y", amt: number) => 
-            buildScrollControl(newArrow(direction == "y" ? amt > 0 ? 180 : 0 : amt > 0 ? 270 : 90), direction, amt);
+            buildScrollControl(newArrow(direction == "y" ? amt > 0 ? 180 : 0 : amt > 0 ? 90: 270), direction, amt);
         let upArrow = newNavArrow("y", 1);
         let downArrow = newNavArrow("y", -1);
+        let leftArrow = newNavArrow("x", 1);
+        let rightArrow = newNavArrow("x", -1);
 
+        leftWall.addChild(leftArrow);
+        rightWall.addChild(rightArrow);
         topWall.addChild(upArrow);
         bottomWall.addChild(downArrow);
         this.subcontainer.addChild(leftWall, rightWall, topWall, bottomWall);
         this.actors.backButton = newBackButton(game, (game) => new MenuScene(game));
 
         this.beforeMount.add(() => {
+            // Recreate left/right walls if needed
+            if (leftWall.height != game.height(100)) {
+                this.subcontainer.removeChild(leftWall);
+                this.subcontainer.removeChild(rightWall);
+                leftWall = vertWall(1);
+                rightWall = vertWall(-1);
+                this.subcontainer.addChild(leftWall);
+                this.subcontainer.addChild(rightWall);
+                leftArrow = newNavArrow("x", 1);
+                rightArrow = newNavArrow("x", -1);
+                leftWall.addChild(leftArrow);
+                rightWall.addChild(rightArrow);
+            }
+
+            // Recreate top/bottom walls if needed
             if (topWall.width != game.width(100)) {
                 this.subcontainer.removeChild(topWall);
                 this.subcontainer.removeChild(bottomWall);
@@ -85,24 +120,29 @@ class OuterScrollScene extends Scene {
                 topWall.addChild(upArrow);
                 bottomWall.addChild(downArrow);
             }
+
+            leftWall.x = 0;
+            leftWall.y = 0;
+            leftArrow.x = leftArrow.width / 2;
+            leftArrow.y = leftWall.height / 2;
+            rightWall.x = game.width(100) - rightWall.width;
+            rightWall.y = 0;
+            rightArrow.x = rightArrow.width / 2;
+            rightArrow.y = rightWall.height / 2;
             topWall.x = 0;
             topWall.y = 0;
             upArrow.x = topWall.width / 2;
             upArrow.y = upArrow.height / 2;
-            downArrow.x = bottomWall.width / 2;
-            downArrow.y = downArrow.height / 2;
-            leftWall.x = 0;
-            leftWall.y = 0;
-            rightWall.x = game.width(100) - rightWall.width;
-            rightWall.y = 0;
             bottomWall.x = 0;
             bottomWall.y = game.height(100) - bottomWall.height;
+            downArrow.x = bottomWall.width / 2;
+            downArrow.y = downArrow.height / 2;
         });
     }
 
     scrollY(factor: number) {
         this.scrollYSpeed = Math.max(Math.min(this.scrollYSpeed + factor, 4), -4);
-        logger.debug(`Scroll speed: ${this.scrollYSpeed}`);
+        logger.debug(`Scroll Y speed: ${this.scrollYSpeed}`);
         if (this.scrollYSpeed == 0) return;
         this.prevScrollYDest = Number(this.scrollYDest);
         this.scrollYDest = Math.min(
@@ -113,7 +153,41 @@ class OuterScrollScene extends Scene {
         );
     }
 
+    scrollX(factor: number) {
+        this.scrollXSpeed = Math.max(Math.min(this.scrollXSpeed + factor, 4), -4);
+        logger.debug(`Scroll X speed: ${this.scrollXSpeed}`);
+        if (this.scrollXSpeed == 0) return;
+        this.prevScrollXDest = Number(this.scrollXDest);
+        this.scrollXDest = Math.min(
+            Math.max(
+                -this.scrollXMax,
+                this.scrollXDest + (this.scrollXSpeed * this.scrollStepSize),
+            ), this.scrollXMax,
+        );
+    }
+
     tick(delta: number, keyboard: IKeyboard) {
+        // Handle x-scroll
+        if (this.scrollContainer.x == this.scrollXDest) {
+            this.scrollXSpeed = 0;
+        } else if (this.scrollXSpeed != 0) {
+            let clamp = Math.min;
+            if (this.scrollXDest < this.prevScrollXDest) clamp = Math.max;
+            if (Math.abs(this.scrollXDest + this.prevScrollXDest) >= this.scrollStepSize) {
+                this.scrollContainer.x = Math.min(
+                    Math.max(
+                        -this.scrollXMax,
+                        this.scrollContainer.x + (delta * this.scrollXSpeed),
+                    ),
+                    this.scrollXMax,
+                );
+            }
+            if (Math.abs(this.scrollContainer.x) == this.scrollXMax) {
+                this.scrollXDest = this.scrollContainer.x;
+            }
+        }
+
+        // Handle y-scroll
         if (this.scrollContainer.y == this.scrollYDest) {
             this.scrollYSpeed = 0;
         } else if (this.scrollYSpeed != 0) {
