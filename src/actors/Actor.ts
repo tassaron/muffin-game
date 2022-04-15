@@ -15,8 +15,13 @@ export default class Actor extends PIXI.Sprite implements IActor {
 
     tick(delta: number, keyboard: IKeyboard) {}
 
-    onTap(callback: (e: Event) => void) {
-        (this as any).pointertap = callback;
+    onTap(downCallback: (e: Event) => void, upCallback?: (e: Event) => void) {
+        if (upCallback === undefined) {
+            (this as any).pointertap = downCallback;
+        } else {
+            (this as any).pointerdown = downCallback;
+            (this as any).pointerup = upCallback;
+        }
     }
 
     onHover(overCallback: (e: Event) => void, outCallback: (e: Event) => void) {

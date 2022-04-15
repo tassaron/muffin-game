@@ -32,27 +32,19 @@ class OuterScrollScene extends Scene {
         const buildScrollControl = (actor: IActor, direction: "x" | "y", amt: number) => {
             actor.interactive = true;
             if (direction == "y") {
-                actor.onTap(
-                    () => this.scrollY(amt)
-                );
-                actor.onHover(
-                    () => this.scrollY((amt^4) - 1),
-                    () => {
-                        this.scrollYDest = this.scrollContainer.y;
-                        this.scrollYSpeed = 0;
-                    },
-                );
+                const startScrolling = () => this.scrollY((amt^4) - 1);
+                const stopScrolling = () => {
+                    this.scrollYDest = this.scrollContainer.y;
+                    this.scrollYSpeed = 0;
+                };
+                actor.onTap(startScrolling, stopScrolling);
             } else {
-                actor.onTap(
-                    () => this.scrollX(amt)
-                );
-                actor.onHover(
-                    () => this.scrollX((amt^4) - 1),
-                    () => {
-                        this.scrollXDest = this.scrollContainer.x;
-                        this.scrollXSpeed = 0;
-                    },
-                );
+                const startScrolling = () => this.scrollX((amt^4) - 1);
+                const stopScrolling = () => {
+                    this.scrollXDest = this.scrollContainer.x;
+                    this.scrollXSpeed = 0;
+                };
+                actor.onTap(startScrolling, stopScrolling);
             }
             return actor;
         }
