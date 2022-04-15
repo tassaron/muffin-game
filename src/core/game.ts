@@ -73,7 +73,7 @@ export default class Game implements IGame {
         }
 
         // Create scenes
-        logger.info(`Game created with dimensions ${this.width}x${this.height}`);
+        logger.info(`Game created with dimensions ${this.width(100)}x${this.height(100)}`);
         this.scene = new Game.entryScene(this);
         this.prevScene = new Game.loadingScene(this);
         this.scene.mount(this.stage);
