@@ -17,37 +17,58 @@ class OuterScrollScene extends Scene {
     scrollStepSize: number;
 
     scrollYSpeed = 0;
-    scrollYMax: number;
+    scrollYMax: number; // set to game.height(50) in constructor
     scrollYDest = 0;
     prevScrollYDest = 0;
-    
+
     scrollXSpeed = 0;
-    scrollXMax: number;
+    scrollXMax: number; // set to game.width(50) in constructor
     scrollXDest = 0;
     prevScrollXDest = 0;
 
     constructor(game: IGame, container: PIXI.Container, scrollStepSize: number) {
         super(game);
 
+        const startScrollingX = (amt: number) => this.scrollX((amt ^ 4) - 1);
+        const stopScrollingX = () => {
+            this.scrollXDest = this.scrollContainer.x;
+            this.scrollXSpeed = 0;
+        };
+
+        const startScrollingY = (amt: number) => this.scrollY((amt ^ 4) - 1);
+        const stopScrollingY = () => {
+            this.scrollYDest = this.scrollContainer.y;
+            this.scrollYSpeed = 0;
+        };
+
         const buildScrollControl = (actor: IActor, direction: "x" | "y", amt: number) => {
             actor.interactive = true;
             if (direction == "y") {
-                const startScrolling = () => this.scrollY((amt^4) - 1);
-                const stopScrolling = () => {
-                    this.scrollYDest = this.scrollContainer.y;
-                    this.scrollYSpeed = 0;
-                };
-                actor.onTap(startScrolling, stopScrolling);
+                actor.onTap(() => startScrollingY(amt), stopScrollingY);
             } else {
-                const startScrolling = () => this.scrollX((amt^4) - 1);
-                const stopScrolling = () => {
-                    this.scrollXDest = this.scrollContainer.x;
-                    this.scrollXSpeed = 0;
-                };
-                actor.onTap(startScrolling, stopScrolling);
+                actor.onTap(() => startScrollingX(amt), stopScrollingX);
             }
             return actor;
         }
+
+        // Scrolling with touch-dragging (a buggy WIP)
+        (container as any).touchend = () => { stopScrollingY(); stopScrollingX() };
+        (container as any).on("touchmove", (e: any) => {
+            const touchY = e.data.originalEvent.movementY;
+            if (Math.abs(container.y - touchY) > 50) {
+                this.scrollYSpeed = touchY > container.y ? 4 : -4;
+                this.prevScrollYDest = Number(this.scrollYDest);
+                this.scrollYDest = this.scrollYDest + touchY;
+            }
+
+            const touchX = e.data.originalEvent.movementX
+            if (Math.abs(container.x - touchX) > 50) {
+                this.scrollXSpeed = touchX > container.x ? 4 : -4;
+                this.prevScrollXDest = Number(this.scrollXDest);
+                this.scrollXDest = this.scrollXDest + touchX;
+            }
+        });
+        (container as any).interactive = true;
 
         this.scrollContainer = container;
         this.scrollStepSize = scrollStepSize;
@@ -70,8 +91,8 @@ class OuterScrollScene extends Scene {
             arrow.anchor.y = 0.5;
             return arrow
         };
-        const newNavArrow = (direction: "x" | "y", amt: number) => 
-            buildScrollControl(newArrow(direction == "y" ? amt > 0 ? 180 : 0 : amt > 0 ? 90: 270), direction, amt);
+        const newNavArrow = (direction: "x" | "y", amt: number) =>
+            buildScrollControl(newArrow(direction == "y" ? amt > 0 ? 180 : 0 : amt > 0 ? 90 : 270), direction, amt);
         let upArrow = newNavArrow("y", 1);
         let downArrow = newNavArrow("y", -1);
         let leftArrow = newNavArrow("x", 1);
@@ -205,7 +226,7 @@ class OuterScrollScene extends Scene {
 export default class ScrollScene extends Scene {
     constructor(game: IGame) {
         super(game);
-        
+
         // A pipe factory :P
         const newPipe = () => {
             const pipe = (game.sprites.pipe() as TileActor);
@@ -230,7 +251,7 @@ export default class ScrollScene extends Scene {
         grid.subcontainer = new PIXI.Container();
         this.beforeMount.add((container: PIXI.Container) => {
             grid.subcontainer!.x = (this.game.width(100) - (grid.gridSize * grid.rows)) / 4;
-            grid.subcontainer!.y = (this.game.height(100)  - (grid.gridSize * grid.cols)) / 4;
+            grid.subcontainer!.y = (this.game.height(100) - (grid.gridSize * grid.cols)) / 4;
         });
 
         const outerScene = new OuterScrollScene(game, grid.subcontainer, grid.gridSize);
