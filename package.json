@@ -5,10 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "tsc",
-    "bundle": "webpack --progress --mode=development --config webpack.config.js",
-    "dev":    "webpack --progress --mode=development --config webpack.config.js",
-    "minify": "webpack --progress --mode=production  --config webpack.config.js",
-    "build":  "webpack --progress --mode=production  --config webpack.config.js"
+    "dev": "webpack --progress --mode=development --config webpack.config.js",
+    "prod": "webpack --progress --mode=production  --config webpack.config.js"
   },
   "repository": {
     "type": "git",
