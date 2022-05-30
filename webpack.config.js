@@ -8,13 +8,8 @@ module.exports = (env, argv) => {
         entry: ['./examples/setup.ts'],
         module: {
             rules: [
-                /*{
-                    test: /\.js$/,
-                    exclude: /node_modules/,
-                    loader: "babel-loader",
-                },*/
                 {
-                    test: /\.(ts|js)?/,
+                    test: /\.ts/,
                     loader: 'ts-loader',
                     exclude: /node_modules/,
                 },
