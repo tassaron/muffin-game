@@ -48,8 +48,10 @@ This is alpha software I'm making for [my online arcade](https://rainey.tech/arc
 1. Creates scenes by subclassing/editing things inside `/scenes`
 1. Commands:
     - Development build: `npm run dev`
-    - Production build: `npm run build`
-
+    - Production build: `npm run prod`
+1. Run visual regression tests with Cypress:
+    - Generate base images for comparison: `npm run test-init`
+    - Run tests against base images: `npm run test`
 
 ### How it works, slightly more in depth
 

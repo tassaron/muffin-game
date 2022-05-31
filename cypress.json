@@ -1,0 +1,8 @@
+{
+    "baseUrl": "http://localhost:8000/",
+    "screenshotsFolder": "./cypress/snapshots/actual",
+    "trashAssetsBeforeRuns": true,
+    "env": {
+        "failSilently": false
+    }
+}

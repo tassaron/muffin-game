@@ -1,0 +1,12 @@
+{
+  "target": "es2016",
+  "lib": ["es2016", "dom"],
+  "compilerOptions": {
+    "types": [
+      "cypress",
+      "cypress-visual-regression"
+    ],
+    "esModuleInterop": true
+  },
+  "include": ["**/*.ts"]
+}
